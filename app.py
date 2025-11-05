@@ -20,6 +20,28 @@ def index():
     return render_template('base.html', page_title="Main Page")
 
 
+@app.route('/discover/')
+def discover():
+    '''
+    Returns the rendered page for the type inputted to the discover form.
+
+    Args:
+        None
+    Return:
+        String of the rendered template -> str
+    '''
+    query_type = request.args.get('kind')
+    conn = dbi.connect()
+
+    if query_type == 'artist':
+        return render_template('discover-artist.html')
+
+    if query_type == 'album':
+        return render_template('discover-album.html')   
+
+    if query_type == 'beef':
+        return render_template('discover-beef.html')   
+
 
 # pages for individual artists
 @app.route('/artist/<name>/')
