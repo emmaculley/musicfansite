@@ -7,7 +7,7 @@ CREATE TABLE `artist` (
 );
 
 CREATE TABLE `ratings` (
-  `ArtistID` varchar(10),
+  `artistID` varchar(10),
   `rating` float(2),
   `userID` varchar(10)
 );
@@ -56,7 +56,9 @@ CREATE TABLE `forum` (
 
 ALTER TABLE `ratings` ADD FOREIGN KEY (`rating`) REFERENCES `artist` (`rating`);
 
-ALTER TABLE `ratings` ADD FOREIGN KEY (`ArtistID`) REFERENCES `artist` (`artistID`);
+ALTER TABLE `ratings` ADD FOREIGN KEY (`artistID`) REFERENCES `artist` (`artistID`);
+
+ALTER TABLE `ratings` ADD FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);
 
 ALTER TABLE `beef` ADD FOREIGN KEY (`artist1`) REFERENCES `artist` (`artistID`);
 
@@ -64,7 +66,7 @@ ALTER TABLE `beef` ADD FOREIGN KEY (`artist2`) REFERENCES `artist` (`artistID`);
 
 ALTER TABLE `album` ADD FOREIGN KEY (`artistID`) REFERENCES `artist` (`artistID`);
 
-ALTER TABLE `forum` ADD FOREIGN KEY (`forum_id`) REFERENCES `post` (`forum_id`);
+ALTER TABLE `post` ADD FOREIGN KEY (`forum_id`) REFERENCES `forum` (`forum_id`);
 
 ALTER TABLE `post` ADD FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);
 
