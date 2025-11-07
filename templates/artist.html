@@ -3,5 +3,11 @@
 {% block main_content %}
 
 <h1>Eventual artist pages go here</h1>
+{% for person in artist %}
+<h2>{{ person.name }} </h2>
+
+<p>{{ person.name }}'s genre is {{ person.genre }}</p>
+
+<p>{{ person.name }} has an average rating of {{ artist.rating }} out of 100</p>
 
 {% endblock %}
