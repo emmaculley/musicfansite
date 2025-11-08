@@ -1,0 +1,23 @@
+<!-- Music Fansite-->
+<!-- Renders a page that allows people to discover beef between artists-->
+{% extends "base.html" %}      
+{% block main %}      
+
+<h1>Discover Beefs</h1>
+
+<form method="POST" action="">
+  <label>Artist involved:
+    <input type="text" name="artist" placeholder="e.g. Drake">
+  </label>
+
+  <label>Genre:
+        <select name="genre">
+        {% for g in genres %}
+            <option value="{{g}}">{{g}}</option>
+        {% endfor %}
+        </select>
+  </label>
+  <input type="submit" value="Find Beefs">
+</form>
+
+{% endblock %}     
