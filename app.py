@@ -22,26 +22,37 @@ def index():
 
 
 @app.route('/discover/')
-def discover():
-    '''
-    Returns the rendered page for the type inputted to the discover form.
+def discover_home():
+    kind = request.args.get('kind')
+    if kind:
+        return redirect(url_for('discover_kind', kind=kind))
+    flash("You need to make a selection")
+    return render_template('discover.html') 
 
-    Args:
-        None
-    Return:
-        String of the rendered template -> str
-    '''
-    query_type = request.args.get('kind')
-    conn = dbi.connect()
-
-    if query_type == 'artist':
+@app.route('/discover/<kind>', methods=['GET', 'POST'])
+def discover_kind(kind):
+    if kind == 'artist':
+        if request.method == 'POST':
+            genre = request.form.get('genre')
+            rating = request.form.get('rating')
+            return render_template('discover-artist-results.html',genre=genre,rating=rating)
         return render_template('discover-artist.html')
 
-    if query_type == 'album':
-        return render_template('discover-album.html')   
+    elif kind == 'album':
+        if request.method == 'POST':
+            genre = request.form.get('genre')
+            rating = request.form.get('rating')
+            return render_template('discover-album-results.html', genre=genre, rating=rating)
+        return render_template('discover-album.html')
 
-    if query_type == 'beef':
-        return render_template('discover-beef.html')   
+    elif kind == 'beef':
+        if request.method == 'POST':
+            artist = request.form.get('artist')
+            genre = request.form.get('genre')
+            return render_template('discover-beef-results.html',artist=artist, genre=genre)
+        return render_template('discover-beef.html')
+
+
 
 
 # pages for individual artists

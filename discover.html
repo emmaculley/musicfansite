@@ -1,0 +1,30 @@
+{% extends "base.html" %}      
+{% block main %}      
+
+
+<header>
+<h1>DISCOVER 🎧</h1>
+</header>
+
+
+<section>
+    <h2>What do you want to discover?</h2>
+    <form method="GET" action="/discover/">
+    <label>Kind:
+        <select required name="kind">
+        <option value="">choose one</option>
+        <option value="artist">artist</option>
+        <option value="album">album</option>
+        <option value="beef">beef</option>
+        </select>
+    </label>
+
+    <input type="submit" value="Continue">
+    </form>
+
+</section>
+
+
+{% endblock %}  
+
+
