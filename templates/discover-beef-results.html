@@ -1,0 +1,18 @@
+<!-- Music Fansite-->
+<!-- Renders a page that allows people to discover specifically new artists-->
+{% extends "base.html" %}      
+{% block main %}      
+<h1>Discover Beefs</h1>
+
+<p>5 Beefs for you to explore involving "{{ artist }}" in {{ genre }}</p>
+
+  <ul>
+    {% for beef in beefs %}
+      <li>
+        <a href="/beef/{{ beef.bid}}">{{ beef.artist1 }} vs. {{ beef.artist2 }}</a> 
+      </li>
+    {% endfor %}
+  </ul>
+ 
+
+{% endblock %}  

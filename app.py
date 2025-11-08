@@ -1,7 +1,7 @@
 """
 Music Fansite
 Authors: Emma Culley, Dana Hammouri, Megan O'Leary, Ashley Yang
-Last updated: 5th November 2025
+Last updated: 8th November 2025
 """
 
 
@@ -20,7 +20,7 @@ print(dbi.conf('musicfan_db'))
 def index():
     return render_template('base.html', page_title="Main Page")
 
-
+# discover home page
 @app.route('/discover/')
 def discover_home():
     kind = request.args.get('kind')
@@ -29,30 +29,30 @@ def discover_home():
     flash("You need to make a selection")
     return render_template('discover.html') 
 
+# brings the user to the correct form to discover new music
 @app.route('/discover/<kind>', methods=['GET', 'POST'])
 def discover_kind(kind):
     if kind == 'artist':
         if request.method == 'POST':
             genre = request.form.get('genre')
-            rating = request.form.get('rating')
-            return render_template('discover-artist-results.html',genre=genre,rating=rating)
+            num_rating = request.form.get('num_rating')
+            artists = discover_artists(conn, genre, num_rating)
+            return render_template('discover-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
         return render_template('discover-artist.html')
-
     elif kind == 'album':
         if request.method == 'POST':
             genre = request.form.get('genre')
-            rating = request.form.get('rating')
-            return render_template('discover-album-results.html', genre=genre, rating=rating)
+            num_rating = request.form.get('num_rating')
+            albums = discover_albums(conn, genre, num_rating)
+            return render_template('discover-album-results.html',genre=genre,num_rating=num_rating, albums=albums)
         return render_template('discover-album.html')
-
     elif kind == 'beef':
         if request.method == 'POST':
             artist = request.form.get('artist')
             genre = request.form.get('genre')
-            return render_template('discover-beef-results.html',artist=artist, genre=genre)
+            beefs = discover_beefs(conn, artist, genre)
+            return render_template('discover-beef-results.html',artist=artist, genre=genre, beefs=beefs)
         return render_template('discover-beef.html')
-
-
 
 
 # pages for individual artists

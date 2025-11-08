@@ -1,0 +1,17 @@
+<!-- Music Fansite-->
+<!-- Renders a page that allows people to discover specifically new artists-->
+{% extends "base.html" %}      
+{% block main %}      
+<h1>Discover Artists</h1>
+
+<p>5 Artists for you to explore in "{{ genre }}" with {{ num_rating }}+ ratings</p>
+
+  <ul>
+    {% for artist in artists %}
+      <li>
+        <a href="/artist/{{ artist.artistID}}">{{ artist.title }}</a> 
+      </li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}
