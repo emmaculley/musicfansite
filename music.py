@@ -8,7 +8,6 @@ Last updated: 8th November 2025
 
 import cs304dbi as dbi
 
-
 # will give back artist info for their page
 def get_artist(conn, id):
     curs = dbi.dict_cursor(conn)
@@ -64,3 +63,18 @@ def discover_beefs(conn, artist, genre):
     curs.execute('''select * from beef where approved = "approved" 
      AND artist1 = %s AND genre = %s order by rand() limit 5''',[artist, genre])
     return curs.fetchall()
+
+#finds user in the db using their email
+def get_user_by_email(conn, email):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from user where user_email = %s''', [email])
+    return curs.fetchone() 
+
+#creates a user who is entering the website for the first time
+def create_user(conn, email, fname, lname, password):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''insert into user (user_email, fname, lname, password) values (%s, %s, %s, %s)''',
+        [email, fname, lname, password])
+    conn.commit()
+    get_user_by_email(conn, email)
+    return curs.fetchone()

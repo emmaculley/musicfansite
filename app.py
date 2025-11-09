@@ -6,12 +6,15 @@ Last updated: 8th November 2025
 
 
 from flask import (Flask, render_template, url_for, request,
-                   redirect)
+                   redirect, session)
+
 app = Flask(__name__)
 
+import secrets
 import cs304dbi as dbi
 import music
 
+app.secret_key = secrets.token_hex()
 
 print(dbi.conf('musicfan_db'))
 
@@ -19,6 +22,36 @@ print(dbi.conf('musicfan_db'))
 @app.route('/')
 def index():
     return render_template('base.html', page_title="Main Page")
+
+#login for users -- if they have an account
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    conn = dbi.connect()
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = music.get_user_by_email(conn, email)
+        if user:
+            session['user_email'] = user['user_email']
+            session['fname'] = user['fname']
+            flash("You have been successfully logged in!")
+            return redirect(url_for('index'))
+        else:
+            return render_template('signup.html', email=email)
+    return render_template('login.html')
+
+# signup for users -- need to make an account
+@app.route('/signup/', methods=['POST'])
+def signup():
+    conn = dbi.connect()
+    email = request.form.get('email')
+    fname = request.form.get('fname')
+    lname = request.form.get('lname')
+    password = request.form.get('password')
+    music.add_user(conn, email, fname, lname, password)
+    session['user_email'] = email
+    session['fname'] = fname
+    flash("Your account was created! You are now logged in!")
+    return redirect(url_for('index'))
 
 # discover home page
 @app.route('/discover/')
@@ -32,6 +65,7 @@ def discover_home():
 # brings the user to the correct form to discover new music
 @app.route('/discover/<kind>', methods=['GET', 'POST'])
 def discover_kind(kind):
+    conn = dbi.connect()
     if kind == 'artist':
         if request.method == 'POST':
             genre = request.form.get('genre')

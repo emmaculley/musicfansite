@@ -1,0 +1,21 @@
+{% extends "base.html" %}      
+{% block main %}      
+
+
+<header>
+<h1>LOGIN for Music Fansite</h1>
+<h2>login in order to add to our app!</h2>
+</header>
+
+
+<section>
+    <form method="POST" action="{{url_for('login')}}">
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <input type="submit" value="Continue">
+    </form>
+</section>
+
+
+{% endblock %}  
