@@ -1,7 +1,18 @@
+use musicfan_db;
+
+DROP TABLE IF EXISTS post;
+DROP TABLE IF EXISTS forum;
+DROP TABLE IF EXISTS album;
+DROP TABLE IF EXISTS beef;
+DROP TABLE IF EXISTS ratings;
+DROP TABLE IF EXISTS artist;
+DROP TABLE IF EXISTS user;
+
 CREATE TABLE `artist` (
   `artistID` varchar(10) PRIMARY KEY,
   `name` varchar(20),
-  `genre` ENUM ('pop', 'rock', 'hiphop', 'rap', 'electronic', 'dance', 'jazz'),
+  `genre` ENUM ('pop', 'rock', 'hiphop', 'hip hop', 'rnb' ,'rap', 'electronic',
+            'dance', 'jazz', 'classical', 'reggae', 'country', 'indie','punk', 'metal'),
   `rating` float,
   `approvalStatus` ENUM ('pending', 'approved', 'rejected')
 );
@@ -35,12 +46,12 @@ CREATE TABLE `user` (
   `user_email` varchar(30),
   `fname` varchar(50),
   `lname` varchar(50),
-  `password` varchar(30)
+  `password` varchar(100)
 );
 
 CREATE TABLE `post` (
   `post_id` varchar(10) PRIMARY KEY,
-  `forum_id` integer,
+  `forum_id` varchar(10),
   `userID` varchar(10),
   `created_at` timestamp,
   `content` text
@@ -48,13 +59,13 @@ CREATE TABLE `post` (
 
 CREATE TABLE `forum` (
   `forum_id` varchar(10) PRIMARY KEY,
-  `title` varchar[500],
+  `title` varchar(20),
   `userID` varchar(30),
   `created_at` timestamp,
   `type` ENUM ('beef', 'music', 'explore')
 );
 
-ALTER TABLE `ratings` ADD FOREIGN KEY (`rating`) REFERENCES `artist` (`rating`);
+-- ALTER TABLE `ratings` ADD FOREIGN KEY (`rating`) REFERENCES `artist` (`rating`);
 
 ALTER TABLE `ratings` ADD FOREIGN KEY (`artistID`) REFERENCES `artist` (`artistID`);
 
