@@ -5,7 +5,7 @@ Last updated: 8th November 2025
 """
 
 
-from flask import (Flask, render_template, url_for, request,
+from flask import (Flask, flash, render_template, url_for, request,
                    redirect, session)
 
 app = Flask(__name__)
@@ -87,7 +87,6 @@ def discover_kind(kind):
             beefs = discover_beefs(conn, artist, genre)
             return render_template('discover-beef-results.html',artist=artist, genre=genre, beefs=beefs)
         return render_template('discover-beef.html')
-
 
 # pages for individual artists
 @app.route('/artist/<id>/')
