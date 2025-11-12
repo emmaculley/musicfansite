@@ -21,7 +21,7 @@ print(dbi.conf('musicfan_db'))
 
 @app.route('/')
 def index():
-    return render_template('base.html', page_title="Main Page")
+    return render_template('main.html', page_title="Main Page")
 
 #login for users -- if they have an account
 @app.route('/login/', methods=['GET', 'POST'])
