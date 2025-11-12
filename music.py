@@ -78,3 +78,13 @@ def create_user(conn, email, fname, lname, password):
     conn.commit()
     get_user_by_email(conn, email)
     return curs.fetchone()
+
+def get_password(conn, email):
+    curs = dbi.dict_cursor(conn)
+    get_user_by_email(conn, email)
+    user = curs.fetchone()
+    if user:
+        user_password = user['password']
+        return user_password
+    else:
+        flash('You are not a user')

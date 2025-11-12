@@ -1,17 +1,11 @@
 """
 Music Fansite
 Authors: Emma Culley, Dana Hammouri, Megan O'Leary, Ashley Yang
-Last updated: 8th November 2025
+Last updated: 12th November 2025
 """
 
-
-<<<<<<< HEAD
 from flask import (Flask, render_template, url_for, request,
                    redirect, session, flash)
-=======
-from flask import (Flask, flash, render_template, url_for, request,
-                   redirect, session)
->>>>>>> f0b6d802fb93de06d7eb916874bbbcb411974027
 
 app = Flask(__name__)
 
@@ -34,8 +28,9 @@ def login():
     conn = dbi.connect()
     if request.method == 'POST':
         email = request.form.get('email')
+        password = request.form.get('password')
         user = music.get_user_by_email(conn, email)
-        if user:
+        if user and password == get_password(conn, email):
             session['user_email'] = user['user_email']
             session['fname'] = user['fname']
             flash("You have been successfully logged in!")
