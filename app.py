@@ -40,18 +40,20 @@ def login():
     return render_template('login.html')
 
 # signup for users -- need to make an account
-@app.route('/signup/', methods=['POST'])
+@app.route('/signup/', methods=['GET', 'POST'])
 def signup():
     conn = dbi.connect()
-    email = request.form.get('email')
-    fname = request.form.get('fname')
-    lname = request.form.get('lname')
-    password = request.form.get('password')
-    music.add_user(conn, email, fname, lname, password)
-    session['user_email'] = email
-    session['fname'] = fname
-    flash("Your account was created! You are now logged in!")
-    return redirect(url_for('index'))
+    if request.method == 'POST':
+        email = request.form.get('email')
+        fname = request.form.get('fname')
+        lname = request.form.get('lname')
+        password = request.form.get('password')
+        music.add_user(conn, email, fname, lname, password)
+        session['user_email'] = email
+        session['fname'] = fname
+        flash("Your account was created! You are now logged in!")
+        return redirect(url_for('index'))
+    return render_template('signup.html')
 
 # discover home page
 @app.route('/discover/')

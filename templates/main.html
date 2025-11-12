@@ -21,10 +21,10 @@
     <nav>
         <ul>
 
-            <li><a href = "{ url_for('###')}">Discover</a></li>
+            <li><a href ="{{url_for('discover_home')}}">Discover</a></li>
             <li><a href = "{ url_for('###')}">Forums</a></li>
-            <li><a href = "{ url_for('###')}">Log in</a></li>
-            <li><a href = "{ url_for('signup')}">Sign Up</a></li>
+            <li><a href = "{{ url_for('login')}}">Log in</a></li>
+            <li><a href = "{{ url_for('signup')}}">Sign Up</a></li>
         </ul>
     </nav>
     <main>
@@ -41,9 +41,9 @@
         <div class="section">
             <h2>Get Started</h2>
             <p>Create an account if you have not already.</p>
-            <button><a href = "{url_for(###)}"></a>Sign Up</button>
+            <button><a href = "{{url_for('discover_home')}}"></a>Sign Up</button>
             <p>Unravel the drama of the music world and discover new artists!</p>
-            <button><a href = "{url_for(###)}"></a>Discover</button>
+            <button><a href = "{{ url_for('signup')}}"></a>Discover</button>
         </div>
     </main>
 </body>
