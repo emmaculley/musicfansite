@@ -1,4 +1,6 @@
-CREATE TABLE `artists` (
+use musicfan_db;
+
+CREATE TABLE `artist` (
   `artistID` varchar(10) PRIMARY KEY,
   `name` varchar(20),
   `genre` ENUM ('pop', 'rock', 'hiphop', 'hip hop', 'rnb' ,'rap', 'electronic',
@@ -23,7 +25,7 @@ CREATE TABLE `beef` (
   `approved` ENUM ('pending', 'approved', 'rejected')
 );
 
-CREATE TABLE `albums` (
+CREATE TABLE `album` (
   `albumID` varchar(10) PRIMARY KEY,
   `title` varchar(50),
   `release` date,
