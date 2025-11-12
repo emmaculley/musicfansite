@@ -4,12 +4,19 @@
     <meta charset="utf-8">
     <meta name="author" content="Emma, Dana, Megan, Ashley">
     <title>{{ page_title }}</title>    
+    {% block styles %}{% endblock %}
 </head> 
+
 <body>
     <!-- Navbar goes here-->
-
-    {% block main_content %}
-    <h1>Welcome to our page</h1>
-    {% endblock %}
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('discover') }}">Discover</a></li>
+            <li><a href="{{ url_for('forums') }}">Forums</a></li>
+            <li><a href="{{ url_for('login') }}">Log in</a></li>
+            <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+        </ul>
+    </nav>
+    {% block main_content %}{% endblock %}
 </body>
 </html>
