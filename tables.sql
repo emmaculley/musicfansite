@@ -1,5 +1,13 @@
 use musicfan_db;
 
+DROP TABLE IF EXISTS post;
+DROP TABLE IF EXISTS forum;
+DROP TABLE IF EXISTS album;
+DROP TABLE IF EXISTS beef;
+DROP TABLE IF EXISTS ratings;
+DROP TABLE IF EXISTS artist;
+DROP TABLE IF EXISTS user;
+
 CREATE TABLE `artist` (
   `artistID` varchar(10) PRIMARY KEY,
   `name` varchar(20),
@@ -43,7 +51,7 @@ CREATE TABLE `user` (
 
 CREATE TABLE `post` (
   `post_id` varchar(10) PRIMARY KEY,
-  `forum_id` integer,
+  `forum_id` varchar(10),
   `userID` varchar(10),
   `created_at` timestamp,
   `content` text
