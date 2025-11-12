@@ -38,7 +38,7 @@ CREATE TABLE `user` (
   `user_email` varchar(30),
   `fname` varchar(50),
   `lname` varchar(50),
-  `password` varchar(50)
+  `password` varchar(100)
 );
 
 CREATE TABLE `post` (
@@ -51,7 +51,7 @@ CREATE TABLE `post` (
 
 CREATE TABLE `forum` (
   `forum_id` varchar(10) PRIMARY KEY,
-  `title` varchar[500],
+  `title` varchar(20),
   `userID` varchar(30),
   `created_at` timestamp,
   `type` ENUM ('beef', 'music', 'explore')
