@@ -97,6 +97,37 @@ def artist(id):
     artist = music.get_artist(conn, id)
     return render_template('artist.html', artist=artist)
 
+@app.route('/forums/')
+def forums_home():
+    kind = request.args.get('kind')
+    if kind:
+        return redirect(url_for('forums_kind', kind=kind))
+    flash("You need to make a selection")
+    return render_template('forums.html') 
+
+@app.route('/forums/<kind>', methods=['GET', 'POST'])
+def forums_kind(kind):
+    conn = dbi.connect()
+    if kind == 'music':
+        if request.method == 'POST': 
+            # want to select from the forums
+            # or make a new forum
+            return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
+        return render_template('forum-artist.html')
+    elif kind == 'explore':
+        if request.method == 'POST':
+            # want to select from the forums
+            # or make a new forum
+            return render_template('forum-album-results.html',genre=genre,num_rating=num_rating, albums=albums)
+        return render_template('forum-music.html')
+    elif kind == 'beef':
+        if request.method == 'POST':
+            # want to select from the forums
+            # or make a new forum
+            return render_template('forum-beef-results.html',artist=artist, genre=genre, beefs=beefs)
+        return render_template('forum-beef.html')
+
+
 if __name__ == '__main__':
     import sys, os
     if len(sys.argv) > 1:
