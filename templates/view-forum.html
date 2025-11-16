@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block main_content %}
+
+<h1>{{ forum.title }}</h1>
+
+<section>
+    <h2>Posts</h2>
+
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                    <small>Posted on: {{ post['created_at']}}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts yet — start the conversation!</p>
+    {% endif %}
+</section>
+
+<hr>
+
+<section>
+    <h2>Post somehting of your own!</h2>
+    <form method="POST">
+        <textarea name="content" placeholder="Write something..." required></textarea>
+        <br><br>
+        <button type="submit">Post</button>
+    </form>
+</section>
+
+<br>
+<a href="{{ url_for('forums_type', type=forum.type) }}">← Back to {{ forum.type }} forums</a>
+
+{% endblock %}
+

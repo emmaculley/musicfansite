@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block main_content %}
+
+<h1>Explore Forums</h1>
+
+<section>
+    <h2>Current Discussions</h2>
+
+    {% if forums %}
+    <ul>
+        {% for forum in forums %}
+            <li>
+                <a href="{{url_for('view_forum', forum_id=forum['forum_id']) }}">
+                    {{ forum['title'] }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No forums yet... start the conversation!</p>
+    {% endif %}
+</section>
+
+<hr>
+
+<section>
+    <h2>Create a New Forum</h2>
+    <form method="POST">
+        <label for="title">Forum Title:</label>
+        <input type="text" id="title" name="title" required>
+
+        <input type="submit" value="Create Forum">
+    </form>
+</section>
+
+{% endblock %}
