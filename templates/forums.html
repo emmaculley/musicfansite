@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block main_content %}
+
+
+<header>
+<h1>Forums 💬</h1>
+</header>
+
+
+<section>
+    <h2>What do you want to discuss?</h2>
+    <form method="GET" action="/discover/">
+    <label>Kind:
+        <select required name="kind">
+        <option value="">choose one</option>
+        <option value="music">music</option>
+        <option value="explore">explore</option>
+        <option value="beef">beef</option>
+        </select>
+    </label>
+
+    <input type="submit" value="Continue">
+    </form>
+
+</section>
+
+
+{% endblock %}  
