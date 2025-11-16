@@ -1,13 +1,6 @@
 {% extends "base.html" %}    
 {% block styles %}
     <style>
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-        }
-
         .section {
             margin-bottom: 2rem;
             padding: 1.5rem;
@@ -31,17 +24,7 @@
         }
     </style>
 {% endblock %}
-
-<<<<<<< HEAD
-            <li><a href ="{{url_for('discover_home')}}">Discover</a></li>
-            <li><a href = "{ url_for('###')}">Forums</a></li>
-            <li><a href = "{{ url_for('login')}}">Log in</a></li>
-            <li><a href = "{{ url_for('signup')}}">Sign Up</a></li>
-        </ul>
-    </nav>
-=======
 {% block main_content %}
->>>>>>> 057e159 (base and main html files)
     <main>
         <h1>Welcome to Our Music Website!</h1>
         <p></p>
@@ -56,15 +39,9 @@
         <div class="section">
             <h2>Get Started</h2>
             <p>Create an account if you have not already.</p>
-<<<<<<< HEAD
-            <button><a href = "{{url_for('discover_home')}}"></a>Sign Up</button>
-            <p>Unravel the drama of the music world and discover new artists!</p>
-            <button><a href = "{{ url_for('signup')}}"></a>Discover</button>
-=======
             <a href="{{ url_for('signup') }}" class="button">Sign Up</a>
             <p>Unravel the drama of the music world and discover new artists!</p>
-            <a href="{{ url_for('discover') }}" class="button">Discover</a>
->>>>>>> 057e159 (base and main html files)
+            <a href="{{ url_for('discover_home') }}" class="button">Discover</a>
         </div>
     </main>
 {% endblock %}
