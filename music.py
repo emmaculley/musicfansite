@@ -15,6 +15,8 @@ def get_artist(conn, id):
     name, genre, rating = curs.fetchall()
     return name, genre, rating
 
+#will return artist ID from t
+
 # returns a random list of 5 artists that fit into the given categories 
 def discover_artists(conn, genre, num_rating):
     curs = dbi.dict_cursor(conn)
@@ -78,6 +80,18 @@ def create_user(conn, email, fname, lname, password):
     conn.commit()
     get_user_by_email(conn, email)
     return curs.fetchone()
+
+
+def create_beef(conn, artist1, artist2, countArtist1, countArtist2, context):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''insert into beef (artist1, artist2, countArtist1, countArtist2, context) values (%s, %s, %s,%s, %s, %s)''',
+        [artist1, artist2, countArtist1, countArtist2, context])
+    conn.commit()
+    return cur.lastrowid
+
+    ###if the artists are not already defined, need to create an artist (name, autogenerates an ID, and a genre)
+
+def 
 
 def get_password(conn, email):
     curs = dbi.dict_cursor(conn)

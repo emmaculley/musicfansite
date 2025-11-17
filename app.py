@@ -97,6 +97,37 @@ def artist(id):
     artist = music.get_artist(conn, id)
     return render_template('artist.html', artist=artist)
 
+#is there a way for the user to be able to like type in artist (and the query )
+#insert beef form
+@app.route('/insertbeef/', methods= ['GET', 'POST'])
+def insertbeef():
+    conn = dbi.connect()
+    if request.method == 'POST':
+        artist1 = request.form.get('artist1')
+        #if artist1/2 not in the database in the table artist, we need to redirect the insertion to adding the artists first !!
+        if artist1 not in music.get_artist():
+            
+        artist2 = request.form.get('artist2')
+        context = request.form.get('reason')
+        side = request.form.get('side')   # either "artist1" or "artist2"
+        countArtist1 = 1 if side == "artist1" else 0
+        countArtist2 = 1 if side == "artist2" else 0
+        bid = music.create_beef(conn, artist1, artist2, context, countArtist1, countArtist2)
+        fname = session.get('fname')   # retrieve stored name
+        flash(f"Beef form was submitted! Thank you {fname}")
+        # return redirect(url_for('index'))
+        return redirect(url_for('beef_page', bid=bid))
+    return render_template('beef_form.html')
+
+#beef page
+@app.route('/beef/<bid>', methods = ['GET', 'POST'])
+def beef_page(bid):
+    conn = dbi.connect()
+    artist1 = music.get_artist
+
+
+
+    
 if __name__ == '__main__':
     import sys, os
     if len(sys.argv) > 1:
