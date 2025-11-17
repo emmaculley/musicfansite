@@ -13,8 +13,8 @@ CREATE TABLE `artist` (
   `name` varchar(20),
   `genre` ENUM ('pop', 'rock', 'hiphop', 'hip hop', 'rnb' ,'rap', 'electronic',
             'dance', 'jazz', 'classical', 'reggae', 'country', 'indie','punk', 'metal'),
-  `rating` float,
-  `approvalStatus` ENUM ('pending', 'approved', 'rejected')
+  `rating` float DEFAULT NULL,
+  `approvalStatus` ENUM ('pending', 'approved', 'rejected') DEFAULT 'pending'
 );
 
 CREATE TABLE `ratings` (
@@ -27,10 +27,10 @@ CREATE TABLE `beef` (
   `bid` INT AUTO_INCREMENT PRIMARY KEY,
   `artist1` INT,
   `artist2` INT,
-  `countArtist1` int,
-  `countArtist2` int,
+  `countArtist1` int DEFAULT 0,
+  `countArtist2` int DEFAULT 0,
   `context` text,
-  `approved` ENUM ('pending', 'approved', 'rejected')
+  `approved` ENUM ('pending', 'approved', 'rejected') DEFAULT 'pending'
 );
 
 CREATE TABLE `album` (
