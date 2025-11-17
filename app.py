@@ -5,13 +5,8 @@ Last updated: 8th November 2025
 """
 
 
-<<<<<<< HEAD
 from flask import (Flask, render_template, url_for, request,
                    redirect, session, flash)
-=======
-from flask import (Flask, flash, render_template, url_for, request,
-                   redirect, session)
->>>>>>> f0b6d802fb93de06d7eb916874bbbcb411974027
 
 app = Flask(__name__)
 
@@ -99,6 +94,14 @@ def artist(id):
     conn = dbi.connect()
     artist = music.get_artist(conn, id)
     return render_template('artist.html', artist=artist)
+
+
+# going to be used for the music form
+@app.route('/add-music/')
+def add_music():
+    type = request.args['add']
+    return render_template('add.html') 
+
 
 if __name__ == '__main__':
     import sys, os
