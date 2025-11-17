@@ -21,10 +21,10 @@
     <nav>
         <ul>
 
-            <li><a href = "{ url_for('###')}">Discover</a></li>
-            <li><a href = "{ url_for('###')}">Forums</a></li>
-            <li><a href = "{ url_for('###')}">Log in</a></li>
-            <li><a href = "{ url_for('signup')}">Sign Up</a></li>
+            <li><a href ="{{url_for('discover_home')}}">Discover</a></li>
+            <li><a href = "{{url_for('forums_home')}}">Forums</a></li>
+            <li><a href = "{{ url_for('login')}}">Log in</a></li>
+            <li><a href = "{{ url_for('signup')}}">Sign Up</a></li>
         </ul>
     </nav>
     <main>
@@ -41,9 +41,16 @@
         <div class="section">
             <h2>Get Started</h2>
             <p>Create an account if you have not already.</p>
-            <button><a href = "{url_for(###)}"></a>Sign Up</button>
+            <a href="{{ url_for('signup') }}">
+            <button type="button">Sign Up</button>
+            </a>
             <p>Unravel the drama of the music world and discover new artists!</p>
-            <button><a href = "{url_for(###)}"></a>Discover</button>
+            <a href="{{ url_for('discover_home') }}">
+            <button type="button">Discover</button>
+            </a>
+            <a href="{{ url_for('insertbeef') }}">
+            <button type="button">Got Beef?</button>
+            </a>
         </div>
     </main>
 </body>

@@ -1,6 +1,5 @@
-{% extends "base.html" %}      
-{% block main %}      
-
+{% extends "base.html" %}
+{% block main_content %}
 
 <header>
 <h1>LOGIN for Music Fansite</h1>
@@ -13,9 +12,12 @@
     <label for="email">Email:</label><br>
     <input type="email" id="email" name="email" required><br><br>
 
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+
     <input type="submit" value="Continue">
     </form>
 </section>
 
 
-{% endblock %}  
+{% endblock %}

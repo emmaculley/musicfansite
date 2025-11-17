@@ -15,6 +15,8 @@ def get_artist(conn, id):
     name, genre, rating = curs.fetchall()
     return name, genre, rating
 
+#will return artist ID from t
+
 # returns a random list of 5 artists that fit into the given categories 
 def discover_artists(conn, genre, num_rating):
     curs = dbi.dict_cursor(conn)
@@ -78,3 +80,46 @@ def create_user(conn, email, fname, lname, password):
     conn.commit()
     get_user_by_email(conn, email)
     return curs.fetchone()
+
+
+def create_beef(conn, artist1, artist2, countArtist1, countArtist2, context):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''insert into beef (artist1, artist2, countArtist1, countArtist2, context) values (%s, %s, %s,%s, %s, %s)''',
+        [artist1, artist2, countArtist1, countArtist2, context])
+    conn.commit()
+    return cur.lastrowid
+
+    ###if the artists are not already defined, need to create an artist (name, autogenerates an ID, and a genre)
+
+def 
+
+def get_password(conn, email):
+    curs = dbi.dict_cursor(conn)
+    get_user_by_email(conn, email)
+    user = curs.fetchone()
+    if user:
+        user_password = user['password']
+        return user_password
+    else:
+        flash('You are not a user')
+
+def insert_to_forums(conn, type, title, user_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''insert into forum (title, userID, created_at, type)
+        values (%s, %s, now(), %s)''', (title, user_id, kind))
+    return conn.commit()
+
+def load_forums(conn, type):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select forum_id, title from forum where type = %s order by created_at desc''', (type,))
+    return curs.fetchall()
+
+def get_forum(conn, forum_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from forum where forum_id = %s''', (forum_id))
+    return curs.fetchone()
+
+def get_posts(conn, forum_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from post where forum_id = %s order by created_at asc''', (forum_id))
+    return curs.fetchall()
