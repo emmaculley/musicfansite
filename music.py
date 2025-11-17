@@ -102,3 +102,24 @@ def get_password(conn, email):
         return user_password
     else:
         flash('You are not a user')
+
+def insert_to_forums(conn, type, title, user_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''insert into forum (title, userID, created_at, type)
+        values (%s, %s, now(), %s)''', (title, user_id, kind))
+    return conn.commit()
+
+def load_forums(conn, type):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select forum_id, title from forum where type = %s order by created_at desc''', (type,))
+    return curs.fetchall()
+
+def get_forum(conn, forum_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from forum where forum_id = %s''', (forum_id))
+    return curs.fetchone()
+
+def get_posts(conn, forum_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from post where forum_id = %s order by created_at asc''', (forum_id))
+    return curs.fetchall()

@@ -31,6 +31,7 @@ def login():
         password = request.form.get('password')
         user = music.get_user_by_email(conn, email)
         if user and password == get_password(conn, email):
+            session['user_id'] = user['userID']
             session['user_email'] = user['user_email']
             session['fname'] = user['fname']
             flash("You have been successfully logged in!")
@@ -49,6 +50,7 @@ def signup():
         lname = request.form.get('lname')
         password = request.form.get('password')
         music.add_user(conn, email, fname, lname, password)
+        session['user_id'] = user['userID']
         session['user_email'] = email
         session['fname'] = fname
         flash("Your account was created! You are now logged in!")
@@ -96,6 +98,49 @@ def artist(id):
     conn = dbi.connect()
     artist = music.get_artist(conn, id)
     return render_template('artist.html', artist=artist)
+
+@app.route('/forums/')
+def forums_home():
+    type = request.args.get('type')
+    if type:
+        return redirect(url_for('forums_type', type=type))
+    flash("You need to make a selection")
+    return render_template('forums.html') 
+
+@app.route('/forums/<type>', methods=['GET', 'POST'])
+def forums_type(type):
+    conn = dbi.connect()
+    if type == 'music':
+        if request.method == 'POST': 
+            # want to select from the forums
+            # or make a new forum
+            return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
+        return render_template('forum-artist.html')
+    elif type == 'explore':
+        if request.method == 'POST':
+            title = request.form.get('title')
+            user_id = session.get('user_id')
+            if title:
+                insert_to_forums(conn, type, title, user_id)
+            else:
+                flash("Forum title required!")
+        forums = music.load_forums(conn, type)
+        return render_template('forums-explore.html', type=type, forums=forums)
+    elif type == 'beef':
+        if request.method == 'POST':
+            # want to select from the forums
+            # or make a new forum
+            return render_template('forum-beef-results.html',artist=artist, genre=genre, beefs=beefs)
+        return render_template('forum-beef.html')
+
+
+@app.route('/forum/<forum_id>')
+def view_forum(forum_id):
+    conn = dbi.connect()
+    forum = get_forum(conn, forum_id)
+    posts = get_posts(conn, forum_id)
+    return render_template('view-forum.html', forum=forum, posts=posts)
+
 
 #is there a way for the user to be able to like type in artist (and the query )
 #insert beef form
