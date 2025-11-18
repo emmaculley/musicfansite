@@ -74,23 +74,26 @@ def discover_kind(kind):
         if request.method == 'POST':
             genre = request.form.get('genre')
             num_rating = request.form.get('num_rating')
-            artists = discover_artists(conn, genre, num_rating)
+            artists = music.discover_artists(conn, genre, num_rating)
             return render_template('discover-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
-        return render_template('discover-artist.html')
+        genres = music.get_genres(conn)
+        return render_template('discover-artist.html', genres=genres)
     elif kind == 'album':
         if request.method == 'POST':
             genre = request.form.get('genre')
             num_rating = request.form.get('num_rating')
-            albums = discover_albums(conn, genre, num_rating)
+            albums = music.discover_albums(conn, genre, num_rating)
             return render_template('discover-album-results.html',genre=genre,num_rating=num_rating, albums=albums)
-        return render_template('discover-album.html')
+        genres = music.get_genres(conn)
+        return render_template('discover-album.html', genres=genres)
     elif kind == 'beef':
         if request.method == 'POST':
             artist = request.form.get('artist')
             genre = request.form.get('genre')
-            beefs = discover_beefs(conn, artist, genre)
+            beefs = music.discover_beefs(conn, artist, genre)
             return render_template('discover-beef-results.html',artist=artist, genre=genre, beefs=beefs)
-        return render_template('discover-beef.html')
+        genres = music.get_genres(conn)
+        return render_template('discover-beef.html', genres=genres)
 
 # pages for individual artists
 @app.route('/artist/<id>/')
@@ -152,16 +155,16 @@ def insertbeef():
         #if artist1/2 not in the database in the table artist, we need to redirect the insertion to adding the artists first !!
         if artist1 not in music.get_artist():
             
-        artist2 = request.form.get('artist2')
-        context = request.form.get('reason')
-        side = request.form.get('side')   # either "artist1" or "artist2"
-        countArtist1 = 1 if side == "artist1" else 0
-        countArtist2 = 1 if side == "artist2" else 0
-        bid = music.create_beef(conn, artist1, artist2, context, countArtist1, countArtist2)
-        fname = session.get('fname')   # retrieve stored name
-        flash(f"Beef form was submitted! Thank you {fname}")
-        # return redirect(url_for('index'))
-        return redirect(url_for('beef_page', bid=bid))
+            artist2 = request.form.get('artist2')
+            context = request.form.get('reason')
+            side = request.form.get('side')   # either "artist1" or "artist2"
+            countArtist1 = 1 if side == "artist1" else 0
+            countArtist2 = 1 if side == "artist2" else 0
+            bid = music.create_beef(conn, artist1, artist2, context, countArtist1, countArtist2)
+            fname = session.get('fname')   # retrieve stored name
+            flash(f"Beef form was submitted! Thank you {fname}")
+            # return redirect(url_for('index'))
+            return redirect(url_for('beef_page', bid=bid))
     return render_template('beef_form.html')
 
 #beef page
