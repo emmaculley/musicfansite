@@ -15,8 +15,6 @@ def get_artist(conn, id):
     name, genre, rating = curs.fetchall()
     return name, genre, rating
 
-#will return artist ID from t
-
 # returns a random list of 5 artists that fit into the given categories 
 def discover_artists(conn, genre, num_rating):
     curs = dbi.dict_cursor(conn)
@@ -25,15 +23,15 @@ def discover_artists(conn, genre, num_rating):
         where a.approvalStatus = "approved" AND a.genre = %s
         group by a.artistID'''
     if num_rating == "100":
-        query += 'having num_ratings >= 100'
+        query += ' having num_ratings >= 100'
     elif num_rating == "75":
-        query += 'having num_ratings >= 75 AND num_ratings < 100'
+        query += ' having num_ratings >= 75 AND num_ratings < 100'
     elif num_rating == "50":
-        query += 'having num_ratings >= 50 AND num_ratings < 75'
+        query += ' having num_ratings >= 50 AND num_ratings < 75'
     elif num_rating == "25":
-        query += 'having num_ratings >= 25 AND num_ratings < 50'
+        query += ' having num_ratings >= 25 AND num_ratings < 50'
     elif num_rating == "0":
-        query += 'having num_ratings >= 0 AND num_ratings < 25'
+        query += ' having num_ratings >= 0 AND num_ratings < 25'
     query += ' order by rand() limit 5'
     curs.execute(query, [genre])
     return curs.fetchall()
@@ -44,17 +42,17 @@ def discover_albums(conn, genre, num_rating):
     query = '''select a.*, count(r.userID) as num_ratings from album a
         join ratings r on a.artistID = r.artistID
         where a.approvalStatus = "approved" AND a.genre = %s
-        group by a.artistID''',
+        group by a.artistID'''
     if num_rating == "100":
-        query += 'having num_ratings >= 100'
+        query += ' having num_ratings >= 100'
     elif num_rating == "75":
-        query += 'having num_ratings >= 75 AND num_ratings < 100'
+        query += ' having num_ratings >= 75 AND num_ratings < 100'
     elif num_rating == "50":
-        query += 'having num_ratings >= 50 AND num_ratings < 75'
+        query += ' having num_ratings >= 50 AND num_ratings < 75'
     elif num_rating == "25":
         query += 'having num_ratings >= 25 AND num_ratings < 50'
     elif num_rating == "0":
-        query += 'having num_ratings >= 0 AND num_ratings < 25'
+        query += ' having num_ratings >= 0 AND num_ratings < 25'
     query += ' order by rand() limit 5'
     curs.execute(query, [genre])
     return curs.fetchall()
