@@ -40,9 +40,12 @@
 
         <div class="section">
             <h2>Get Started</h2>
-            <p>Create an account if you have not already.</p>
+            <p>Create an account or login.</p>
             <a href="{{ url_for('signup') }}">
             <button type="button">Sign Up</button>
+            </a>
+            <a href="{{ url_for('login') }}">
+            <button type="button">Login</button>
             </a>
             <p>Unravel the drama of the music world and discover new artists!</p>
             <a href="{{ url_for('discover_home') }}">
