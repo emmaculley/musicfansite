@@ -12,11 +12,13 @@
 
   <label>Genre:
         <select name="genre">
-        {% for g in genres %}
-            <option value="{{g}}">{{g}}</option>
-        {% endfor %}
+          <option value="">choose one</option>
+          {% for g in genres %}
+              <option value="{{g}}">{{g}}</option>
+          {% endfor %}
         </select>
   </label>
+  
   <input type="submit" value="Find Beefs">
 </form>
 

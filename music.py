@@ -41,8 +41,6 @@ def update_artist_rating(conn, artistID):
     avgRating = totalRating/countRatings
     curs.execute('update artist set rating =%s where artistID = %s', [avgRating, artistID])
 
-#will return artist ID from t
-
 # returns a random list of 5 artists that fit into the given categories 
 def discover_artists(conn, genre, num_rating):
     curs = dbi.dict_cursor(conn)
@@ -51,15 +49,15 @@ def discover_artists(conn, genre, num_rating):
         where a.approvalStatus = "approved" AND a.genre = %s
         group by a.artistID'''
     if num_rating == "100":
-        query += 'having num_ratings >= 100'
+        query += ' having num_ratings >= 100'
     elif num_rating == "75":
-        query += 'having num_ratings >= 75 AND num_ratings < 100'
+        query += ' having num_ratings >= 75 AND num_ratings < 100'
     elif num_rating == "50":
-        query += 'having num_ratings >= 50 AND num_ratings < 75'
+        query += ' having num_ratings >= 50 AND num_ratings < 75'
     elif num_rating == "25":
-        query += 'having num_ratings >= 25 AND num_ratings < 50'
+        query += ' having num_ratings >= 25 AND num_ratings < 50'
     elif num_rating == "0":
-        query += 'having num_ratings >= 0 AND num_ratings < 25'
+        query += ' having num_ratings >= 0 AND num_ratings < 25'
     query += ' order by rand() limit 5'
     curs.execute(query, [genre])
     return curs.fetchall()
@@ -70,17 +68,17 @@ def discover_albums(conn, genre, num_rating):
     query = '''select a.*, count(r.userID) as num_ratings from album a
         join ratings r on a.artistID = r.artistID
         where a.approvalStatus = "approved" AND a.genre = %s
-        group by a.artistID''',
+        group by a.artistID'''
     if num_rating == "100":
-        query += 'having num_ratings >= 100'
+        query += ' having num_ratings >= 100'
     elif num_rating == "75":
-        query += 'having num_ratings >= 75 AND num_ratings < 100'
+        query += ' having num_ratings >= 75 AND num_ratings < 100'
     elif num_rating == "50":
-        query += 'having num_ratings >= 50 AND num_ratings < 75'
+        query += ' having num_ratings >= 50 AND num_ratings < 75'
     elif num_rating == "25":
         query += 'having num_ratings >= 25 AND num_ratings < 50'
     elif num_rating == "0":
-        query += 'having num_ratings >= 0 AND num_ratings < 25'
+        query += ' having num_ratings >= 0 AND num_ratings < 25'
     query += ' order by rand() limit 5'
     curs.execute(query, [genre])
     return curs.fetchall()
@@ -117,6 +115,10 @@ def create_beef(conn, artist1, artist2, countArtist1, countArtist2, context):
 
     ###if the artists are not already defined, need to create an artist (name, autogenerates an ID, and a genre)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5e5afe1a45b7c697573449afd8bd27cd5a1f5027
 
 def get_password(conn, email):
     curs = dbi.dict_cursor(conn)
@@ -148,3 +150,9 @@ def get_posts(conn, forum_id):
     curs = dbi.dict_cursor(conn)
     curs.execute('''select * from post where forum_id = %s order by created_at asc''', (forum_id))
     return curs.fetchall()
+
+def get_genres(conn):
+    curs = dbi.dict_cursor(conn)
+    curs.execute("select distinct genre from artist")
+    return [row['genre'] for row in curs.fetchall()]
+
