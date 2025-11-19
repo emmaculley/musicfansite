@@ -7,6 +7,15 @@
 </head> 
 <body>
     <!-- Navbar goes here-->
+     <nav>
+        <ul>
+
+            <li><a href ="{{url_for('discover_home')}}">Discover</a></li>
+            <li><a href = "{{url_for('forums_home')}}">Forums</a></li>
+            <li><a href = "{{ url_for('login')}}">Log in</a></li>
+            <li><a href = "{{ url_for('signup')}}">Sign Up</a></li>
+        </ul>
+    </nav>
 
     {% block main_content %}
     <h1>Welcome to our page</h1>

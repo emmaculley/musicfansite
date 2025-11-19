@@ -4,10 +4,6 @@ Authors: Emma Culley, Dana Hammouri, Megan O'Leary, Ashley Yang
 Last updated: 12th November 2025
 """
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 55d2a64a6cf0772331f8954e8e243c222bd730f9
 from flask import (Flask, render_template, url_for, request,
                    redirect, session, flash)
 
@@ -97,13 +93,22 @@ def discover_kind(kind):
         return render_template('discover-beef.html')
 
 # pages for individual artists
-@app.route('/artist/<id>/')
+@app.route('/artist/<id>/', methods = ['GET', 'POST'])
 def artist(id):
     conn = dbi.connect()
     artist = music.get_artist(conn, id)
-    return render_template('artist.html', artist=artist)
+    beefs = music.get_beef(conn, artist[0]['artistID'])
+    if request.method == 'GET':
+        return render_template('artist.html', artist=artist, beefs=beefs)
+    else:
+        form_data = request.form
+        music.insert_rating(conn, form_data, id)
+        music.update_artist_rating(conn, id)
+        artist_w_current_rating = music.get_artist(conn, id) # change to better name later
+        # need to get the artist again so that their new rating gets rendered on their page
+        return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
+        
 
-<<<<<<< HEAD
 
 # going to be used for the music form
 @app.route('/add-music/')
@@ -112,7 +117,6 @@ def add_music():
     return render_template('add.html') 
 
 
-=======
 @app.route('/forums/')
 def forums_home():
     type = request.args.get('type')
@@ -166,16 +170,16 @@ def insertbeef():
         #if artist1/2 not in the database in the table artist, we need to redirect the insertion to adding the artists first !!
         if artist1 not in music.get_artist():
             
-        artist2 = request.form.get('artist2')
-        context = request.form.get('reason')
-        side = request.form.get('side')   # either "artist1" or "artist2"
-        countArtist1 = 1 if side == "artist1" else 0
-        countArtist2 = 1 if side == "artist2" else 0
-        bid = music.create_beef(conn, artist1, artist2, context, countArtist1, countArtist2)
-        fname = session.get('fname')   # retrieve stored name
-        flash(f"Beef form was submitted! Thank you {fname}")
-        # return redirect(url_for('index'))
-        return redirect(url_for('beef_page', bid=bid))
+            artist2 = request.form.get('artist2')
+            context = request.form.get('reason')
+            side = request.form.get('side')   # either "artist1" or "artist2"
+            countArtist1 = 1 if side == "artist1" else 0
+            countArtist2 = 1 if side == "artist2" else 0
+            bid = music.create_beef(conn, artist1, artist2, context, countArtist1, countArtist2)
+            fname = session.get('fname')   # retrieve stored name
+            flash(f"Beef form was submitted! Thank you {fname}")
+            # return redirect(url_for('index'))
+            return redirect(url_for('beef_page', bid=bid))
     return render_template('beef_form.html')
 
 #beef page
@@ -187,7 +191,6 @@ def beef_page(bid):
 
 
     
->>>>>>> 55d2a64a6cf0772331f8954e8e243c222bd730f9
 if __name__ == '__main__':
     import sys, os
     if len(sys.argv) > 1:
