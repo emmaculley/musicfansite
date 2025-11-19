@@ -9,7 +9,8 @@
     {% if posts %}
         <ul>
             {% for post in posts %}
-                    <small>Posted on: {{ post['created_at']}}</small>
+                <li>
+                    <small>{{ post['content'] }}</small>
                 </li>
             {% endfor %}
         </ul>
@@ -21,7 +22,7 @@
 <hr>
 
 <section>
-    <h2>Post somehting of your own!</h2>
+    <h2>Post something of your own!</h2>
     <form method="POST">
         <textarea name="content" placeholder="Write something..." required></textarea>
         <br><br>
