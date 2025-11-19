@@ -74,30 +74,51 @@ def discover_kind(kind):
         if request.method == 'POST':
             genre = request.form.get('genre')
             num_rating = request.form.get('num_rating')
-            artists = discover_artists(conn, genre, num_rating)
+            artists = music.discover_artists(conn, genre, num_rating)
             return render_template('discover-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
-        return render_template('discover-artist.html')
+        genres = music.get_genres(conn)
+        return render_template('discover-artist.html', genres=genres)
     elif kind == 'album':
         if request.method == 'POST':
             genre = request.form.get('genre')
             num_rating = request.form.get('num_rating')
-            albums = discover_albums(conn, genre, num_rating)
+            albums = music.discover_albums(conn, genre, num_rating)
             return render_template('discover-album-results.html',genre=genre,num_rating=num_rating, albums=albums)
-        return render_template('discover-album.html')
+        genres = music.get_genres(conn)
+        return render_template('discover-album.html', genres=genres)
     elif kind == 'beef':
         if request.method == 'POST':
             artist = request.form.get('artist')
             genre = request.form.get('genre')
-            beefs = discover_beefs(conn, artist, genre)
+            beefs = music.discover_beefs(conn, artist, genre)
             return render_template('discover-beef-results.html',artist=artist, genre=genre, beefs=beefs)
-        return render_template('discover-beef.html')
+        genres = music.get_genres(conn)
+        return render_template('discover-beef.html', genres=genres)
 
 # pages for individual artists
-@app.route('/artist/<id>/')
+@app.route('/artist/<id>/', methods = ['GET', 'POST'])
 def artist(id):
     conn = dbi.connect()
     artist = music.get_artist(conn, id)
-    return render_template('artist.html', artist=artist)
+    beefs = music.get_beef(conn, artist[0]['artistID'])
+    if request.method == 'GET':
+        return render_template('artist.html', artist=artist, beefs=beefs)
+    else:
+        form_data = request.form
+        music.insert_rating(conn, form_data, id)
+        music.update_artist_rating(conn, id)
+        artist_w_current_rating = music.get_artist(conn, id) # change to better name later
+        # need to get the artist again so that their new rating gets rendered on their page
+        return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
+        
+
+
+# going to be used for the music form
+@app.route('/add-music/')
+def add_music():
+    type = request.args['add']
+    return render_template('add.html') 
+
 
 @app.route('/forums/')
 def forums_home():
