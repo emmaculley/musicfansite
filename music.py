@@ -12,9 +12,35 @@ import cs304dbi as dbi
 # will give back artist info for their page
 def get_artist(conn, id):
     curs = dbi.dict_cursor(conn)
-    curs.execute('select name, genre, rating from artist where artistID=%s', [id])
-    name, genre, rating = curs.fetchall()
-    return name, genre, rating
+    curs.execute('select name, genre, rating, artistID from artist where artistID=%s', [id])
+    artist = curs.fetchall()
+    return artist
+
+def get_beef(conn, id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('select name from artist where artistID=(select artist1 from beef where artist2=%s) or artistID=(select artist2 from beef where artist1=%s)', [id, id])
+    beefs1 = curs.fetchall()
+    return beefs1
+
+def insert_rating(conn, form_data, artistID):
+    # puts a rating into the ratings table
+    curs = dbi.dict_cursor(conn)
+    curs.execute('insert into ratings values (%s, %s, %s)', [artistID, int(form_data['rating']), int(form_data['userID'])])
+    conn.commit()
+
+def update_artist_rating(conn, artistID):
+    # updates the artist's rating in the artist table
+    curs = dbi.dict_cursor(conn)
+    curs.execute('select rating from ratings where artistID = %s', [artistID])
+    ratings = curs.fetchall()
+    totalRating = 0
+    countRatings = 0
+    # compute the artist's average rating:
+    for rating in ratings:
+        totalRating += rating["rating"]
+        countRatings += 1
+    avgRating = totalRating/countRatings
+    curs.execute('update artist set rating =%s where artistID = %s', [avgRating, artistID])
 
 # returns a random list of 5 artists that fit into the given categories 
 def discover_artists(conn, genre, num_rating):
@@ -89,6 +115,10 @@ def create_beef(conn, artist1, artist2, countArtist1, countArtist2, context):
 
     ###if the artists are not already defined, need to create an artist (name, autogenerates an ID, and a genre)
 
+def get_beef(conn, bid):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from beef where bid = %s''', [bid])
+    return curs.fetchone()
 
 
 def get_password(conn, email):
@@ -132,4 +162,17 @@ def get_genres(conn):
     curs = dbi.dict_cursor(conn)
     curs.execute("select distinct genre from artist")
     return [row['genre'] for row in curs.fetchall()]
+
+
+
+
+def get_artists(conn):
+    curs = dbi.dict_cursor(conn)
+    curs.execute(
+        '''
+        SELECT artistID, name
+        FROM artist
+        '''
+    )
+    return curs.fetchall()
 

@@ -2,12 +2,48 @@
 
 {% block main_content %}
 
-<h1>Eventual artist pages go here</h1>
+
 {% for person in artist %}
 <h2>{{ person.name }} </h2>
 
-<p>{{ person.name }}'s genre is {{ person.genre }}</p>
+<p>{{ person.name }} is a {{ person.genre }} artist with a current rating of {{ person.rating }} out of 10.</p>
 
-<p>{{ person.name }} has an average rating of {{ artist.rating }} out of 100</p>
+
+
+<form method="POST">
+    <input type="radio" id="1" name="rating" value="1">
+    <label for="1">1</label><br>
+    <input type="radio" id="2" name="rating" value="2">
+    <label for="2">2</label><br>
+    <input type="radio" id="3" name="rating" value="3">
+    <label for="3">3</label><br>
+    <input type="radio" id="4" name="rating" value="4">
+    <label for="4">4</label><br>
+    <input type="radio" id="5" name="rating" value="5">
+    <label for="5">5</label><br>
+    <input type="radio" id="6" name="rating" value="6">
+    <label for="6">6</label><br>
+    <input type="radio" id="7" name="rating" value="7">
+    <label for="7">7</label><br>
+    <input type="radio" id="8" name="rating" value="8">
+    <label for="8">8</label><br>
+    <input type="radio" id="9" name="rating" value="9">
+    <label for="9">9</label><br>
+    <input type="radio" id="10" name="rating" value="10">
+    <label for="10">10</label><br>
+    <label>Your ID number: <input type="text" name="userID"> </label><br>
+    <input type="submit" name="submit" value="rate">
+</form>
+
+
+<p>Artists {{person.name}} has had beef with:</p>
+{% for beef in beefs %}
+<ul>
+    <li>{{beef.name}}</li> <!--Later add the beef pages to here as href-->
+</ul>
+
+{% endfor %}
+{% endfor %}
+
 
 {% endblock %}

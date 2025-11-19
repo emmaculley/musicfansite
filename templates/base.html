@@ -3,16 +3,30 @@
 <head>
     <meta charset="utf-8">
     <meta name="author" content="Emma, Dana, Megan, Ashley">
-    <title>{{ page_title }}</title>    
+    <title>{{ page_title }}</title>   
+    <style>
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+    </style> 
+    {% block styles %}{% endblock %}
 </head> 
+
 <body>
 
-    <nav>
+     <nav>
+        <ul>
+
             <li><a href ="{{url_for('discover_home')}}">Discover</a></li>
             <li><a href = "{{url_for('forums_home')}}">Forums</a></li>
             <li><a href = "{{ url_for('login')}}">Log in</a></li>
             <li><a href = "{{ url_for('signup')}}">Sign Up</a></li>
+            <li><a href = "{{ url_for('insertbeef')}}">Insert Beef</a></li>
 
+        </ul>
     </nav>
 
     {% block main_content %}

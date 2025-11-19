@@ -1,32 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends "base.html" %}    
+{% block styles %}
     <style>
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-        }
-
         .section {
             margin-bottom: 2rem;
             padding: 1.5rem;
             background: #f4f4f4;
             border-radius: 5px;
         }
+        
+        /* Style for button-like links */
+        .button {
+            display: inline-block;
+            background: #333;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+        
+        .button:hover {
+            background: #555;
+        }
     </style>
-</head>
-<body>
-    <nav>
-        <ul>
-
-            <li><a href ="{{url_for('discover_home')}}">Discover</a></li>
-            <li><a href = "{{url_for('forums_home')}}">Forums</a></li>
-            <li><a href = "{{ url_for('login')}}">Log in</a></li>
-            <li><a href = "{{ url_for('signup')}}">Sign Up</a></li>
-        </ul>
-    </nav>
+{% endblock %}
+{% block main_content %}
     <main>
         <h1>Welcome to Our Music Website!</h1>
         <p></p>
@@ -40,21 +38,10 @@
 
         <div class="section">
             <h2>Get Started</h2>
-            <p>Create an account or login.</p>
-            <a href="{{ url_for('signup') }}">
-            <button type="button">Sign Up</button>
-            </a>
-            <a href="{{ url_for('login') }}">
-            <button type="button">Login</button>
-            </a>
+            <p>Create an account if you have not already.</p>
+            <a href="{{ url_for('signup') }}" class="button">Sign Up</a>
             <p>Unravel the drama of the music world and discover new artists!</p>
-            <a href="{{ url_for('discover_home') }}">
-            <button type="button">Discover</button>
-            </a>
-            <a href="{{ url_for('insertbeef') }}">
-            <button type="button">Got Beef?</button>
-            </a>
+            <a href="{{ url_for('discover_home') }}" class="button">Discover</a>
         </div>
     </main>
-</body>
-</html>
+{% endblock %}
