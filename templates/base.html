@@ -17,7 +17,6 @@
 
 <body>
     <!-- Navbar goes here-->
-<<<<<<< HEAD
      <nav>
         <ul>
 
@@ -25,22 +24,13 @@
             <li><a href = "{{url_for('forums_home')}}">Forums</a></li>
             <li><a href = "{{ url_for('login')}}">Log in</a></li>
             <li><a href = "{{ url_for('signup')}}">Sign Up</a></li>
+            <li><a href = "{{ url_for('insertbeef')}}">Insert Beef</a></li>
+
         </ul>
     </nav>
 
     {% block main_content %}
     <h1>Welcome to our page</h1>
     {% endblock %}
-=======
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('discover_home') }}">Discover</a></li>
-            <li><a href="">Forums</a></li>
-            <li><a href="{{ url_for('login') }}">Log in</a></li>
-            <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
-        </ul>
-    </nav>
-    {% block main_content %}{% endblock %}
->>>>>>> 5e5afe1a45b7c697573449afd8bd27cd5a1f5027
 </body>
 </html>
