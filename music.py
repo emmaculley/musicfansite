@@ -91,7 +91,11 @@ def create_beef(conn, artist1, artist2, countArtist1, countArtist2, context):
 
     ###if the artists are not already defined, need to create an artist (name, autogenerates an ID, and a genre)
 
-def 
+def get_beef(conn, bid):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''select * from beef where bid = %s''', [bid])
+    return curs.fetchone()
+
 
 def get_password(conn, email):
     curs = dbi.dict_cursor(conn)
@@ -123,3 +127,15 @@ def get_posts(conn, forum_id):
     curs = dbi.dict_cursor(conn)
     curs.execute('''select * from post where forum_id = %s order by created_at asc''', (forum_id))
     return curs.fetchall()
+
+
+def get_artists(conn):
+    curs = dbi.dict_cursor(conn)
+    curs.execute(
+        '''
+        SELECT artistID, name
+        FROM artist
+        '''
+    )
+    return curs.fetchall()
+
