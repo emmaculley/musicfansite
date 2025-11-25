@@ -85,10 +85,9 @@ def create_beef(conn, artist1, artist2, countArtist1, countArtist2, context):
     curs.execute('''insert into beef (artist1, artist2, countArtist1, countArtist2, context) values (%s, %s, %s,%s, %s, %s)''',
         [artist1, artist2, countArtist1, countArtist2, context])
     conn.commit()
-    return cur.lastrowid
+    return curs.lastrowid
 
     ###if the artists are not already defined, need to create an artist (name, autogenerates an ID, and a genre)
-
 
 
 def get_password(conn, email):
@@ -104,7 +103,7 @@ def get_password(conn, email):
 def insert_to_forums(conn, type, title, user_id):
     curs = dbi.dict_cursor(conn)
     curs.execute('''insert into forum (title, userID, created_at, type)
-        values (%s, %s, now(), %s)''', (title, user_id, kind))
+        values (%s, %s, now(), %s)''', (title, user_id, type))
     return conn.commit()
 
 def load_forums(conn, type):

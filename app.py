@@ -133,6 +133,13 @@ def forums_type(type):
         if request.method == 'POST':
             # want to select from the forums
             # or make a new forum
+            title = request.form.get('title')
+            user_id = session.get('user_id')
+            if title:
+                music.insert_to_forums(conn, type, title, user_id)
+            else:
+                flash("Forum title required!")
+            forums = music.load_forums(conn, type)
             return render_template('forum-beef-results.html',artist=artist, genre=genre, beefs=beefs)
         return render_template('forum-beef.html')
 
