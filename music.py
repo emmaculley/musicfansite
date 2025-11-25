@@ -15,10 +15,16 @@ def get_artist(conn, id):
     artist = curs.fetchall()
     return artist
 
+def get_artist_one(conn, id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('select name, genre, rating, artistID from artist where artistID=%s', [id])
+    artist = curs.fetchone()
+    return artist
+
 def get_beef(conn, id):
     curs = dbi.dict_cursor(conn)
     curs.execute('select name from artist where artistID=(select artist1 from beef where artist2=%s) or artistID=(select artist2 from beef where artist1=%s)', [id, id])
-    beefs1 = curs.fetchall()
+    beefs1 = curs.fetchone()
     return beefs1
 
 def insert_rating(conn, form_data, artistID):
@@ -106,18 +112,21 @@ def create_user(conn, email, fname, lname, password):
     return curs.fetchone()
 
 
-def create_beef(conn, artist1, artist2, countArtist1, countArtist2, context):
+def create_beef(conn, artist1, artist2, context, countArtist1, countArtist2):
     curs = dbi.dict_cursor(conn)
-    curs.execute('''insert into beef (artist1, artist2, countArtist1, countArtist2, context) values (%s, %s, %s,%s, %s, %s)''',
-        [artist1, artist2, countArtist1, countArtist2, context])
+    curs.execute(
+        '''INSERT INTO beef (artist1, artist2, context, countArtist1, countArtist2)
+           VALUES (%s, %s, %s, %s, %s)''',
+        [artist1, artist2, context, countArtist1, countArtist2]
+    )
     conn.commit()
-    return cur.lastrowid
+    return curs.lastrowid
 
     ###if the artists are not already defined, need to create an artist (name, autogenerates an ID, and a genre)
 
 def get_beef(conn, bid):
     curs = dbi.dict_cursor(conn)
-    curs.execute('''select * from beef where bid = %s''', [bid])
+    curs.execute('''SELECT * FROM beef WHERE bid = %s''', [bid])
     return curs.fetchone()
 
 
@@ -157,15 +166,13 @@ def get_genres(conn):
     curs.execute("select distinct genre from artist")
     return [row['genre'] for row in curs.fetchall()]
 
-
-
-
 def get_artists(conn):
     curs = dbi.dict_cursor(conn)
     curs.execute(
         '''
         SELECT artistID, name
         FROM artist
+        WHERE approvalStatus = 'approved'
         '''
     )
     return curs.fetchall()
