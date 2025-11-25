@@ -30,11 +30,10 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         user = music.get_user_by_email(conn, email)
-        if user and password == get_password(conn, email):
+        if user and password == music.get_password(conn, email):
             session['user_id'] = user['userID']
             session['user_email'] = user['user_email']
             session['fname'] = user['fname']
-            flash("You have been successfully logged in!")
             return redirect(url_for('index'))
         else:
             return render_template('signup.html', email=email)
@@ -49,13 +48,14 @@ def signup():
         fname = request.form.get('fname')
         lname = request.form.get('lname')
         password = request.form.get('password')
-        music.add_user(conn, email, fname, lname, password)
+        user = music.create_user(conn, email, fname, lname, password)
+        print (f'{user=}')
         session['user_id'] = user['userID']
         session['user_email'] = email
         session['fname'] = fname
-        flash("Your account was created! You are now logged in!")
         return redirect(url_for('index'))
     return render_template('signup.html')
+
 
 # discover home page
 @app.route('/discover/')
@@ -142,7 +142,7 @@ def forums_type(type):
             title = request.form.get('title')
             user_id = session.get('user_id')
             if title:
-                insert_to_forums(conn, type, title, user_id)
+                music.insert_to_forums(conn, type, title, user_id)
             else:
                 flash("Forum title required!")
         forums = music.load_forums(conn, type)
@@ -155,12 +155,24 @@ def forums_type(type):
         return render_template('forum-beef.html')
 
 
-@app.route('/forum/<forum_id>')
+@app.route('/forum/<forum_id>', methods=['GET', 'POST'])
 def view_forum(forum_id):
     conn = dbi.connect()
-    forum = get_forum(conn, forum_id)
-    posts = get_posts(conn, forum_id)
+    if request.method == 'POST':
+        content = request.form.get('content')
+        user_id = session.get('user_id')
+        if not user_id:
+            flash("You must be logged in to post.")
+            return redirect(url_for('login'))
+        if content:
+            music.insert_post(conn, forum_id, user_id, content)
+        else:
+            flash("Post cannot be empty.")
+        return redirect(url_for('view_forum', forum_id=forum_id))
+    forum = music.get_forum(conn, forum_id)
+    posts = music.get_posts(conn, forum_id)
     return render_template('view-forum.html', forum=forum, posts=posts)
+
 
 
 #is there a way for the user to be able to like type in artist (and the query )

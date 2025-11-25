@@ -8,6 +8,7 @@ Last updated: 8th November 2025
 
 import cs304dbi as dbi
 
+
 # will give back artist info for their page
 def get_artist(conn, id):
     curs = dbi.dict_cursor(conn)
@@ -51,7 +52,7 @@ def update_artist_rating(conn, artistID):
 def discover_artists(conn, genre, num_rating):
     curs = dbi.dict_cursor(conn)
     query = '''select a.*, count(r.userID) as num_ratings from artist a
-        join ratings r on a.artistID = r.artistID
+        left join ratings r on a.artistID = r.artistID
         where a.approvalStatus = "approved" AND a.genre = %s
         group by a.artistID'''
     if num_rating == "100":
@@ -72,9 +73,9 @@ def discover_artists(conn, genre, num_rating):
 def discover_albums(conn, genre, num_rating):
     curs = dbi.dict_cursor(conn)
     query = '''select a.*, count(r.userID) as num_ratings from album a
-        join ratings r on a.artistID = r.artistID
-        where a.approvalStatus = "approved" AND a.genre = %s
-        group by a.artistID'''
+        left join ratings r on a.albumID = r.albumID
+        where a.approved = "approved" AND a.genre = %s
+        group by a.albumID'''
     if num_rating == "100":
         query += ' having num_ratings >= 100'
     elif num_rating == "75":
@@ -82,7 +83,7 @@ def discover_albums(conn, genre, num_rating):
     elif num_rating == "50":
         query += ' having num_ratings >= 50 AND num_ratings < 75'
     elif num_rating == "25":
-        query += 'having num_ratings >= 25 AND num_ratings < 50'
+        query += ' having num_ratings >= 25 AND num_ratings < 50'
     elif num_rating == "0":
         query += ' having num_ratings >= 0 AND num_ratings < 25'
     query += ' order by rand() limit 5'
@@ -108,8 +109,7 @@ def create_user(conn, email, fname, lname, password):
     curs.execute('''insert into user (user_email, fname, lname, password) values (%s, %s, %s, %s)''',
         [email, fname, lname, password])
     conn.commit()
-    get_user_by_email(conn, email)
-    return curs.fetchone()
+    return get_user_by_email(conn, email)
 
 
 def create_beef(conn, artist1, artist2, context, countArtist1, countArtist2):
@@ -132,8 +132,7 @@ def get_beef(conn, bid):
 
 def get_password(conn, email):
     curs = dbi.dict_cursor(conn)
-    get_user_by_email(conn, email)
-    user = curs.fetchone()
+    user = get_user_by_email(conn, email)
     if user:
         user_password = user['password']
         return user_password
@@ -143,8 +142,15 @@ def get_password(conn, email):
 def insert_to_forums(conn, type, title, user_id):
     curs = dbi.dict_cursor(conn)
     curs.execute('''insert into forum (title, userID, created_at, type)
-        values (%s, %s, now(), %s)''', (title, user_id, kind))
+        values (%s, %s, now(), %s)''', (title, user_id, type))
     return conn.commit()
+
+def insert_post(conn, forum_id, user_id, content):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''insert into post (forum_id, userID, created_at, content) 
+        values (%s, %s, now(), %s)''', (forum_id, user_id, content))
+    return conn.commit()
+
 
 def load_forums(conn, type):
     curs = dbi.dict_cursor(conn)
