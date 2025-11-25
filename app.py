@@ -1,7 +1,7 @@
 """
 Music Fansite
 Authors: Emma Culley, Dana Hammouri, Megan O'Leary, Ashley Yang
-Last updated: 12th November 2025
+Last updated: 25th November 2025
 """
 
 from flask import (Flask, render_template, url_for, request,
@@ -130,15 +130,13 @@ def contribution_type(type):
         return render_template('forum-artist.html')
     elif type == 'artist':
         if request.method == 'POST':
+            artist_id = request.form.get('artist-id')
             name = request.form.get('name')
             genre = request.form.get('genre')
             rating = request.form.get('rating', 0)
-            if not name or not genre:
-                flash("Name and genre required!")
-            else:
-                music.add_artist(conn, None, name, genre, rating)
-                flash(f"Artist '{name}' added successfully! Pending approval.")
-                return redirect(url_for('contribution_type', type='artist'))
+            music.add_artist(conn, None, name, genre, rating)
+            flash(f"Artist '{name}' added successfully! Pending approval.")
+            return render_template()
         # GET request: show the form
         return render_template('add-artist.html')
     elif type == 'beef':
