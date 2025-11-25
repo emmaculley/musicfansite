@@ -2,56 +2,45 @@
 
 {% block main_content %}
 
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='utf-8'>
-    <meta name=author content="music fansite group -- Ashley">
-    <title>Submit a Beef</title>   
-</head>
-
-<body>
-
 <h1>Submit a Music Beef</h1>
 
-<p>Tell us about a legendary feud in music — or one you’ve just discovered!  
-Who’s beefing, why, and whose side are you on?</p>
+<p>
+    Tell us about a legendary feud in music — or one you’ve just discovered!
+    Who’s beefing, why, and whose side are you on?
+</p>
 
 <section>
     <h2>Beef Submission Form</h2>
 
-    <form id="beef-form" method="post" action="{{url_for('insertbeef')}}">
+    <form id="beef-form" method="post" action="{{ url_for('insertbeef') }}">
+
         <label for="artist1">Artist 1:</label>
         <select id="artist1" name="artist1">
             <option value="none">Choose One</option>
-    
             {% for a in artists %}
-                <option value="{{a.artistID}}">{{ a.name }}</option>
+                <option value="{{ a.artistID }}">{{ a.name }}</option>
             {% endfor %}
         </select>
 
         <label for="artist2">Artist 2:</label>
         <select id="artist2" name="artist2">
             <option value="none">Choose One</option>
-    
             {% for a in artists %}
-                <option value="{{a.artistID}}">{{ a.name }}</option>
+                <option value="{{ a.artistID }}">{{ a.name }}</option>
             {% endfor %}
         </select>
 
-        <label for="reason">What’s the beef about?</label><br>
-        <textarea id="reason" name="reason" placeholder="Explain what caused the feud..." required></textarea><br><br>
+        <label for="reason">What’s the beef about?</label>
+        <textarea id="reason" name="reason" placeholder="Explain what caused the feud..." required></textarea>
 
         <label for="side">Whose Side Are You On?</label>
         <select id="side" name="side">
-            <option value="artist1">artist1</option>
-            <option value="artist2">artist2</option>
+            <option value="artist1">Artist 1</option>
+            <option value="artist2">Artist 2</option>
         </select>
 
-        <input type="submit" value="Submit Beef">
+        <button type="submit">Submit Beef</button>
     </form>
 </section>
 
-</body>
-</html>
 {% endblock %}

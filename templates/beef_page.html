@@ -2,19 +2,11 @@
 
 {% block main_content %}
 
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='utf-8'>
-    <meta name=author content="music fansite group -- Ashley">
-    <title>Beef Page</title>   
-</head>
-
 <h1>Music Beef: {{ artist1.name }} vs {{ artist2.name }}</h1>
 
 <p><strong>Reason for the beef:</strong> {{ beef.context }}</p>
 
-<p><strong>Votes / Side support:</strong></p>
+<h3>Votes</h3>
 <ul>
     <li>{{ artist1.name }}: {{ beef.countArtist1 }}</li>
     <li>{{ artist2.name }}: {{ beef.countArtist2 }}</li>
@@ -22,7 +14,7 @@
 
 <p><strong>Approval Status:</strong>
     {% if beef.approved == 'approved' %}
-    Approved
+        Approved
     {% elif beef.approved == 'pending' %}
         Pending
     {% else %}
@@ -31,6 +23,5 @@
 </p>
 
 <a href="{{ url_for('index') }}">Back to Home</a>
+
 {% endblock %}
-
-

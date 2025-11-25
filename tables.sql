@@ -10,9 +10,10 @@ DROP TABLE IF EXISTS user;
 
 CREATE TABLE `artist` (
   artistID INT AUTO_INCREMENT PRIMARY KEY,
-  `name` varchar(20),
-  `genre` ENUM ('pop', 'rock', 'hiphop', 'hip hop', 'rnb' ,'rap', 'electronic',
-            'dance', 'jazz', 'classical', 'reggae', 'country', 'indie','punk', 'metal'),
+  `name` varchar(50),
+  `genre` ENUM ('pop','rock','hiphop','rap','electronic','R&B',
+            'dance','jazz','classical','metal','reggae',
+            'country','indie','punk', 'folk'),
   `rating` float DEFAULT NULL,
   `approvalStatus` ENUM ('pending', 'approved', 'rejected') DEFAULT 'pending'
 );
