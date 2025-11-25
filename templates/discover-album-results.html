@@ -1,3 +1,4 @@
+<!-- Ashley Yang, Dana Hammouri, Megan O'Leary, Emma Culley -->
 <!-- Music Fansite-->
 <!-- Renders a page that allows people to discover specifically new artists-->
 {% extends "base.html" %}
@@ -10,7 +11,7 @@
   <ul>
     {% for album in albums %}
       <li>
-        <a href="/album/{{ album.albumID}}">{{ a;bum.name }}</a> 
+        <a href="/album/{{ album.albumID}}">{{ album.name }}</a> 
       </li>
     {% endfor %}
   </ul>

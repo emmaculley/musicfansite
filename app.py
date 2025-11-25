@@ -119,7 +119,7 @@ def add_music():
     type = request.args['add']
     return render_template('add.html') 
 
-
+#forums home page to decide where the user wants to navigate
 @app.route('/forums/')
 def forums_home():
     type = request.args.get('type')
@@ -128,6 +128,7 @@ def forums_home():
     flash("You need to make a selection")
     return render_template('forums.html') 
 
+# brings the user to the correct formum they want to discuss on
 @app.route('/forums/<type>', methods=['GET', 'POST'])
 def forums_type(type):
     conn = dbi.connect()
@@ -154,7 +155,7 @@ def forums_type(type):
             return render_template('forum-beef-results.html',artist=artist, genre=genre, beefs=beefs)
         return render_template('forum-beef.html')
 
-
+# allows users to view the specific forum they are interested in
 @app.route('/forum/<forum_id>', methods=['GET', 'POST'])
 def view_forum(forum_id):
     conn = dbi.connect()
