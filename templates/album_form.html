@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<h1>Add a New Album</h1>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul style="color:red;">
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+<form method="POST" action="{{ url_for('add_album') }}">
+    <label for="artist">Artist:</label>
+    <select id="artist" name="artist">
+        <option value="none">Choose One</option>
+        {% for a in artists %}
+            <option value="{{ a.artistID }}">{{ a.name }}</option>
+        {% endfor %}
+    </select>
+    <br><br>
+
+    <label for="album">Album Name:</label>
+    <input type="text" name="album" id="album" placeholder="Album Name">
+    <br><br>
+
+    <label for="release">Release Year:</label>
+    <input type="number" name="release" id="release" min="1900" max="2099" placeholder="YYYY">
+    <br><br>
+    
+    <button type="submit">Add Album</button>
+</form>
+
+<a href="{{ url_for('index') }}">Back to Home</a>
+
+{% endblock %}
+

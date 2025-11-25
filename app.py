@@ -173,7 +173,10 @@ def view_forum(forum_id):
     posts = music.get_posts(conn, forum_id)
     return render_template('view-forum.html', forum=forum, posts=posts)
 
-
+############################################################################################################################################
+##need to find a way where if the beef between the 2 artists alr exist, ####################
+##send them to beef page and include update button ########################################
+############################################################################################################################################
 
 #is there a way for the user to be able to like type in artist (and the query )
 #insert beef form
@@ -227,8 +230,63 @@ def beef_page(bid):
 
     artist2 = music.get_artist_one(conn, beef['artist2'])
 
-
     return render_template('beef_page.html', beef=beef, artist1=artist1, artist2=artist2)
+
+@app.route('/insertalbum', methods=['GET', 'POST'])
+def add_album():
+    conn = dbi.connect()
+
+    if request.method == 'GET':
+        print("loading artists...")
+        artists = music.get_artists(conn)
+        return render_template('album_form.html', artists=artists)
+    ##you want the artist to alr be in the database
+    #get all the artists
+    artist = request.form.get('artist')
+    title = request.form.get('album')
+    release = request.form.get('release')
+
+    if artist is None:
+        flash('please choose an artist')
+        artists = music.get_artists(conn)
+        return render_template('album_form.html', artists=artists)
+
+    if title is None:
+        flash('please choose an album')
+        artists = music.get_artists(conn)
+        return render_template('album_form.html', artists=artists)
+    
+    if release is None:
+        flash('please add release date')
+        artists = music.get_artists(conn)
+        return render_template('album_form.html', artists=artists)
+
+    ###how to check if the album alr exists? 
+    # existing_album = music.get_album_by_title(conn, album)
+    # if existing_album:
+    #     flash('Album already exists')
+    #     return redirect(url_for('album_page', aid=existing_album['albumID']))
+    
+    #need to get artist by artistID!
+    aid = music.create_album(conn, title, release, artist)
+
+    fname = session.get('fname')
+    flash(f"Album form submitted! Thank you {fname}")
+    return redirect(url_for('album_page', aid = aid))
+
+
+@app.route('/album/<int:aid>')
+def album_page(aid):
+    conn = dbi.connect()
+    album = music.get_album(conn, aid)
+
+    if not album:
+        flash("Album not found!")
+        return redirect(url_for('index'))
+
+    artist = music.get_artist_one(conn, album['artistID'])
+
+    return render_template('album_page.html',album=album, artist =artist)
 
 
 if __name__ == '__main__':

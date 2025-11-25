@@ -129,6 +129,20 @@ def get_beef(conn, bid):
     curs.execute('''SELECT * FROM beef WHERE bid = %s''', [bid])
     return curs.fetchone()
 
+def create_album(conn, title, release, artistID):
+    curs = dbi.dict_cursor(conn)
+    curs.execute(
+        '''INSERT INTO album (title, `release`, artistID)
+           VALUES (%s, %s, %s)''',
+        [title, release, artistID]
+    )
+    conn.commit()
+    return curs.lastrowid
+
+def get_album(conn, albumID):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''SELECT * FROM album WHERE albumID = %s''', [albumID])
+    return curs.fetchone()
 
 def get_password(conn, email):
     curs = dbi.dict_cursor(conn)
@@ -179,6 +193,18 @@ def get_artists(conn):
         SELECT artistID, name
         FROM artist
         WHERE approvalStatus = 'approved'
+        '''
+    )
+    return curs.fetchall()
+
+
+def get_albums(conn):
+    curs = dbi.dict_cursor(conn)
+    curs.execute(
+        '''
+        SELECT albumID, title
+        FROM album
+        WHERE approved = 'approved'
         '''
     )
     return curs.fetchall()

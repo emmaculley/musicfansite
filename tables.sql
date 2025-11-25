@@ -37,7 +37,7 @@ CREATE TABLE `beef` (
 CREATE TABLE `album` (
   `albumID` INT AUTO_INCREMENT PRIMARY KEY,
   `title` varchar(50),
-  `release` date,
+  `release` INT,
   `artistID` INT,
   `approved` ENUM ('pending', 'approved', 'rejected')
 );
