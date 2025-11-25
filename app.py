@@ -111,7 +111,7 @@ def artist(id):
         # need to get the artist again so that their new rating gets rendered on their page
         return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
         
-@app.route('/contribute')
+@app.route('/contribute/')
 def contribute_home():
     type = request.args.get('type')
     if type:
@@ -120,7 +120,7 @@ def contribute_home():
     return render_template('contribute.html') 
 
 @app.route('/contribution/<type>', methods=['GET', 'POST'])
-def contribution_type():
+def contribution_type(type):
     conn = dbi.connect()
     if type == 'music':
         if request.method == 'POST': 
