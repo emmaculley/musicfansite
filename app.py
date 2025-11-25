@@ -165,57 +165,58 @@ def view_forum(forum_id):
 
 #is there a way for the user to be able to like type in artist (and the query )
 #insert beef form
-@app.route('/insertbeef/', methods= ['GET', 'POST'])
+@app.route('/insertbeef', methods=['GET', 'POST'])
 def insertbeef():
     conn = dbi.connect()
-    if request.method == 'GET':
-        all_artists = music.get_artists(conn)
-        return render_template('beef_form.html', artists=all_artists)
 
-        # POST: get selected tt
+    if request.method == 'GET':
+        print("loading artists...")
+        artists = music.get_artists(conn)
+        return render_template('beef_form.html', artists=artists)
+
     artist1 = request.form.get('artist1')
     artist2 = request.form.get('artist2')
 
+    if artist1 == artist2:
+        flash("An artist cannot beef with themselves!")
+        artists = music.get_artists(conn)
+        return render_template('beef_form.html', artists=artists)
 
     if artist1 == 'none' or artist2 == 'none':
-        flash("Please artists that have beefed.")
+        flash("Please choose two artists that have beefed.")
         artists = music.get_artists(conn)
-        return render_template('beef_form.html', artists=all_artists)
+        return render_template('beef_form.html', artists=artists)
 
     context = request.form.get('reason')
-    side = request.form.get('side')   # either "artist1" or "artist2"
+    side = request.form.get('side')
+
     countArtist1 = 1 if side == "artist1" else 0
     countArtist2 = 1 if side == "artist2" else 0
+
+    # user_id = session.get('user_id')
+
     bid = music.create_beef(conn, artist1, artist2, context, countArtist1, countArtist2)
-    fname = session.get('fname')   # retrieve stored name
-    flash(f"Beef form was submitted! Thank you {fname}")
+
+    fname = session.get('fname')
+    flash(f"Beef form submitted! Thank you {fname}")
     return redirect(url_for('beef_page', bid=bid))
 
 
-@app.route('/beef/<int:bid>', methods=['GET'])
+@app.route('/beef/<int:bid>')
 def beef_page(bid):
     conn = dbi.connect()
-
-    beef = music.get_beef(conn, bid)  # assume this returns a dict with keys like artist1_id, artist2_id, countArtist1, countArtist2, context, approved
-    approval = beef['approved']
-    #in the HTML, print out the approval status in the webpage
+    beef = music.get_beef(conn, bid)
 
     if not beef:
         flash("Beef not found!")
         return redirect(url_for('index'))
 
-    # Fetch artist details
-    artist1 = music.get_artist(conn, beef['artist1'])  # returns dict with name, etc.
-    artist2 = music.get_artist(conn, beef['artist2'])
+    artist1 = music.get_artist_one(conn, beef['artist1'])
 
-    return render_template(
-        'beef_page.html',
-        beef=beef,
-        artist1=artist1,
-        artist2=artist2
-    )
+    artist2 = music.get_artist_one(conn, beef['artist2'])
 
 
+    return render_template('beef_page.html', beef=beef, artist1=artist1, artist2=artist2)
 
 
 if __name__ == '__main__':
