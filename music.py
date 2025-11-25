@@ -39,7 +39,8 @@ def update_artist_rating(conn, artistID):
         totalRating += rating["rating"]
         countRatings += 1
     avgRating = totalRating/countRatings
-    curs.execute('update artist set rating =%s where artistID = %s', [avgRating, artistID])
+    curs.execute('update artist set rating = %s where artistID = %s', [avgRating, artistID])
+    conn.commit()
 
 # returns a random list of 5 artists that fit into the given categories 
 def discover_artists(conn, genre, num_rating):
@@ -115,10 +116,6 @@ def create_beef(conn, artist1, artist2, countArtist1, countArtist2, context):
 
     ###if the artists are not already defined, need to create an artist (name, autogenerates an ID, and a genre)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 5e5afe1a45b7c697573449afd8bd27cd5a1f5027
 
 def get_password(conn, email):
     curs = dbi.dict_cursor(conn)
