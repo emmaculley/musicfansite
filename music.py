@@ -8,7 +8,13 @@ Last updated: 8th November 2025
 
 import cs304dbi as dbi
 
-
+# adds an artists into the db
+def add_artist(conn, artistID, name, genre, rating):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''insert into artist (artistID, name, genre, rating, approvalStatus)
+        values (%s, %s, %s, %s, 'pending')''', (artistID, name, genre,rating))
+    curs.commit()
+    
 # will give back artist info for their page
 def get_artist(conn, id):
     curs = dbi.dict_cursor(conn)
@@ -51,6 +57,7 @@ def update_artist_rating(conn, artistID):
         countRatings += 1
     avgRating = totalRating/countRatings
     curs.execute('update artist set rating =%s where artistID = %s', [avgRating, artistID])
+    curs.commit()
 
 # returns a random list of 5 artists that fit into the given categories 
 def discover_artists(conn, genre, num_rating):
@@ -140,8 +147,7 @@ def get_beef(conn, bid):
     curs.execute('''SELECT * FROM beef WHERE bid = %s''', [bid])
     return curs.fetchone()
 
-<<<<<<< HEAD
-=======
+
 # adds an album in the db -- linked to the artist
 def create_album(conn, title, release, artistID):
     curs = dbi.dict_cursor(conn)
@@ -160,7 +166,6 @@ def get_album(conn, albumID):
     return curs.fetchone()
 
 # returns a users password given the users email
->>>>>>> a92819123a378a7d2a23376e255d51a57f6d113c
 def get_password(conn, email):
     curs = dbi.dict_cursor(conn)
     user = get_user_by_email(conn, email)

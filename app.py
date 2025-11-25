@@ -111,11 +111,69 @@ def artist(id):
         # need to get the artist again so that their new rating gets rendered on their page
         return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
         
+@app.route('/contribute')
+def contribute_home():
+    type = request.args.get('type')
+    if type:
+        return redirect(url_for('contribution_type', type=type))
+    flash("You need to make a selection")
+    return render_template('contribute.html') 
 
+@app.route('/contribution/<type>', methods=['GET', 'POST'])
+def contribution_type():
+    conn = dbi.connect()
+    if type == 'music':
+        if request.method == 'POST': 
+            # want to select from the forums
+            # or make a new forum
+            return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
+        return render_template('forum-artist.html')
+    elif type == 'artist':
+        if request.method == 'POST':
+            name = request.form.get('name')
+            genre = request.form.get('genre')
+            rating = request.form.get('rating', 0)
+            if not name or not genre:
+                flash("Name and genre required!")
+            else:
+                music.add_artist(conn, None, name, genre, rating)
+                flash(f"Artist '{name}' added successfully! Pending approval.")
+                return redirect(url_for('contribution_type', type='artist'))
+        # GET request: show the form
+        return render_template('add-artist.html')
+    elif type == 'beef':
+        if request.method == 'POST':
+            # want to select from the forums
+            # or make a new forum
+            title = request.form.get('title')
+            user_id = session.get('user_id')
+            if title:
+                music.insert_to_forums(conn, type, title, user_id)
+            else:
+                flash("Forum title required!")
+            forums = music.load_forums(conn, type)
+            return render_template('forum-beef-results.html',artist=artist, genre=genre, beefs=beefs)
+        return render_template('forum-beef.html')
 
 # going to be used for the music form
 @app.route('/add-music/')
 def add_music():
+    type = request.args['add']
+    return render_template('add.html') 
+
+@app.route('/add-artists/', methods=['POST'])
+def add_artist_user(): 
+    artistID = request.form['artist-id']
+    name = request.form['name']
+    genre = request.form['genre']
+    rating = request.form.get('rating', 0)
+    music.add_artist(artistID, name, genre, rating)
+    flash('Artist added successfully! Pending approval.')
+    return redirect(url_for('add_artists'))
+
+# going to be used for the beef form
+@app.route('/add-beef/')
+def add_beef():
     type = request.args['add']
     return render_template('add.html') 
 
