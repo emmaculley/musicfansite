@@ -1,8 +1,9 @@
 <!-- Ashley Yang, Dana Hammouri, Megan O'Leary, Emma Culley -->
 <!-- Music Fansite-->
 <!-- Renders a page that allows users enter new artist information into the database->
-{% extends "base.html" %}    
-{% block styles %}
+{% extends "base.html" %}  
+
+{% block main_content %}
 <form method="POST" action="{{ url_for('contribution_type', type='artist') }}">
     <label>Name: <input type="text" name="name" required></label><br>
     <label>Genre: <input type="text" name="genre" required></label><br>
