@@ -1,52 +1,47 @@
+<!-- Ashley Yang, Dana Hammouri, Megan O'Leary, Emma Culley -->
 {% extends "base.html" %}
 
 {% block main_content %}
 
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='utf-8'>
-    <meta name=author content="music fansite group -- Ashley">
-    <title>Submit a Beef</title>   
-</head>
+<h1>Submit a Music Beef</h1>
 
-<body>
-
-<h1>Submit a Music Beef 🔥</h1>
-
-<p>Tell us about a legendary feud in music — or one you’ve just discovered!  
-Who’s beefing, why, and whose side are you on?</p>
+<p>
+    Tell us about a legendary feud in music — or one you’ve just discovered!
+    Who’s beefing, why, and whose side are you on?
+</p>
 
 <section>
     <h2>Beef Submission Form</h2>
 
-    <form id="beef-form" method="post" action="https://cs.wellesley.edu/~cs304flask/cgi-bin/dump.cgi">
-        <label for="name">Your name:</label>
-        <input type="text" id="name" name="name" required><br><br>
-
-        <label for="email">Email (used to sign up):</label>
-        <input type="email" id="email" name="email" required><br><br>
+    <form id="beef-form" method="post" action="{{ url_for('insertbeef') }}">
 
         <label for="artist1">Artist 1:</label>
-        <input type="text" id="artist1" name="artist1" required><br><br>
+        <select id="artist1" name="artist1">
+            <option value="none">Choose One</option>
+            {% for a in artists %}
+                <option value="{{ a.artistID }}">{{ a.name }}</option>
+            {% endfor %}
+        </select>
 
         <label for="artist2">Artist 2:</label>
-        <input type="text" id="artist2" name="artist2" required><br><br>
+        <select id="artist2" name="artist2">
+            <option value="none">Choose One</option>
+            {% for a in artists %}
+                <option value="{{ a.artistID }}">{{ a.name }}</option>
+            {% endfor %}
+        </select>
 
-        <label for="reason">What’s the beef about?</label><br>
-        <textarea id="reason" name="reason" placeholder="Explain what caused the feud..." required></textarea><br><br>
+        <label for="reason">What’s the beef about?</label>
+        <textarea id="reason" name="reason" placeholder="Explain what caused the feud..." required></textarea>
 
-        <label>Whose side are you on?</label>
-        <div class="radio-group">
-            <label><input type="radio" name="side" value="Artist 1"> Artist 1</label>
-            <label><input type="radio" name="side" value="Artist 2"> Artist 2</label>
-        </div>
-        <br>
+        <label for="side">Whose Side Are You On?</label>
+        <select id="side" name="side">
+            <option value="artist1">Artist 1</option>
+            <option value="artist2">Artist 2</option>
+        </select>
 
-        <input type="submit" value="Submit Beef">
+        <button type="submit">Submit Beef</button>
     </form>
 </section>
 
-</body>
-</html>
 {% endblock %}

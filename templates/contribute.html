@@ -1,21 +1,24 @@
 <!-- Ashley Yang, Dana Hammouri, Megan O'Leary, Emma Culley -->
+<!-- Music Fansite-->
+<!-- Renders a page that allows users to navigate to their prefered type of forum->
+ 
 {% extends "base.html" %}
 {% block main_content %}
 
 
 <header>
-<h1>DISCOVER 🎧</h1>
+<h1>Contribute</h1>
 </header>
 
 
 <section>
-    <h2>What do you want to discover?</h2>
-    <form method="GET" action="/discover/">
-    <label>Kind:
-        <select required name="kind">
+    <h2>Add artists, music, or beef:</h2>
+    <form method="GET" action="/contribute/">
+    <label>Type:
+        <select required name="type">
         <option value="">choose one</option>
+        <option value="music">music</option>
         <option value="artist">artist</option>
-        <option value="album">album</option>
         <option value="beef">beef</option>
         </select>
     </label>
@@ -27,5 +30,3 @@
 
 
 {% endblock %}  
-
-

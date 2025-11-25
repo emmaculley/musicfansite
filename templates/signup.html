@@ -1,3 +1,6 @@
+<!-- Ashley Yang, Dana Hammouri, Megan O'Leary, Emma Culley -->
+<!-- Music Fansite-->
+<!-- Renders a signup page for new users-->
 {% extends "base.html" %}
 {% block main_content %}
 
@@ -8,7 +11,7 @@
 
 <form method="POST" action="{{url_for('signup')}}">
   <label for="email">Email:</label><br>
-  <input type="email" id="email" name="email" value="{{ email }}" readonly><br><br>
+  <input type="email" id="email" name="email" value="{{ email or '' }}" required><br><br>
 
   <label for="fname">First Name:</label><br>
   <input type="text" id="fname" name="fname" required><br><br>

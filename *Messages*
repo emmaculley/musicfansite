@@ -1,0 +1,20 @@
+Loading /usr/share/emacs/site-lisp/site-start.d/autoconf-init.el (source)...done
+Loading /usr/share/emacs/site-lisp/site-start.d/cmake-init.el (source)...done
+Loading /usr/share/emacs/site-lisp/site-start.d/desktop-entry-mode-init.el (source)...done
+Loading /usr/share/emacs/site-lisp/site-start.d/systemtap-init.el (source)...done
+For information about GNU Emacs and the GNU system, type C-h C-a.
+next-line: End of buffer [2 times]
+Mark set
+:wq
+ESC M-DEL is undefined
+M-RET is undefined
+Entering debugger...
+(No changes need to be saved)
+C-x C-k DEL is undefined
+kill-line: End of buffer
+Back to top level
+No keyboard macro defined.  Create one? (y or n) n
+Quit
+Saving file /students/ay108/cs304/musicfansite/.git/MERGE_MSG...
+Wrote /students/ay108/cs304/musicfansite/.git/MERGE_MSG
+delete-backward-char: Text is read-only
