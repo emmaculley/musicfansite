@@ -102,6 +102,8 @@ def artist(id):
     artist = music.get_artist(conn, id)
     beefs = music.get_beef(conn, artist[0]['artistID'])
     if request.method == 'GET':
+        if beefs == None:
+            beefs = {}
         return render_template('artist.html', artist=artist, beefs=beefs)
     else:
         form_data = request.form
