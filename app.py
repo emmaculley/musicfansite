@@ -12,6 +12,9 @@ app = Flask(__name__)
 import secrets
 import cs304dbi as dbi
 import music
+import bcrypt
+from pymysql import IntegrityError
+
 
 app.secret_key = secrets.token_hex()
 
@@ -30,12 +33,17 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         user = music.get_user_by_email(conn, email)
-        if user and password == music.get_password(conn, email):
+        if not user:
+            flash("Login incorrect. Try again or sign up.")
+            return render_template('signup.html', email=email)
+        stored_hash = user['password'].encode('utf-8')
+        if bcrypt.checkpw(password.encode('utf-8'), stored_hash):
             session['user_id'] = user['userID']
             session['user_email'] = user['user_email']
             session['fname'] = user['fname']
             return redirect(url_for('index'))
         else:
+            flash("Login incorrect. Try again or sign up.")
             return render_template('signup.html', email=email)
     return render_template('login.html')
 
@@ -44,16 +52,21 @@ def login():
 def signup():
     conn = dbi.connect()
     if request.method == 'POST':
-        email = request.form.get('email')
-        fname = request.form.get('fname')
-        lname = request.form.get('lname')
-        password = request.form.get('password')
-        user = music.create_user(conn, email, fname, lname, password)
-        print (f'{user=}')
-        session['user_id'] = user['userID']
-        session['user_email'] = email
-        session['fname'] = fname
-        return redirect(url_for('index'))
+        try:
+            email = request.form.get('email')
+            fname = request.form.get('fname')
+            lname = request.form.get('lname')
+            password = request.form.get('password')
+            hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            stored = hashed.decode('utf-8')
+            user = music.create_user(conn, email, fname, lname, stored)
+            session['user_id'] = user['userID']
+            session['user_email'] = email
+            session['fname'] = fname
+            return redirect(url_for('index'))
+        except IntegrityError:
+            flash('That email is already associated with an account.')
+            return redirect(url_for('login'))
     return render_template('signup.html')
 
 
@@ -132,13 +145,14 @@ def contribute_home():
 @app.route('/contribution/<type>', methods=['GET', 'POST'])
 def contribution_type(type):
     conn = dbi.connect()
-    if type == 'music':
-        if request.method == 'POST': 
-            # want to select from the forums
-            # or make a new forum
-            return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
-        return render_template('forum-artist.html')
-    elif type == 'artist':
+    genres = music.get_genres(conn)
+    # if type == 'music':
+    #     if request.method == 'POST': 
+    #         # want to select from the forums
+    #         # or make a new forum
+    #         return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
+    #     return render_template('forum-artist.html')
+    if type == 'artist':
         if request.method == 'POST':
             artist_id = request.form.get('artist-id')
             name = request.form.get('name')
@@ -146,9 +160,10 @@ def contribution_type(type):
             rating = request.form.get('rating', 0)
             music.add_artist(conn, None, name, genre, rating)
             flash(f"Artist '{name}' added successfully! Pending approval.")
-            return render_template()
+            return render_template('add-artist.html',
+                                   genres = genres)
         # GET request: show the form
-        return render_template('add-artist.html')
+        return render_template('add-artist.html', genres = genres)
     elif type == 'beef':
         if request.method == 'POST':
             # want to select from the forums

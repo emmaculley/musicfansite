@@ -13,7 +13,7 @@ def add_artist(conn, artistID, name, genre, rating):
     curs = dbi.dict_cursor(conn)
     curs.execute('''insert into artist (artistID, name, genre, rating, approvalStatus)
         values (%s, %s, %s, %s, 'pending')''', (artistID, name, genre,rating))
-    curs.commit()
+    conn.commit()
     
 # will give back artist info for their page
 def get_artist(conn, id):
@@ -57,7 +57,7 @@ def update_artist_rating(conn, artistID):
         countRatings += 1
     avgRating = totalRating/countRatings
     curs.execute('update artist set rating =%s where artistID = %s', [avgRating, artistID])
-    curs.commit()
+    conn.commit()
 
 # returns a random list of 5 artists that fit into the given categories 
 def discover_artists(conn, genre, num_rating):
@@ -113,7 +113,6 @@ def discover_beefs(conn, artist, genre):
         limit 5''', [artist, genre])
     return curs.fetchall()
 
-
 #finds user in the db using their email
 def get_user_by_email(conn, email):
     curs = dbi.dict_cursor(conn)
@@ -139,7 +138,7 @@ def create_beef(conn, artist1, artist2, context, countArtist1, countArtist2):
     conn.commit()
     return curs.lastrowid
 
-    ###if the artists are not already defined, need to create an artist (name, autogenerates an ID, and a genre)
+###if the artists are not already defined, need to create an artist (name, autogenerates an ID, and a genre)
 
 #returns the beef given the beef id
 def get_beef(conn, bid):
