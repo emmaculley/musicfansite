@@ -124,13 +124,14 @@ def contribute_home():
 @app.route('/contribution/<type>', methods=['GET', 'POST'])
 def contribution_type(type):
     conn = dbi.connect()
-    if type == 'music':
-        if request.method == 'POST': 
-            # want to select from the forums
-            # or make a new forum
-            return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
-        return render_template('forum-artist.html')
-    elif type == 'artist':
+    genres = music.get_genres(conn)
+    # if type == 'music':
+    #     if request.method == 'POST': 
+    #         # want to select from the forums
+    #         # or make a new forum
+    #         return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
+    #     return render_template('forum-artist.html')
+    if type == 'artist':
         if request.method == 'POST':
             artist_id = request.form.get('artist-id')
             name = request.form.get('name')
@@ -138,9 +139,10 @@ def contribution_type(type):
             rating = request.form.get('rating', 0)
             music.add_artist(conn, None, name, genre, rating)
             flash(f"Artist '{name}' added successfully! Pending approval.")
-            return render_template()
+            return render_template('add-artist.html',
+                                   genres = genres)
         # GET request: show the form
-        return render_template('add-artist.html')
+        return render_template('add-artist.html', genres = genres)
     elif type == 'beef':
         if request.method == 'POST':
             # want to select from the forums
