@@ -67,8 +67,6 @@ CREATE TABLE `forum` (
   `type` ENUM ('beef', 'music', 'explore')
 );
 
--- ALTER TABLE `ratings` ADD FOREIGN KEY (`rating`) REFERENCES `artist` (`rating`);
-
 ALTER TABLE `ratings` ADD FOREIGN KEY (`artistID`) REFERENCES `artist` (`artistID`);
 
 ALTER TABLE `ratings` ADD FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);

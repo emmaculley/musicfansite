@@ -123,18 +123,26 @@ def discover_kind(kind):
 def artist(id):
     conn = dbi.connect()
     artist = music.get_artist(conn, id)
-    beefs = music.get_beef(conn, artist[0]['artistID'])
+    beefs = music.get_beef_names(conn, id)
+    if beefs == None:
+        beefs = {}
     if request.method == 'GET':
-        if beefs == None:
-            beefs = {}
+        for beef in beefs:
+            beefID = music.get_beef_id(conn, beef['artistID'])
+            beef['beefID'] = beefID['bid']
         return render_template('artist.html', artist=artist, beefs=beefs)
     else:
         form_data = request.form
-        music.insert_rating(conn, form_data, id)
-        music.update_artist_rating(conn, id)
-        artist_w_current_rating = music.get_artist(conn, id) # change to better name later
-        # need to get the artist again so that their new rating gets rendered on their page
-        return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
+        if 'user_id' in session:
+            user_id = session['user_id']
+            music.insert_rating(conn, form_data, id, user_id)
+            music.update_artist_rating(conn, id)
+            artist_w_current_rating = music.get_artist(conn, id) # change to better name later
+            # need to get the artist again so that their new rating gets rendered on their page
+            return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
+        else:
+            flash('you need to be logged in to rate artists')
+            return render_template('artist.html', artist=artist, beefs=beefs)
         
 @app.route('/contribute/')
 def contribute_home():
@@ -147,13 +155,14 @@ def contribute_home():
 @app.route('/contribution/<type>', methods=['GET', 'POST'])
 def contribution_type(type):
     conn = dbi.connect()
-    if type == 'music':
-        if request.method == 'POST': 
-            # want to select from the forums
-            # or make a new forum
-            return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
-        return render_template('forum-artist.html')
-    elif type == 'artist':
+    genres = music.get_genres(conn)
+    # if type == 'music':
+    #     if request.method == 'POST': 
+    #         # want to select from the forums
+    #         # or make a new forum
+    #         return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
+    #     return render_template('forum-artist.html')
+    if type == 'artist':
         if request.method == 'POST':
             artist_id = request.form.get('artist-id')
             name = request.form.get('name')
@@ -161,9 +170,10 @@ def contribution_type(type):
             rating = request.form.get('rating', 0)
             music.add_artist(conn, None, name, genre, rating)
             flash(f"Artist '{name}' added successfully! Pending approval.")
-            return render_template()
+            return render_template('add-artist.html',
+                                   genres = genres)
         # GET request: show the form
-        return render_template('add-artist.html')
+        return render_template('add-artist.html', genres = genres)
     elif type == 'beef':
         if request.method == 'POST':
             # want to select from the forums

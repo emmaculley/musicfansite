@@ -32,7 +32,7 @@
     <label for="9">9</label><br>
     <input type="radio" id="10" name="rating" value="10">
     <label for="10">10</label><br>
-    <label>Your ID number: <input type="text" name="userID"> </label><br>
+    <!--<label>Your ID number: <input type="text" name="userID"> </label><br>-->
     <input type="submit" name="submit" value="rate">
 </form>
 
@@ -40,7 +40,7 @@
 <p>Artists {{person.name}} has had beef with:</p>
 {% for beef in beefs %}
 <ul>
-    <li>{{beef.name}}</li> <!--Later add the beef pages to here as href-->
+    <li><a href="/beef/{{beef.beefID}}">{{beef.name}}</a></li> <!--Later add the beef pages to here as href-->
 </ul>
 
 {% endfor %}

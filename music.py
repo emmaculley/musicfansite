@@ -29,18 +29,18 @@ def get_artist_one(conn, id):
     artist = curs.fetchone()
     return artist
 
-# will return the beef between 2 artists
-def get_beef(conn, id):
+# given an artist's id, will return the names of the other artists they have beef with
+def get_beef_names(conn, id):
     curs = dbi.dict_cursor(conn)
-    curs.execute('select name from artist where artistID=(select artist1 from beef where artist2=%s) or artistID=(select artist2 from beef where artist1=%s)', [id, id])
+    curs.execute('select name, artistID from artist where artistID=(select artist1 from beef where artist2=%s) or artistID=(select artist2 from beef where artist1=%s)', [id, id])
     beefs = curs.fetchall()
     return beefs
 
 # inserts a users rating into the db 
-def insert_rating(conn, form_data, artistID):
+def insert_rating(conn, form_data, artistID, userID):
     # puts a rating into the ratings table
     curs = dbi.dict_cursor(conn)
-    curs.execute('insert into ratings values (%s, %s, %s)', [artistID, int(form_data['rating']), int(form_data['userID'])])
+    curs.execute('insert into ratings values (%s, %s, %s)', [artistID, int(form_data['rating']), userID])
     conn.commit()
 
 #updates the rating of the artist
@@ -245,3 +245,9 @@ def get_albums(conn):
     )
     return curs.fetchall()
 
+# given an artist's id, returns the beefs they've been in
+def get_beef_id(conn, id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('select bid from beef where artist1=%s or artist2=%s', [id, id])
+    return curs.fetchone()
+    
