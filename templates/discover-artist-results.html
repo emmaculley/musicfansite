@@ -5,7 +5,7 @@
 {% block main_content %}
 <h1>Discover Artists</h1>
 
-<p>5 Artists for you to explore in "{{ genre }}" with {{ num_rating + '+' if num_rating else 'Any' }} ratings</p>
+<p>Artists for you to explore in "{{ genre }}" with {{ num_rating + '+' if num_rating else 'Any' }} ratings</p>
 
 <ul>
   {% for artist in artists %}

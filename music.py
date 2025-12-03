@@ -78,7 +78,10 @@ def discover_artists(conn, genre, num_rating):
         query += ' having num_ratings >= 0 AND num_ratings < 25'
     query += ' order by rand() limit 5'
     curs.execute(query, [genre])
-    return curs.fetchall()
+    artists = curs.fetchall()
+    if not artists:
+        return None
+    return artists
 
 # returns a random list of 5 albums that fit into the given categories 
 def discover_albums(conn, genre, num_rating):
@@ -100,7 +103,10 @@ def discover_albums(conn, genre, num_rating):
         query += ' having num_ratings >= 0 AND num_ratings < 25'
     query += ' order by rand() limit 5'
     curs.execute(query, [genre])
-    return curs.fetchall()
+    albums = curs.fetchall()
+    if not albums:
+        return None
+    return albums
 
 # returns a random list of 5 beefs that fit into the given categories 
 def discover_beefs(conn, artist, genre):
@@ -111,7 +117,10 @@ def discover_beefs(conn, artist, genre):
             AND ar.genre = %s
         order by rand() 
         limit 5''', [artist, genre])
-    return curs.fetchall()
+    beefs = curs.fetchall()
+    if not beefs:
+        return None
+    return beefs
 
 #finds user in the db using their email
 def get_user_by_email(conn, email):

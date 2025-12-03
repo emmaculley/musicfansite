@@ -76,7 +76,8 @@ def discover_home():
     kind = request.args.get('kind')
     if kind:
         return redirect(url_for('discover_kind', kind=kind))
-    flash("You need to make a selection")
+    else:
+        flash("You need to make a selection")
     return render_template('discover.html') 
 
 # brings the user to the correct form to discover new music
@@ -88,6 +89,9 @@ def discover_kind(kind):
             genre = request.form.get('genre')
             num_rating = request.form.get('num_rating')
             artists = music.discover_artists(conn, genre, num_rating)
+            if not artists:
+                flash("There are no artists in this category.")
+                return redirect(url_for('discover_kind', kind=kind))
             return render_template('discover-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
         genres = music.get_genres(conn)
         return render_template('discover-artist.html', genres=genres)
@@ -96,6 +100,9 @@ def discover_kind(kind):
             genre = request.form.get('genre')
             num_rating = request.form.get('num_rating')
             albums = music.discover_albums(conn, genre, num_rating)
+            if not albums:
+                flash("There are no artists in this category.")
+                return redirect(url_for('discover_kind', kind=kind))
             return render_template('discover-album-results.html',genre=genre,num_rating=num_rating, albums=albums)
         genres = music.get_genres(conn)
         return render_template('discover-album.html', genres=genres)
@@ -104,6 +111,9 @@ def discover_kind(kind):
             artist = request.form.get('artist')
             genre = request.form.get('genre')
             beefs = music.discover_beefs(conn, artist, genre)
+            if not beefs:
+                flash("There are no artists in this category.")
+                return redirect(url_for('discover_kind', kind=kind))
             return render_template('discover-beef-results.html',artist=artist, genre=genre, beefs=beefs)
         genres = music.get_genres(conn)
         return render_template('discover-beef.html', genres=genres)
