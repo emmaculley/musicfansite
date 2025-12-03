@@ -44,11 +44,12 @@ CREATE TABLE `album` (
 
 CREATE TABLE `user` (
   `userID` INT AUTO_INCREMENT PRIMARY KEY,
-  `user_email` varchar(30),
-  `fname` varchar(50),
-  `lname` varchar(50),
-  `password` varchar(100)
+  `user_email` VARCHAR(30) UNIQUE,
+  `fname` VARCHAR(50),
+  `lname` VARCHAR(50),
+  `password` VARCHAR(100)
 );
+
 
 CREATE TABLE `post` (
   `post_id` INT AUTO_INCREMENT PRIMARY KEY,

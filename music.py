@@ -13,7 +13,7 @@ def add_artist(conn, artistID, name, genre, rating):
     curs = dbi.dict_cursor(conn)
     curs.execute('''insert into artist (artistID, name, genre, rating, approvalStatus)
         values (%s, %s, %s, %s, 'pending')''', (artistID, name, genre,rating))
-    curs.commit()
+    conn.commit()
     
 # will give back artist info for their page
 def get_artist(conn, id):
@@ -33,8 +33,8 @@ def get_artist_one(conn, id):
 def get_beef(conn, id):
     curs = dbi.dict_cursor(conn)
     curs.execute('select name from artist where artistID=(select artist1 from beef where artist2=%s) or artistID=(select artist2 from beef where artist1=%s)', [id, id])
-    beefs1 = curs.fetchone()
-    return beefs1
+    beefs = curs.fetchall()
+    return beefs
 
 # inserts a users rating into the db 
 def insert_rating(conn, form_data, artistID):
