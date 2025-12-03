@@ -12,6 +12,8 @@ app = Flask(__name__)
 import secrets
 import cs304dbi as dbi
 import music
+import bcrypt
+
 
 app.secret_key = secrets.token_hex()
 
@@ -30,7 +32,12 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         user = music.get_user_by_email(conn, email)
-        if user and password == music.get_password(conn, email):
+        if not user:
+            return render_template('signup.html', email=email)
+        stored_hash = user['password'].encode('utf-8')
+        hashed = bcrypt.hashpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
+        hashed_str = hashed.decode('utf-8')
+        if bcrypt.checkpw(password.encode('utf-8'), stored_hash):
             session['user_id'] = user['userID']
             session['user_email'] = user['user_email']
             session['fname'] = user['fname']
@@ -38,6 +45,8 @@ def login():
         else:
             return render_template('signup.html', email=email)
     return render_template('login.html')
+
+
 
 # signup for users -- need to make an account
 @app.route('/signup/', methods=['GET', 'POST'])
@@ -48,8 +57,13 @@ def signup():
         fname = request.form.get('fname')
         lname = request.form.get('lname')
         password = request.form.get('password')
-        user = music.create_user(conn, email, fname, lname, password)
-        print (f'{user=}')
+        account = music.get_user_by_email(conn, email)
+        if account:
+            flash('That email is already associated with an account. Please log in.')
+            return render_template('signup.html', email=email)
+        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        stored = hashed.decode('utf-8')
+        user = music.create_user(conn, email, fname, lname, stored)
         session['user_id'] = user['userID']
         session['user_email'] = email
         session['fname'] = fname
