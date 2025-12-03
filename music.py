@@ -13,7 +13,7 @@ def add_artist(conn, artistID, name, genre, rating):
     curs = dbi.dict_cursor(conn)
     curs.execute('''insert into artist (artistID, name, genre, rating, approvalStatus)
         values (%s, %s, %s, %s, 'pending')''', (artistID, name, genre,rating))
-    curs.commit()
+    conn.commit()
     
 # will give back artist info for their page
 def get_artist(conn, id):
@@ -57,7 +57,7 @@ def update_artist_rating(conn, artistID):
         countRatings += 1
     avgRating = totalRating/countRatings
     curs.execute('update artist set rating =%s where artistID = %s', [avgRating, artistID])
-    curs.commit()
+    conn.commit()
 
 # returns a random list of 5 artists that fit into the given categories 
 def discover_artists(conn, genre, num_rating):
