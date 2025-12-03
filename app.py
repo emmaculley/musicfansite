@@ -100,18 +100,26 @@ def discover_kind(kind):
 def artist(id):
     conn = dbi.connect()
     artist = music.get_artist(conn, id)
-    beefs = music.get_beef(conn, artist[0]['artistID'])
+    beefs = music.get_beef_names(conn, id)
+    if beefs == None:
+        beefs = {}
     if request.method == 'GET':
-        if beefs == None:
-            beefs = {}
+        for beef in beefs:
+            beefID = music.get_beef_id(conn, beef['artistID'])
+            beef['beefID'] = beefID['bid']
         return render_template('artist.html', artist=artist, beefs=beefs)
     else:
         form_data = request.form
-        music.insert_rating(conn, form_data, id)
-        music.update_artist_rating(conn, id)
-        artist_w_current_rating = music.get_artist(conn, id) # change to better name later
-        # need to get the artist again so that their new rating gets rendered on their page
-        return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
+        if 'user_id' in session:
+            user_id = session['user_id']
+            music.insert_rating(conn, form_data, id, user_id)
+            music.update_artist_rating(conn, id)
+            artist_w_current_rating = music.get_artist(conn, id) # change to better name later
+            # need to get the artist again so that their new rating gets rendered on their page
+            return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
+        else:
+            flash('you need to be logged in to rate artists')
+            return render_template('artist.html', artist=artist, beefs=beefs)
         
 @app.route('/contribute/')
 def contribute_home():
