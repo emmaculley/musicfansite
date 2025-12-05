@@ -1,0 +1,177 @@
+/* ---------------------------
+   Pink + Purple Theme
+   For your Flask music site
+   --------------------------- */
+
+:root {
+    --pink: #ff3d9a;
+    --pink-light: #ff8fc1;
+    --purple: #7a3cff;
+    --purple-dark: #5b2bb3;
+
+    --text: #222;
+    --bg: #ffffff;
+    --section-bg: #f9f5ff;
+    --border-soft: rgba(122, 60, 255, 0.2);
+
+    --radius: 8px;
+    --shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Global page style */
+body {
+    background: var(--bg);
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, sans-serif;
+    color: var(--text);
+}
+
+/* ---------------------------
+   NAVIGATION BAR
+   --------------------------- */
+nav {
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    padding: 1rem 0;
+    box-shadow: var(--shadow);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 0;
+    margin: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: .5px;
+    transition: opacity .2s ease;
+}
+
+nav a:hover {
+    opacity: 0.75;
+}
+
+/* ---------------------------
+   FLASH MESSAGES
+   --------------------------- */
+.flash {
+    background: #ffe5ef;
+    color: var(--pink);
+    padding: 0.8rem 1rem;
+    border-left: 5px solid var(--pink);
+    margin: 1rem auto;
+    max-width: 900px;
+    border-radius: var(--radius);
+}
+
+/* ---------------------------
+   PAGE STRUCTURE & HEADERS
+   --------------------------- */
+main, section {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+h1, h2 {
+    color: var(--purple-dark);
+    margin-bottom: .5rem;
+}
+
+/* ---------------------------
+   SECTIONS / CARDS
+   --------------------------- */
+.section,
+section {
+    background: var(--section-bg);
+    border: 1px solid var(--border-soft);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+}
+
+/* ---------------------------
+   BUTTONS
+   --------------------------- */
+.button,
+button,
+input[type="submit"] {
+    display: block;              
+    margin: 0.5rem auto;
+    display: inline-block;
+    background: linear-gradient(135deg, var(--pink-light), var(--purple));
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform .15s ease, opacity .15s ease;
+    text-align: center;
+}
+
+.button:hover,
+button:hover,
+input[type="submit"]:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.button:active,
+button:active,
+input[type="submit"]:active {
+    transform: translateY(1px);
+}
+
+/* ---------------------------
+   FORMS
+   --------------------------- */
+input,
+select,
+textarea {
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+label {
+    font-weight: 600;
+    color: var(--purple-dark);
+}
+
+/* ---------------------------
+   LINKS IN CONTENT
+   --------------------------- */
+a {
+    color: var(--purple-dark);
+    text-decoration: none;
+    font-weight: 500;
+}
+a:hover {
+    text-decoration: underline;
+    color: var(--pink);
+}
+
+.flash-box {
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.flash-msg {
+    background: linear-gradient(135deg, var(--pink-light), var(--purple));
+    color: white;
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--radius);
+    display: inline-block;
+    font-weight: 600;
+}
