@@ -118,10 +118,10 @@ def discover_beefs(conn, artist, genre):
     curs = dbi.dict_cursor(conn)
     curs.execute('''select b.*, ar.genre from beef b
         join artist ar ON b.artist1 = ar.artistID
-        where b.approved = "approved" AND b.artist1 = %s
-            AND ar.genre = %s
+        where (b.artist1 = %s
+            AND ar.genre = %s) OR (b.artist2 = %s AND ar.genre = %s)
         order by rand() 
-        limit 5''', [artist, genre])
+        limit 5''', [artist, genre, artist, genre])
     beefs = curs.fetchall()
     if not beefs:
         return None
@@ -234,6 +234,7 @@ def get_artists(conn):
         SELECT artistID, name
         FROM artist
         WHERE approvalStatus = 'approved'
+        ORDER BY name
         '''
     )
     return curs.fetchall()
@@ -255,4 +256,9 @@ def get_beef_id(conn, id):
     curs = dbi.dict_cursor(conn)
     curs.execute('select bid from beef where artist1=%s or artist2=%s', [id, id])
     return curs.fetchone()
-    
+
+
+def check_ratings(conn, userID, artistID):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('select userID from ratings where artistID=%s AND userID=%s', [artistID, userID])
+    return curs.fetchone()
