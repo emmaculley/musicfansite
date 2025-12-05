@@ -1,0 +1,13 @@
+
+{% extends "base.html" %}  
+
+{% block main_content %}
+<section>
+<h2>Add an album:</h2>
+<form method="POST" action="{{ url_for('contribution_type', type='music') }}">
+    <label>Album title: <input type="text" name="title" required></label>
+    <label>Release year: <input type="text" name="release" placeholder="YYYY"></label>
+    <button type="submit">Add Artist</button>
+</form>
+</section>
+{% endblock %}

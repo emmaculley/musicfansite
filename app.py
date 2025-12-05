@@ -156,24 +156,25 @@ def contribute_home():
 def contribution_type(type):
     conn = dbi.connect()
     genres = music.get_genres(conn)
-    # if type == 'music':
-    #     if request.method == 'POST': 
-    #         # want to select from the forums
-    #         # or make a new forum
-    #         return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
-    #     return render_template('forum-artist.html')
-    if type == 'artist':
+    if type == 'music':
+        if request.method == 'POST': 
+            title = request.form.get('title')
+            release = request.form.get('release')
+            music.add_album(conn, None, title, release)
+            flash(f"Album '{title}' added successfully! Pending approval.")
+            return redirect(url_for('contribution_type', type='music'))
+        return render_template('add-music.html')
+    elif type == 'artist':
         if request.method == 'POST':
-            artist_id = request.form.get('artist-id')
             name = request.form.get('name')
             genre = request.form.get('genre')
             rating = request.form.get('rating', 0)
             music.add_artist(conn, None, name, genre, rating)
             flash(f"Artist '{name}' added successfully! Pending approval.")
-            return render_template('add-artist.html',
-                                   genres = genres)
+            return redirect(url_for('contribution_type', type='artist'))
         # GET request: show the form
         return render_template('add-artist.html', genres = genres)
+    
     elif type == 'beef':
         if request.method == 'POST':
             # want to select from the forums

@@ -14,7 +14,12 @@ def add_artist(conn, artistID, name, genre, rating):
     curs.execute('''insert into artist (artistID, name, genre, rating, approvalStatus)
         values (%s, %s, %s, %s, 'pending')''', (artistID, name, genre,rating))
     conn.commit()
-    
+
+def add_album(conn, albumID, title, release):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''insert into album (albumID, title, `release`, artistID, approved)
+        values (%s, %s, %s, NULL , 'pending')''', (albumID,title, release))
+    conn.commit()
 # will give back artist info for their page
 def get_artist(conn, id):
     curs = dbi.dict_cursor(conn)
