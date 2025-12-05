@@ -112,8 +112,7 @@ def discover_kind(kind):
             # 'artist' is their id. need to get their name
             artistInfo =  music.get_artist_one(conn, artist)
             artistName = artistInfo['name']
-            genre = request.form.get('genre')
-            beefs = music.discover_beefs(conn, artist, genre)
+            beefs = music.discover_beefs(conn, artist)
             for beef in beefs:
                 # get the artist IDs involved
                 artist1 = beef["artist1"]
@@ -130,7 +129,7 @@ def discover_kind(kind):
             if not beefs:
                 flash("There are no artists in this category.")
                 return redirect(url_for('discover_kind', kind=kind))
-            return render_template('discover-beef-results.html',artist=artistName, genre=genre, beefs=beefs)
+            return render_template('discover-beef-results.html',artist=artistName, beefs=beefs)
         genres = music.get_genres(conn)
         artists = music.get_artists(conn)
         return render_template('discover-beef.html', genres=genres, artists=artists)
