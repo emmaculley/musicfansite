@@ -271,8 +271,8 @@ def forums_type(type):
         if request.method == 'POST': 
             # want to select from the forums
             # or make a new forum
-            return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
-        return render_template('forum-artist.html')
+            return render_template('forums-music-results.html',genre=genre,num_rating=num_rating, artists=artists)
+        return render_template('forums-music.html')
     elif type == 'explore':
         if request.method == 'POST':
             title = request.form.get('title')
