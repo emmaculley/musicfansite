@@ -251,4 +251,9 @@ def get_beef_id(conn, id):
     curs = dbi.dict_cursor(conn)
     curs.execute('select bid from beef where artist1=%s or artist2=%s', [id, id])
     return curs.fetchone()
-    
+
+
+def check_ratings(conn, userID, artistID):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('select userID from ratings where artistID=%s AND userID=%s', [artistID, userID])
+    return curs.fetchone()

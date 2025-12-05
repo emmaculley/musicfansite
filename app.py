@@ -145,18 +145,27 @@ def artist(id):
         beefs = {}
     if request.method == 'GET':
         for beef in beefs:
-            beefID = music.get_beef_id(conn, beef['artistID'])
+            artistID = artist[0]['artistID']
+            beefID = music.get_beef_id(conn, artistID)
             beef['beefID'] = beefID['bid']
         return render_template('artist.html', artist=artist, beefs=beefs)
     else:
         form_data = request.form
         if 'user_id' in session:
             user_id = session['user_id']
-            music.insert_rating(conn, form_data, id, user_id)
-            music.update_artist_rating(conn, id)
-            artist_w_current_rating = music.get_artist(conn, id) # change to better name later
-            # need to get the artist again so that their new rating gets rendered on their page
-            return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
+            artistID = artist[0]['artistID']
+            potential_rating = music.check_ratings(conn, user_id, artistID)
+            if potential_rating == None:
+                # if this user hasn't rated this artist yet
+                music.insert_rating(conn, form_data, id, user_id)
+                music.update_artist_rating(conn, id)
+                artist_w_current_rating = music.get_artist(conn, id) # change to better name later
+                # need to get the artist again so that their new rating gets rendered on their page
+                return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
+            else:
+                # if this user has already rated this artist
+                flash("you have already rated this artist")
+                return render_template('artist.html', artist=artist, beefs=beefs)
         else:
             flash('you need to be logged in to rate artists')
             return render_template('artist.html', artist=artist, beefs=beefs)
