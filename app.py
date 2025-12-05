@@ -109,14 +109,31 @@ def discover_kind(kind):
     elif kind == 'beef':
         if request.method == 'POST':
             artist = request.form.get('artist')
+            # 'artist' is their id. need to get their name
+            artistInfo =  music.get_artist_one(conn, artist)
+            artistName = artistInfo['name']
             genre = request.form.get('genre')
             beefs = music.discover_beefs(conn, artist, genre)
+            for beef in beefs:
+                # get the artist IDs involved
+                artist1 = beef["artist1"]
+                artist2 = beef["artist2"]
+                #get artist1's name
+                artist1Info = music.get_artist_one(conn, artist1)
+                artist1Name = artist1Info['name']
+                # get artist2's name
+                artist2Info = music.get_artist_one(conn, artist2)
+                artist2Name = artist2Info['name']
+                # add names to the beef dict so they can be displayed on the 'beefs to explore'
+                beef['artist1Name'] = artist1Name
+                beef['artist2Name'] = artist2Name
             if not beefs:
                 flash("There are no artists in this category.")
                 return redirect(url_for('discover_kind', kind=kind))
-            return render_template('discover-beef-results.html',artist=artist, genre=genre, beefs=beefs)
+            return render_template('discover-beef-results.html',artist=artistName, genre=genre, beefs=beefs)
         genres = music.get_genres(conn)
-        return render_template('discover-beef.html', genres=genres)
+        artists = music.get_artists(conn)
+        return render_template('discover-beef.html', genres=genres, artists=artists)
 
 # pages for individual artists
 @app.route('/artist/<id>/', methods = ['GET', 'POST'])
@@ -176,17 +193,34 @@ def contribution_type(type):
         return render_template('add-artist.html', genres = genres)
     elif type == 'beef':
         if request.method == 'POST':
-            # want to select from the forums
-            # or make a new forum
-            title = request.form.get('title')
-            user_id = session.get('user_id')
-            if title:
-                music.insert_to_forums(conn, type, title, user_id)
-            else:
-                flash("Forum title required!")
-            forums = music.load_forums(conn, type)
-            return render_template('forum-beef-results.html',artist=artist, genre=genre, beefs=beefs)
-        return render_template('forum-beef.html')
+            artist1 = request.form.get('artist1')
+            artist2 = request.form.get('artist2')
+
+            if artist1 == artist2:
+                flash("An artist cannot beef with themselves!")
+                artists = music.get_artists(conn)
+                return render_template('beef_form.html', artists=artists)
+
+            if artist1 == 'none' or artist2 == 'none':
+                flash("Please choose two artists that have beefed.")
+                artists = music.get_artists(conn)
+                return render_template('beef_form.html', artists=artists)
+
+            context = request.form.get('reason')
+            side = request.form.get('side')
+
+            countArtist1 = 1 if side == "artist1" else 0
+            countArtist2 = 1 if side == "artist2" else 0
+
+            # user_id = session.get('user_id')
+
+            bid = music.create_beef(conn, artist1, artist2, context, countArtist1, countArtist2)
+
+            fname = session.get('fname')
+            flash(f"Beef form submitted! Thank you {fname}")
+            return redirect(url_for('beef_page', bid=bid))
+            
+        return render_template('beef_form.html', artists=music.get_artists(conn))
 
 # going to be used for the music form
 @app.route('/add-music/')
