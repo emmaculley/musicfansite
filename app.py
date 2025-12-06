@@ -253,7 +253,7 @@ def contribution_type(type):
 
 
 # Forums page, where the user decides which forum they want to access
-@app.route('/forums/')
+@app.route('/forums/', methods = ['GET', 'POST'])
 def forums_home():
     if request.method == 'POST':
         type = request.form.get('type')
