@@ -35,7 +35,7 @@ def login():
         user = music.get_user_by_email(conn, email)
         if not user:
             flash("Login incorrect. Try again or sign up.")
-            return render_template('signup.html', email=email)
+            return render_template('signup.html', email=email, page_title='Signup')
         stored_hash = user['password'].encode('utf-8')
         if bcrypt.checkpw(password.encode('utf-8'), stored_hash):
             session['user_id'] = user['userID']
@@ -44,7 +44,7 @@ def login():
             return redirect(url_for('index'))
         else:
             flash("Login incorrect. Try again or sign up.")
-            return render_template('signup.html', email=email)
+            return render_template('signup.html', email=email, page_title='Signup')
     return render_template('login.html')
 
 # signup for users -- need to make an account
@@ -67,7 +67,7 @@ def signup():
         except IntegrityError:
             flash('That email is already associated with an account.')
             return redirect(url_for('login'))
-    return render_template('signup.html')
+    return render_template('signup.html', page_title='Signup')
 
 
 # discover home page
@@ -76,8 +76,14 @@ def discover_home():
     kind = request.args.get('kind')
     if kind:
         return redirect(url_for('discover_kind', kind=kind))
+<<<<<<< HEAD
     
     return render_template('discover.html') 
+=======
+    else:
+        flash("You need to make a selection")
+    return render_template('discover.html', page_title='Discover') 
+>>>>>>> b7ba590a6bf413f02df4bb437eee388fd3a17b38
 
 # brings the user to the correct form to discover new music
 @app.route('/discover/<kind>', methods=['GET', 'POST'])
@@ -91,9 +97,9 @@ def discover_kind(kind):
             if not artists:
                 flash("There are no artists in this category.")
                 return redirect(url_for('discover_kind', kind=kind))
-            return render_template('discover-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
+            return render_template('discover-artist-results.html',genre=genre,num_rating=num_rating, artists=artists, page_title='Artists to Discover')
         genres = music.get_genres(conn)
-        return render_template('discover-artist.html', genres=genres)
+        return render_template('discover-artist.html', genres=genres, page_title='Discover Artists')
     elif kind == 'album':
         if request.method == 'POST':
             genre = request.form.get('genre')
@@ -102,9 +108,9 @@ def discover_kind(kind):
             if not albums:
                 flash("There are no albums in this category.")
                 return redirect(url_for('discover_kind', kind=kind))
-            return render_template('discover-album-results.html',genre=genre,num_rating=num_rating, albums=albums)
+            return render_template('discover-album-results.html',genre=genre,num_rating=num_rating, albums=albums, page_title='Albums to Discover')
         genres = music.get_genres(conn)
-        return render_template('discover-album.html', genres=genres)
+        return render_template('discover-album.html', genres=genres, page_title='Discover Albums')
     elif kind == 'beef':
         if request.method == 'POST':
             artist = request.form.get('artist')
@@ -128,10 +134,10 @@ def discover_kind(kind):
             if not beefs:
                 flash("There are no artists in this category.")
                 return redirect(url_for('discover_kind', kind=kind))
-            return render_template('discover-beef-results.html',artist=artistName, beefs=beefs)
+            return render_template('discover-beef-results.html',artist=artistName, beefs=beefs, page_title='Beefs to Discover')
         genres = music.get_genres(conn)
         artists = music.get_artists(conn)
-        return render_template('discover-beef.html', genres=genres, artists=artists)
+        return render_template('discover-beef.html', genres=genres, artists=artists, page_title='Discover Beefs')
 
 # pages for individual artists
 @app.route('/artist/<id>/', methods = ['GET', 'POST'])
@@ -146,7 +152,7 @@ def artist(id):
             artistID = artist[0]['artistID']
             beefID = music.get_beef_id(conn, artistID)
             beef['beefID'] = beefID['bid']
-        return render_template('artist.html', artist=artist, beefs=beefs)
+        return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
     else:
         form_data = request.form
         if 'user_id' in session:
@@ -159,21 +165,26 @@ def artist(id):
                 music.update_artist_rating(conn, id)
                 artist_w_current_rating = music.get_artist(conn, id) # change to better name later
                 # need to get the artist again so that their new rating gets rendered on their page
-                return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs)
+                return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs, page_title=artist[0]['name'])
             else:
                 # if this user has already rated this artist
                 flash("you have already rated this artist")
-                return render_template('artist.html', artist=artist, beefs=beefs)
+                return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
         else:
             flash('you need to be logged in to rate artists')
-            return render_template('artist.html', artist=artist, beefs=beefs)
+            return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
         
 @app.route('/contribute/')
 def contribute_home():
     type = request.args.get('type')
     if type:
         return redirect(url_for('contribution_type', type=type))
+<<<<<<< HEAD
     return render_template('contribute.html') 
+=======
+    flash("You need to make a selection")
+    return render_template('contribute.html', page_title='Contribute') 
+>>>>>>> b7ba590a6bf413f02df4bb437eee388fd3a17b38
 
 @app.route('/contribution/<type>', methods=['GET', 'POST'])
 def contribution_type(type):
@@ -188,7 +199,7 @@ def contribution_type(type):
             music.add_album(conn, title, release,artistID)
             flash(f"Album '{title}' added successfully! Pending approval.")
             return redirect(url_for('contribution_type', type='music'))
-        return render_template('add-music.html', artists= artists)
+        return render_template('add-music.html', artists= artists, page_title='Add Music')
     elif type == 'artist':
         if request.method == 'POST':
             name = request.form.get('name')
@@ -198,7 +209,7 @@ def contribution_type(type):
             flash(f"Artist '{name}' added successfully! Pending approval.")
             return redirect(url_for('contribution_type', type='artist'))
         # GET request: show the form
-        return render_template('add-artist.html', genres = genres)
+        return render_template('add-artist.html', genres=genres, page_title='Add Artist')
     
     elif type == 'beef':
         if request.method == 'POST':
@@ -208,12 +219,12 @@ def contribution_type(type):
             if artist1 == artist2:
                 flash("An artist cannot beef with themselves!")
                 artists = music.get_artists(conn)
-                return render_template('beef_form.html', artists=artists)
+                return render_template('beef_form.html', artists=artists, page_title='Beef Form')
 
             if artist1 == 'none' or artist2 == 'none':
                 flash("Please choose two artists that have beefed.")
                 artists = music.get_artists(conn)
-                return render_template('beef_form.html', artists=artists)
+                return render_template('beef_form.html', artists=artists, page_title="Beef Form")
 
             context = request.form.get('reason')
             side = request.form.get('side')
@@ -229,13 +240,13 @@ def contribution_type(type):
             flash(f"Beef form submitted! Thank you {fname}")
             return redirect(url_for('beef_page', bid=bid))
             
-        return render_template('beef_form.html', artists=music.get_artists(conn))
+        return render_template('beef_form.html', artists=music.get_artists(conn), page_title='Beef Form')
 
 # going to be used for the music form
 @app.route('/add-music/')
 def add_music():
     type = request.args['add']
-    return render_template('add.html') 
+    return render_template('add.html', page_title='Add') 
 
 @app.route('/add-artists/', methods=['POST'])
 def add_artist_user(): 
@@ -251,16 +262,24 @@ def add_artist_user():
 @app.route('/add-beef/')
 def add_beef():
     type = request.args['add']
-    return render_template('add.html') 
+    return render_template('add.html', page_title='Add Beef') 
 
 #forums home page to decide where the user wants to navigate
 @app.route('/forums/', methods=['GET', 'POST'])
 def forums_home():
+<<<<<<< HEAD
     if request.method == 'POST':
         type = request.form.get('type')
         if type:
             return redirect(url_for('forums_type', type=type))
     return render_template('forums.html') 
+=======
+    type = request.args.get('type')
+    if type:
+        return redirect(url_for('forums_type', type=type))
+    flash("You need to make a selection")
+    return render_template('forums.html', page_title='Forums') 
+>>>>>>> b7ba590a6bf413f02df4bb437eee388fd3a17b38
 
 @app.route('/forums/<type>', methods=['GET', 'POST'])
 def forums_type(type):
@@ -348,7 +367,7 @@ def view_forum(forum_id):
         return redirect(url_for('view_forum', forum_id=forum_id))
     forum = music.get_forum(conn, forum_id)
     posts = music.get_posts(conn, forum_id)
-    return render_template('view-forum.html', forum=forum, posts=posts)
+    return render_template('view-forum.html', forum=forum, posts=posts, page_title='Forum')
 
 ############################################################################################################################################
 ##need to find a way where if the beef between the 2 artists alr exist, ####################
@@ -364,7 +383,7 @@ def insertbeef():
     if request.method == 'GET':
         print("loading artists...")
         artists = music.get_artists(conn)
-        return render_template('beef_form.html', artists=artists)
+        return render_template('beef_form.html', artists=artists, page_title='Beef Form')
 
     artist1 = request.form.get('artist1')
     artist2 = request.form.get('artist2')
@@ -372,12 +391,12 @@ def insertbeef():
     if artist1 == artist2:
         flash("An artist cannot beef with themselves!")
         artists = music.get_artists(conn)
-        return render_template('beef_form.html', artists=artists)
+        return render_template('beef_form.html', artists=artists, page_title='Beef Form')
 
     if artist1 == 'none' or artist2 == 'none':
         flash("Please choose two artists that have beefed.")
         artists = music.get_artists(conn)
-        return render_template('beef_form.html', artists=artists)
+        return render_template('beef_form.html', artists=artists, page_title='Beef Form')
 
     context = request.form.get('reason')
     side = request.form.get('side')
@@ -395,7 +414,7 @@ def insertbeef():
     except: 
         flash("That beef already exists!")
         artists = music.get_artists(conn)
-        return render_template('beef_form.html', artists=artists)
+        return render_template('beef_form.html', artists=artists, page_title='Beef Form')
 
     return redirect(url_for('beef_page', bid=bid))
 
@@ -413,7 +432,7 @@ def beef_page(bid):
 
     artist2 = music.get_artist_one(conn, beef['artist2'])
 
-    return render_template('beef_page.html', beef=beef, artist1=artist1, artist2=artist2)
+    return render_template('beef_page.html', beef=beef, artist1=artist1, artist2=artist2, page_title='Beef')
 
 @app.route('/insertalbum', methods=['GET', 'POST'])
 def add_album():
@@ -422,7 +441,7 @@ def add_album():
     if request.method == 'GET':
         print("loading artists...")
         artists = music.get_artists(conn)
-        return render_template('album_form.html', artists=artists)
+        return render_template('album_form.html', artists=artists, page_title='Album Form')
     ##you want the artist to alr be in the database
     #get all the artists
     artist = request.form.get('artist')
@@ -432,17 +451,17 @@ def add_album():
     if artist is None:
         flash('please choose an artist')
         artists = music.get_artists(conn)
-        return render_template('album_form.html', artists=artists)
+        return render_template('album_form.html', artists=artists, page_title='Album Form')
 
     if title is None:
         flash('please choose an album')
         artists = music.get_artists(conn)
-        return render_template('album_form.html', artists=artists)
+        return render_template('album_form.html', artists=artists, page_title='Album Form')
     
     if release is None:
         flash('please add release date')
         artists = music.get_artists(conn)
-        return render_template('album_form.html', artists=artists)
+        return render_template('album_form.html', artists=artists, page_title='Album Form')
 
     ###how to check if the album alr exists? 
     # existing_album = music.get_album_by_title(conn, album)
@@ -469,7 +488,7 @@ def album_page(aid):
 
     artist = music.get_artist_one(conn, album['artistID'])
 
-    return render_template('album_page.html',album=album, artist =artist)
+    return render_template('album_page.html',album=album, artist=artist, page_title=album['title'])
 
 
 if __name__ == '__main__':
