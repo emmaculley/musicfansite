@@ -127,6 +127,9 @@ def discover_kind(kind):
             artistName = artistInfo['name']
             # make sure there are beefs involving that artist
             beefs = music.discover_beefs(conn, artist)
+            if not beefs:
+                flash("This artist has no beefs.")
+                return redirect(url_for('discover_kind', kind=kind))
             for beef in beefs:
                 # get the artist IDs involved
                 artist1 = beef["artist1"]
@@ -140,9 +143,6 @@ def discover_kind(kind):
                 # add names to the beef dict so they can be displayed on the 'beefs to explore'
                 beef['artist1Name'] = artist1Name
                 beef['artist2Name'] = artist2Name
-            if not beefs:
-                flash("There are no artists in this category.")
-                return redirect(url_for('discover_kind', kind=kind))
             return render_template('discover-beef-results.html',artist=artistName, beefs=beefs, page_title='Beefs to Discover')
         genres = music.get_genres(conn)
         artists = music.get_artists(conn)
@@ -190,8 +190,12 @@ def contribute_home():
     type = request.args.get('type')
     if type:
         return redirect(url_for('contribution_type', type=type))
+<<<<<<< HEAD
+    return render_template('contribute.html') 
+=======
     flash("You need to make a selection")
     return render_template('contribute.html', page_title='Contribute') 
+>>>>>>> b7ba590a6bf413f02df4bb437eee388fd3a17b38
 
 # Takes the user to a page to contribute the correct type, either
 # to add a new artist, album, or beef.
@@ -254,15 +258,50 @@ def contribution_type(type):
             
         return render_template('beef_form.html', artists=music.get_artists(conn), page_title='Beef Form')
 
+<<<<<<< HEAD
 
 # Forums page, where the user decides which forum they want to access
 @app.route('/forums/')
+=======
+# going to be used for the music form
+@app.route('/add-music/')
+def add_music():
+    type = request.args['add']
+    return render_template('add.html', page_title='Add') 
+
+@app.route('/add-artists/', methods=['POST'])
+def add_artist_user(): 
+    artistID = request.form['artist-id']
+    name = request.form['name']
+    genre = request.form['genre']
+    rating = request.form.get('rating', 0)
+    music.add_artist(artistID, name, genre, rating)
+    flash('Artist added successfully! Pending approval.')
+    return redirect(url_for('add_artists'))
+
+# going to be used for the beef form
+@app.route('/add-beef/')
+def add_beef():
+    type = request.args['add']
+    return render_template('add.html', page_title='Add Beef') 
+
+#forums home page to decide where the user wants to navigate
+@app.route('/forums/', methods=['GET', 'POST'])
+>>>>>>> 75935d89578612bfd3941e278a591926d2a56de5
 def forums_home():
+<<<<<<< HEAD
+    if request.method == 'POST':
+        type = request.form.get('type')
+        if type:
+            return redirect(url_for('forums_type', type=type))
+    return render_template('forums.html') 
+=======
     type = request.args.get('type')
     if type:
         return redirect(url_for('forums_type', type=type))
     flash("You need to make a selection")
     return render_template('forums.html', page_title='Forums') 
+>>>>>>> b7ba590a6bf413f02df4bb437eee388fd3a17b38
 
 # Forum pages, where the user is taken to the music, explore, or 
 # beef forum.
