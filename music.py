@@ -9,17 +9,18 @@ Last updated: 8th November 2025
 import cs304dbi as dbi
 
 # adds an artists into the db
-def add_artist(conn, artistID, name, genre, rating):
+def add_artist(conn,name, genre, rating):
     curs = dbi.dict_cursor(conn)
-    curs.execute('''insert into artist (artistID, name, genre, rating, approvalStatus)
-        values (%s, %s, %s, %s, 'pending')''', (artistID, name, genre,rating))
+    curs.execute('''insert into artist (name, genre, rating, approvalStatus)
+        values (%s, %s, %s, 'pending')''', (name, genre,rating))
     conn.commit()
 
-def add_album(conn, albumID, title, release):
+def add_album(conn, title, release, artistID):
     curs = dbi.dict_cursor(conn)
-    curs.execute('''insert into album (albumID, title, `release`, artistID, approved)
-        values (%s, %s, %s, NULL , 'pending')''', (albumID,title, release))
+    curs.execute('''insert into album (title, `release`, artistID, approved)
+        values (%s, %s, %s , 'pending')''', (title, release, artistID))
     conn.commit()
+    
 # will give back artist info for their page
 def get_artist(conn, id):
     curs = dbi.dict_cursor(conn)

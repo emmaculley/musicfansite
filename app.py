@@ -182,20 +182,22 @@ def contribute_home():
 def contribution_type(type):
     conn = dbi.connect()
     genres = music.get_genres(conn)
+    artists = music.get_artists(conn)
     if type == 'music':
         if request.method == 'POST': 
             title = request.form.get('title')
             release = request.form.get('release')
-            music.add_album(conn, None, title, release)
+            artistID = int(request.form.get('artist'))
+            music.add_album(conn, title, release,artistID)
             flash(f"Album '{title}' added successfully! Pending approval.")
             return redirect(url_for('contribution_type', type='music'))
-        return render_template('add-music.html')
+        return render_template('add-music.html', artists= artists)
     elif type == 'artist':
         if request.method == 'POST':
             name = request.form.get('name')
             genre = request.form.get('genre')
             rating = request.form.get('rating', 0)
-            music.add_artist(conn, None, name, genre, rating)
+            music.add_artist(conn, name, genre, rating)
             flash(f"Artist '{name}' added successfully! Pending approval.")
             return redirect(url_for('contribution_type', type='artist'))
         # GET request: show the form
@@ -271,8 +273,15 @@ def forums_type(type):
         if request.method == 'POST': 
             # want to select from the forums
             # or make a new forum
-            return render_template('forums-music-results.html',genre=genre,num_rating=num_rating, artists=artists)
-        return render_template('forums-music.html')
+            if request.method == 'POST':
+                title = request.form.get('title')
+                user_id = session.get('user_id')
+                if title:
+                    music.insert_to_forums(conn, type, title, user_id)
+                else:
+                    flash("Forum title required!")
+            forums = music.load_forums(conn, type)
+            return render_template('forums-music.html',type=type, forums = forums)
     elif type == 'explore':
         if request.method == 'POST':
             title = request.form.get('title')
@@ -293,9 +302,8 @@ def forums_type(type):
                 music.insert_to_forums(conn, type, title, user_id)
             else:
                 flash("Forum title required!")
-            forums = music.load_forums(conn, type)
-            return render_template('forum-beef-results.html',artist=artist, genre=genre, beefs=beefs)
-        return render_template('forum-beef.html')
+        forums = music.load_forums(conn, type)
+        return render_template('forum-beef.html',type=type, forums=forums)
 
 # allows users to view the specific forum they are interested in
 @app.route('/forum/<forum_id>', methods=['GET', 'POST'])
