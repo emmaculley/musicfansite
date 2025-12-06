@@ -1,6 +1,6 @@
 <!-- Ashley Yang, Dana Hammouri, Megan O'Leary, Emma Culley -->
 <!-- Music Fansite-->
-<!-- Renders a page that allows users to navigate to their prefered type of forum->
+<!-- Renders a page that allows users to navigate to their prefered type of forum-->
  
 {% extends "base.html" %}
 {% block main_content %}
@@ -13,7 +13,7 @@
 
 <section>
     <h2>What do you want to discuss?</h2>
-    <form method="POST" action="/forums/">
+    <form method="GET" action="/forums/">
     <label>Type:
         <select required name="type">
         <option value="">choose one</option>
