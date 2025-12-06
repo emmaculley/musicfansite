@@ -190,12 +190,8 @@ def contribute_home():
     type = request.args.get('type')
     if type:
         return redirect(url_for('contribution_type', type=type))
-<<<<<<< HEAD
-    return render_template('contribute.html') 
-=======
     flash("You need to make a selection")
     return render_template('contribute.html', page_title='Contribute') 
->>>>>>> b7ba590a6bf413f02df4bb437eee388fd3a17b38
 
 # Takes the user to a page to contribute the correct type, either
 # to add a new artist, album, or beef.
@@ -258,11 +254,6 @@ def contribution_type(type):
             
         return render_template('beef_form.html', artists=music.get_artists(conn), page_title='Beef Form')
 
-<<<<<<< HEAD
-
-# Forums page, where the user decides which forum they want to access
-@app.route('/forums/')
-=======
 # going to be used for the music form
 @app.route('/add-music/')
 def add_music():
@@ -287,21 +278,12 @@ def add_beef():
 
 #forums home page to decide where the user wants to navigate
 @app.route('/forums/', methods=['GET', 'POST'])
->>>>>>> 75935d89578612bfd3941e278a591926d2a56de5
 def forums_home():
-<<<<<<< HEAD
-    if request.method == 'POST':
-        type = request.form.get('type')
-        if type:
-            return redirect(url_for('forums_type', type=type))
-    return render_template('forums.html') 
-=======
     type = request.args.get('type')
     if type:
         return redirect(url_for('forums_type', type=type))
     flash("You need to make a selection")
     return render_template('forums.html', page_title='Forums') 
->>>>>>> b7ba590a6bf413f02df4bb437eee388fd3a17b38
 
 # Forum pages, where the user is taken to the music, explore, or 
 # beef forum.
