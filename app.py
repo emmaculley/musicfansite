@@ -15,12 +15,12 @@ import music
 import bcrypt
 from pymysql import IntegrityError
 
-
+# for flashing
 app.secret_key = secrets.token_hex()
 
 print(dbi.conf('musicfan_db'))
 
-
+# The main page of our site
 @app.route('/')
 def index():
     return render_template('main.html', page_title="Main Page")
@@ -30,12 +30,17 @@ def index():
 def login():
     conn = dbi.connect()
     if request.method == 'POST':
+        # look up user's email and password in db
         email = request.form.get('email')
         password = request.form.get('password')
         user = music.get_user_by_email(conn, email)
+
+        # if they put in an email that isn't in the db:
         if not user:
             flash("Login incorrect. Try again or sign up.")
             return render_template('signup.html', email=email, page_title='Signup')
+        
+        # check their passord:
         stored_hash = user['password'].encode('utf-8')
         if bcrypt.checkpw(password.encode('utf-8'), stored_hash):
             session['user_id'] = user['userID']
@@ -45,9 +50,11 @@ def login():
         else:
             flash("Login incorrect. Try again or sign up.")
             return render_template('signup.html', email=email, page_title='Signup')
-    return render_template('login.html')
+    
+    # if this is a GET request, render page as normal
+    return render_template('login.html', page_title='Login')
 
-# signup for users -- need to make an account
+# signup for users -- for if they need to make an account
 @app.route('/signup/', methods=['GET', 'POST'])
 def signup():
     conn = dbi.connect()
@@ -59,6 +66,7 @@ def signup():
             password = request.form.get('password')
             hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             stored = hashed.decode('utf-8')
+            # add their info to the user table:
             user = music.create_user(conn, email, fname, lname, stored)
             session['user_id'] = user['userID']
             session['user_email'] = email
@@ -70,7 +78,8 @@ def signup():
     return render_template('signup.html', page_title='Signup')
 
 
-# discover home page
+# Discover page, where users can choose the type of thing they want to 
+# discover - albums, artists, or beef.
 @app.route('/discover/')
 def discover_home():
     kind = request.args.get('kind')
@@ -78,7 +87,8 @@ def discover_home():
         return redirect(url_for('discover_kind', kind=kind))
     return render_template('discover.html') 
 
-# brings the user to the correct form to discover new music
+# brings the user to the correct form to discover what they're looking
+# for (artists, albums, or beefs)
 @app.route('/discover/<kind>', methods=['GET', 'POST'])
 def discover_kind(kind):
     conn = dbi.connect()
@@ -86,6 +96,8 @@ def discover_kind(kind):
         if request.method == 'POST':
             genre = request.form.get('genre')
             num_rating = request.form.get('num_rating')
+            # user selects genre and # of total ratings they want the 
+            # artist to have. we make sure artists of their category exist 
             artists = music.discover_artists(conn, genre, num_rating)
             if not artists:
                 flash("There are no artists in this category.")
@@ -97,6 +109,7 @@ def discover_kind(kind):
         if request.method == 'POST':
             genre = request.form.get('genre')
             num_rating = request.form.get('num_rating')
+            # make sure there are albums in their category
             albums = music.discover_albums(conn, genre, num_rating)
             if not albums:
                 flash("There are no albums in this category.")
@@ -107,9 +120,10 @@ def discover_kind(kind):
     elif kind == 'beef':
         if request.method == 'POST':
             artist = request.form.get('artist')
-            # 'artist' is their id. need to get their name
+            # 'artist' is their id. also need to get their name to display on the page
             artistInfo =  music.get_artist_one(conn, artist)
             artistName = artistInfo['name']
+            # make sure there are beefs involving that artist
             beefs = music.discover_beefs(conn, artist)
             if not beefs:
                 flash("This artist has no beefs.")
@@ -142,6 +156,7 @@ def artist(id):
         beefs = {}
     if request.method == 'GET':
         for beef in beefs:
+            # add the beef ID to the beef, so we can put a link to it
             artistID = artist[0]['artistID']
             beefID = music.get_beef_id(conn, artistID)
             beef['beefID'] = beefID['bid']
@@ -166,7 +181,8 @@ def artist(id):
         else:
             flash('you need to be logged in to rate artists')
             return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
-        
+
+# Page to contribute new information to the site        
 @app.route('/contribute/')
 def contribute_home():
     type = request.args.get('type')
@@ -174,6 +190,8 @@ def contribute_home():
         return redirect(url_for('contribution_type', type=type))
     return render_template('contribute.html') 
 
+# Takes the user to a page to contribute the correct type, either
+# to add a new artist, album, or beef.
 @app.route('/contribution/<type>', methods=['GET', 'POST'])
 def contribution_type(type):
     conn = dbi.connect()
@@ -184,19 +202,22 @@ def contribution_type(type):
             title = request.form.get('title')
             release = request.form.get('release')
             artistID = int(request.form.get('artist'))
+            # add album to db
             music.add_album(conn, title, release,artistID)
             flash(f"Album '{title}' added successfully! Pending approval.")
             return redirect(url_for('contribution_type', type='music'))
         return render_template('add-music.html', artists= artists, page_title='Add Music')
+    
     elif type == 'artist':
         if request.method == 'POST':
             name = request.form.get('name')
             genre = request.form.get('genre')
             rating = request.form.get('rating', 0)
+            # add artist to db
             music.add_artist(conn, name, genre, rating)
             flash(f"Artist '{name}' added successfully! Pending approval.")
             return redirect(url_for('contribution_type', type='artist'))
-        # GET request: show the form
+
         return render_template('add-artist.html', genres=genres, page_title='Add Artist')
     
     elif type == 'beef':
@@ -204,6 +225,7 @@ def contribution_type(type):
             artist1 = request.form.get('artist1')
             artist2 = request.form.get('artist2')
 
+            # check to make sure they're two different artists
             if artist1 == artist2:
                 flash("An artist cannot beef with themselves!")
                 artists = music.get_artists(conn)
@@ -220,8 +242,7 @@ def contribution_type(type):
             countArtist1 = 1 if side == "artist1" else 0
             countArtist2 = 1 if side == "artist2" else 0
 
-            # user_id = session.get('user_id')
-
+            # add the beef to the db
             bid = music.create_beef(conn, artist1, artist2, context, countArtist1, countArtist2)
 
             fname = session.get('fname')
@@ -230,30 +251,9 @@ def contribution_type(type):
             
         return render_template('beef_form.html', artists=music.get_artists(conn), page_title='Beef Form')
 
-# going to be used for the music form
-@app.route('/add-music/')
-def add_music():
-    type = request.args['add']
-    return render_template('add.html', page_title='Add') 
 
-@app.route('/add-artists/', methods=['POST'])
-def add_artist_user(): 
-    artistID = request.form['artist-id']
-    name = request.form['name']
-    genre = request.form['genre']
-    rating = request.form.get('rating', 0)
-    music.add_artist(artistID, name, genre, rating)
-    flash('Artist added successfully! Pending approval.')
-    return redirect(url_for('add_artists'))
-
-# going to be used for the beef form
-@app.route('/add-beef/')
-def add_beef():
-    type = request.args['add']
-    return render_template('add.html', page_title='Add Beef') 
-
-#forums home page to decide where the user wants to navigate
-@app.route('/forums/', methods=['GET', 'POST'])
+# Forums page, where the user decides which forum they want to access
+@app.route('/forums/')
 def forums_home():
     if request.method == 'POST':
         type = request.form.get('type')
@@ -261,6 +261,10 @@ def forums_home():
             return redirect(url_for('forums_type', type=type))
     return render_template('forums.html') 
 
+# Forum pages, where the user is taken to the music, explore, or 
+# beef forum.
+# Music forum is for artist and album discussions, explore is for 
+# music recommendations, and beef is for discussing beefs.
 @app.route('/forums/<type>', methods=['GET', 'POST'])
 def forums_type(type):
     conn = dbi.connect()
@@ -330,7 +334,8 @@ def forums_type(type):
 #         return render_template('forums.html', type=type, forums=forums)
 
 
-# allows users to view the specific forum they are interested in
+# allows users to view the specific forum they are interested in or 
+# add their own forum
 @app.route('/forum/<forum_id>', methods=['GET', 'POST'])
 def view_forum(forum_id):
     conn = dbi.connect()
@@ -349,13 +354,8 @@ def view_forum(forum_id):
     posts = music.get_posts(conn, forum_id)
     return render_template('view-forum.html', forum=forum, posts=posts, page_title='Forum')
 
-############################################################################################################################################
-##need to find a way where if the beef between the 2 artists alr exist, ####################
-##send them to beef page and include update button ########################################
-############################################################################################################################################
 
-#is there a way for the user to be able to like type in artist (and the query )
-#insert beef form
+# Used to insert new beef into the database
 @app.route('/insertbeef', methods=['GET', 'POST'])
 def insertbeef():
     conn = dbi.connect()
@@ -399,6 +399,7 @@ def insertbeef():
     return redirect(url_for('beef_page', bid=bid))
 
 
+# Displays the beef pages
 @app.route('/beef/<int:bid>')
 def beef_page(bid):
     conn = dbi.connect()
@@ -409,11 +410,12 @@ def beef_page(bid):
         return redirect(url_for('index'))
 
     artist1 = music.get_artist_one(conn, beef['artist1'])
-
     artist2 = music.get_artist_one(conn, beef['artist2'])
 
     return render_template('beef_page.html', beef=beef, artist1=artist1, artist2=artist2, page_title='Beef')
 
+
+# Used to insert new albums into the database
 @app.route('/insertalbum', methods=['GET', 'POST'])
 def add_album():
     conn = dbi.connect()
@@ -457,6 +459,7 @@ def add_album():
     return redirect(url_for('album_page', aid = aid))
 
 
+# Displays the album, allows users to rate the album
 @app.route('/album/<int:aid>')
 def album_page(aid):
     conn = dbi.connect()
@@ -467,8 +470,9 @@ def album_page(aid):
         return redirect(url_for('index'))
 
     artist = music.get_artist_one(conn, album['artistID'])
-
     return render_template('album_page.html',album=album, artist=artist, page_title=album['title'])
+    
+    
 
 
 if __name__ == '__main__':
