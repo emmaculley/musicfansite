@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS user;
 
 CREATE TABLE `artist` (
   artistID INT AUTO_INCREMENT PRIMARY KEY,
-  `name` varchar(50),
+  `name` varchar(50) UNIQUE,
   `genre` ENUM ('pop','rock','hiphop','rap','electronic','R&B',
             'dance','jazz','classical','metal','reggae',
             'country','indie','punk', 'folk'),
@@ -24,15 +24,25 @@ CREATE TABLE `ratings` (
   `userID` INT
 );
 
-CREATE TABLE `beef` (
-  `bid` INT AUTO_INCREMENT PRIMARY KEY,
-  `artist1` INT,
-  `artist2` INT,
-  `countArtist1` int DEFAULT 0,
-  `countArtist2` int DEFAULT 0,
-  `context` text,
-  `approved` ENUM ('pending', 'approved', 'rejected') DEFAULT 'pending'
+CREATE TABLE beef (
+  bid INT AUTO_INCREMENT PRIMARY KEY,
+  artist1 INT,
+  artist2 INT,
+
+  -- Canonical ordering so (artist1, artist2) and (artist2, artist1) mean the same beef
+  a1 INT AS (LEAST(artist1, artist2)) STORED,
+  a2 INT AS (GREATEST(artist1, artist2)) STORED,
+
+  countArtist1 INT DEFAULT 0,
+  countArtist2 INT DEFAULT 0,
+  context TEXT,
+  approved ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+
+  UNIQUE(a1, a2)
 );
+
+--want to talk about a certain pair of id's
+-- primary key as the combination of artist1 and artist2
 
 CREATE TABLE `album` (
   `albumID` INT AUTO_INCREMENT PRIMARY KEY,
