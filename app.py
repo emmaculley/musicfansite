@@ -352,11 +352,17 @@ def insertbeef():
     countArtist2 = 1 if side == "artist2" else 0
 
     # user_id = session.get('user_id')
+    try: 
+        bid = music.create_beef(conn, artist1, artist2, context, countArtist1, countArtist2)
 
-    bid = music.create_beef(conn, artist1, artist2, context, countArtist1, countArtist2)
+        fname = session.get('fname')
+        flash(f"Beef form submitted! Thank you {fname}")
+        return redirect(url_for('beef_page', bid=bid))
+    except: 
+        flash("That beef already exists!")
+        artists = music.get_artists(conn)
+        return render_template('beef_form.html', artists=artists)
 
-    fname = session.get('fname')
-    flash(f"Beef form submitted! Thank you {fname}")
     return redirect(url_for('beef_page', bid=bid))
 
 
