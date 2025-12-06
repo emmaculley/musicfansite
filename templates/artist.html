@@ -1,6 +1,8 @@
 <!-- Ashley Yang, Dana Hammouri, Megan O'Leary, Emma Culley -->
-{% extends "base.html" %}
+<!-- Music Fansite-->
+<!-- Renders an artist page that contains their ranting and beefs-->
 
+{% extends "base.html" %}
 {% block main_content %}
 
 
@@ -10,7 +12,14 @@
 <p>{{ person.name }} is a {{ person.genre }} artist with a current rating of {{ person.rating }} out of 10.</p>
 
 
+<form method="POST">
+    <label>Rate this artist: 
+        <input type="number" name="rating" value="1" min="1" max="10">
+    </label>
+    <button type="submit" name="submit" value="rate">Rate</button>
+</form>
 
+<!--
 <form method="POST">
     <input type="radio" id="1" name="rating" value="1">
     <label for="1">1</label><br>
@@ -32,10 +41,9 @@
     <label for="9">9</label><br>
     <input type="radio" id="10" name="rating" value="10">
     <label for="10">10</label><br>
-    <!--<label>Your ID number: <input type="text" name="userID"> </label><br>-->
     <input type="submit" name="submit" value="rate">
 </form>
-
+-->
 
 <p>Artists {{person.name}} has had beef with:</p>
 {% for beef in beefs %}
