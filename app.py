@@ -289,49 +289,49 @@ def forums_type(type):
     }
     return render_template(template_map[type], type=type, forums=forums)
 
-# # brings the user to the correct formum they want to discuss on
-# @app.route('/forums/<type>', methods=['GET', 'POST'])
-# def forums_type(type):
-#     conn = dbi.connect()
-#     if type == 'music':
-#         if request.method == 'POST': 
-#             # want to select from the forums
-#             # or make a new forum
-#             if request.method == 'POST':
-#                 title = request.form.get('title')
-#                 user_id = session.get('user_id')
-#                 if title:
-#                     music.insert_to_forums(conn, type, title, user_id)
-#                 else:
-#                     flash("Forum title required!")
-#             forums = music.load_forums(conn, type)
-#             return render_template('forums-music.html',type=type, forums = forums)
-#     elif type == 'explore':
-#         if request.method == 'POST':
-#             title = request.form.get('title')
-#             user_id = session.get('user_id')
-#             if title:
-#                 music.insert_to_forums(conn, type, title, user_id)
-#             else:
-#                 flash("Forum title required!")
-#         forums = music.load_forums(conn, type)
-#         return render_template('forums-explore.html', type=type, forums=forums)
-#     elif type == 'beef':
-#         if request.method == 'POST':
-#             # want to select from the forums
-#             # or make a new forum
-#             title = request.form.get('title')
-#             user_id = session.get('user_id')
-#             if title:
-#                 music.insert_to_forums(conn, type, title, user_id)
-#             else:
-#                 flash("Forum title required!")
-#         forums = music.load_forums(conn, type)
-#         return render_template('forum-beef.html',type=type, forums=forums)
-#     else:
-#         # default behavior
-#         forums = music.load_forums(conn, type)
-#         return render_template('forums.html', type=type, forums=forums)
+# brings the user to the correct formum they want to discuss on
+@app.route('/forums/<type>', methods=['GET', 'POST'])
+def forums_type(type):
+    conn = dbi.connect()
+    if type == 'music':
+        if request.method == 'POST': 
+            # want to select from the forums
+            # or make a new forum
+            if request.method == 'POST':
+                title = request.form.get('title')
+                user_id = session.get('user_id')
+                if title:
+                    music.insert_to_forums(conn, type, title, user_id)
+                else:
+                    flash("Forum title required!")
+            forums = music.load_forums(conn, type)
+            return render_template('forums-music.html',type=type, forums = forums)
+    elif type == 'explore':
+        if request.method == 'POST':
+            title = request.form.get('title')
+            user_id = session.get('user_id')
+            if title:
+                music.insert_to_forums(conn, type, title, user_id)
+            else:
+                flash("Forum title required!")
+        forums = music.load_forums(conn, type)
+        return render_template('forums-explore.html', type=type, forums=forums)
+    elif type == 'beef':
+        if request.method == 'POST':
+            # want to select from the forums
+            # or make a new forum
+            title = request.form.get('title')
+            user_id = session.get('user_id')
+            if title:
+                music.insert_to_forums(conn, type, title, user_id)
+            else:
+                flash("Forum title required!")
+        forums = music.load_forums(conn, type)
+        return render_template('forum-beef.html',type=type, forums=forums)
+    else:
+        # default behavior
+        forums = music.load_forums(conn, type)
+        return render_template('forums.html', type=type, forums=forums)
 
 
 # allows users to view the specific forum they are interested in or 
