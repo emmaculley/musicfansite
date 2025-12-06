@@ -10,7 +10,7 @@
   <ul>
     {% for beef in beefs %}
       <li>
-        <a href="/beef/{{ beef.bid}}">{{ beef.artist1Name }} vs. {{ beef.artist2Name }}</a> 
+        <a href="{{ url_for('beef_page', bid=beef.bid) }}">{{ beef.artist1Name }} vs. {{ beef.artist2Name }}</a> 
       </li>
     {% endfor %}
   </ul>

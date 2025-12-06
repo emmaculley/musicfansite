@@ -115,18 +115,17 @@ def discover_albums(conn, genre, num_rating):
     return albums
 
 # returns a random list of 5 beefs that fit into the given categories 
-def discover_beefs(conn, artist, genre):
+def discover_beefs(conn, artist):
     curs = dbi.dict_cursor(conn)
-    curs.execute('''select b.*, ar.genre from beef b
-        join artist ar ON b.artist1 = ar.artistID
-        where (b.artist1 = %s
-            AND ar.genre = %s) OR (b.artist2 = %s AND ar.genre = %s)
-        order by rand() 
-        limit 5''', [artist, genre, artist, genre])
+    curs.execute('''select b.* from beef b
+        where b.artist1 = %s or b.artist2 = %s
+        order by rand()
+        limit 5''', [artist, artist])
     beefs = curs.fetchall()
     if not beefs:
         return None
     return beefs
+
 
 #finds user in the db using their email
 def get_user_by_email(conn, email):
