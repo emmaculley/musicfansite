@@ -245,9 +245,15 @@ def contribution_type(type):
             return render_template('add-artist.html', artists=artists, genres=genres)
 
         # POST
+        user_id = session.get('user_id')
+        if not user_id:
+            flash("You must be logged in to submit an artist.")
+            return redirect(url_for('login'))
+
         name = request.form.get('name')
         genre = request.form.get('genre')
         rating = request.form.get('rating', 0)
+        
 
         if not name or not genre:
             flash("Please fill in all required fields.")
