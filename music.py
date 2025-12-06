@@ -58,7 +58,7 @@ def get_artist(conn, id):
 
 
 def get_artist_one(conn, id):
-     '''
+    '''
     Returns an artists given their artistID
 
     Args:
@@ -281,7 +281,7 @@ def create_beef(conn, artist1, artist2, context, countArtist1, countArtist2):
 
 
 def get_beef(conn, bid):
-     '''
+    '''
     Returns a beef given the beef id
 
     Args:
