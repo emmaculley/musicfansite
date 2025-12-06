@@ -85,9 +85,7 @@ def discover_home():
     kind = request.args.get('kind')
     if kind:
         return redirect(url_for('discover_kind', kind=kind))
-    else:
-        flash("You need to make a selection")
-    return render_template('discover.html', page_title='Discover') 
+    return render_template('discover.html') 
 
 # brings the user to the correct form to discover what they're looking
 # for (artists, albums, or beefs)
@@ -190,8 +188,7 @@ def contribute_home():
     type = request.args.get('type')
     if type:
         return redirect(url_for('contribution_type', type=type))
-    flash("You need to make a selection")
-    return render_template('contribute.html', page_title='Contribute') 
+    return render_template('contribute.html') 
 
 # Takes the user to a page to contribute the correct type, either
 # to add a new artist, album, or beef.
@@ -254,36 +251,15 @@ def contribution_type(type):
             
         return render_template('beef_form.html', artists=music.get_artists(conn), page_title='Beef Form')
 
-# going to be used for the music form
-@app.route('/add-music/')
-def add_music():
-    type = request.args['add']
-    return render_template('add.html', page_title='Add') 
 
-@app.route('/add-artists/', methods=['POST'])
-def add_artist_user(): 
-    artistID = request.form['artist-id']
-    name = request.form['name']
-    genre = request.form['genre']
-    rating = request.form.get('rating', 0)
-    music.add_artist(artistID, name, genre, rating)
-    flash('Artist added successfully! Pending approval.')
-    return redirect(url_for('add_artists'))
-
-# going to be used for the beef form
-@app.route('/add-beef/')
-def add_beef():
-    type = request.args['add']
-    return render_template('add.html', page_title='Add Beef') 
-
-#forums home page to decide where the user wants to navigate
-@app.route('/forums/', methods=['GET', 'POST'])
+# Forums page, where the user decides which forum they want to access
+@app.route('/forums/')
 def forums_home():
-    type = request.args.get('type')
-    if type:
-        return redirect(url_for('forums_type', type=type))
-    flash("You need to make a selection")
-    return render_template('forums.html', page_title='Forums') 
+    if request.method == 'POST':
+        type = request.form.get('type')
+        if type:
+            return redirect(url_for('forums_type', type=type))
+    return render_template('forums.html') 
 
 # Forum pages, where the user is taken to the music, explore, or 
 # beef forum.
