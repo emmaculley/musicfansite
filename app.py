@@ -76,14 +76,7 @@ def discover_home():
     kind = request.args.get('kind')
     if kind:
         return redirect(url_for('discover_kind', kind=kind))
-<<<<<<< HEAD
-    
     return render_template('discover.html') 
-=======
-    else:
-        flash("You need to make a selection")
-    return render_template('discover.html', page_title='Discover') 
->>>>>>> b7ba590a6bf413f02df4bb437eee388fd3a17b38
 
 # brings the user to the correct form to discover new music
 @app.route('/discover/<kind>', methods=['GET', 'POST'])
@@ -179,12 +172,7 @@ def contribute_home():
     type = request.args.get('type')
     if type:
         return redirect(url_for('contribution_type', type=type))
-<<<<<<< HEAD
     return render_template('contribute.html') 
-=======
-    flash("You need to make a selection")
-    return render_template('contribute.html', page_title='Contribute') 
->>>>>>> b7ba590a6bf413f02df4bb437eee388fd3a17b38
 
 @app.route('/contribution/<type>', methods=['GET', 'POST'])
 def contribution_type(type):
@@ -267,19 +255,11 @@ def add_beef():
 #forums home page to decide where the user wants to navigate
 @app.route('/forums/', methods=['GET', 'POST'])
 def forums_home():
-<<<<<<< HEAD
     if request.method == 'POST':
         type = request.form.get('type')
         if type:
             return redirect(url_for('forums_type', type=type))
     return render_template('forums.html') 
-=======
-    type = request.args.get('type')
-    if type:
-        return redirect(url_for('forums_type', type=type))
-    flash("You need to make a selection")
-    return render_template('forums.html', page_title='Forums') 
->>>>>>> b7ba590a6bf413f02df4bb437eee388fd3a17b38
 
 @app.route('/forums/<type>', methods=['GET', 'POST'])
 def forums_type(type):
