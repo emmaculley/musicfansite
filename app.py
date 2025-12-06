@@ -101,7 +101,7 @@ def discover_kind(kind):
             num_rating = request.form.get('num_rating')
             albums = music.discover_albums(conn, genre, num_rating)
             if not albums:
-                flash("There are no artists in this category.")
+                flash("There are no albums in this category.")
                 return redirect(url_for('discover_kind', kind=kind))
             return render_template('discover-album-results.html',genre=genre,num_rating=num_rating, albums=albums)
         genres = music.get_genres(conn)
@@ -112,8 +112,7 @@ def discover_kind(kind):
             # 'artist' is their id. need to get their name
             artistInfo =  music.get_artist_one(conn, artist)
             artistName = artistInfo['name']
-            genre = request.form.get('genre')
-            beefs = music.discover_beefs(conn, artist, genre)
+            beefs = music.discover_beefs(conn, artist)
             for beef in beefs:
                 # get the artist IDs involved
                 artist1 = beef["artist1"]
@@ -130,7 +129,7 @@ def discover_kind(kind):
             if not beefs:
                 flash("There are no artists in this category.")
                 return redirect(url_for('discover_kind', kind=kind))
-            return render_template('discover-beef-results.html',artist=artistName, genre=genre, beefs=beefs)
+            return render_template('discover-beef-results.html',artist=artistName, beefs=beefs)
         genres = music.get_genres(conn)
         artists = music.get_artists(conn)
         return render_template('discover-beef.html', genres=genres, artists=artists)
@@ -182,20 +181,22 @@ def contribute_home():
 def contribution_type(type):
     conn = dbi.connect()
     genres = music.get_genres(conn)
+    artists = music.get_artists(conn)
     if type == 'music':
         if request.method == 'POST': 
             title = request.form.get('title')
             release = request.form.get('release')
-            music.add_album(conn, None, title, release)
+            artistID = int(request.form.get('artist'))
+            music.add_album(conn, title, release,artistID)
             flash(f"Album '{title}' added successfully! Pending approval.")
             return redirect(url_for('contribution_type', type='music'))
-        return render_template('add-music.html')
+        return render_template('add-music.html', artists= artists)
     elif type == 'artist':
         if request.method == 'POST':
             name = request.form.get('name')
             genre = request.form.get('genre')
             rating = request.form.get('rating', 0)
-            music.add_artist(conn, None, name, genre, rating)
+            music.add_artist(conn, name, genre, rating)
             flash(f"Artist '{name}' added successfully! Pending approval.")
             return redirect(url_for('contribution_type', type='artist'))
         # GET request: show the form
@@ -271,8 +272,15 @@ def forums_type(type):
         if request.method == 'POST': 
             # want to select from the forums
             # or make a new forum
-            return render_template('forum-artist-results.html',genre=genre,num_rating=num_rating, artists=artists)
-        return render_template('forum-artist.html')
+            if request.method == 'POST':
+                title = request.form.get('title')
+                user_id = session.get('user_id')
+                if title:
+                    music.insert_to_forums(conn, type, title, user_id)
+                else:
+                    flash("Forum title required!")
+            forums = music.load_forums(conn, type)
+            return render_template('forums-music.html',type=type, forums = forums)
     elif type == 'explore':
         if request.method == 'POST':
             title = request.form.get('title')
@@ -293,9 +301,8 @@ def forums_type(type):
                 music.insert_to_forums(conn, type, title, user_id)
             else:
                 flash("Forum title required!")
-            forums = music.load_forums(conn, type)
-            return render_template('forum-beef-results.html',artist=artist, genre=genre, beefs=beefs)
-        return render_template('forum-beef.html')
+        forums = music.load_forums(conn, type)
+        return render_template('forum-beef.html',type=type, forums=forums)
 
 # allows users to view the specific forum they are interested in
 @app.route('/forum/<forum_id>', methods=['GET', 'POST'])

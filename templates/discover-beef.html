@@ -5,22 +5,21 @@
 {% block main_content %}    
 
 <h1>Discover Beefs</h1>
+<section>
 
 <form method="POST" action="">
   <label>Artist involved:
-    <input type="text" name="artist" placeholder="e.g. Drake">
-  </label>
-
-  <label>Genre:
-        <select name="genre">
-          <option value="">choose one</option>
-          {% for g in genres %}
-              <option value="{{g}}">{{g}}</option>
-          {% endfor %}
-        </select>
+    <!--<input type="text" name="artist" placeholder="e.g. Drake">-->
+    <select id="artist" name="artist">
+      <option value="">choose one:</option>
+      {% for a in artists %}
+        <option value="{{a.artistID}}">{{ a.name }}</option>
+        {% endfor %}
+    </select>
   </label>
   
   <input type="submit" value="Find Beefs">
 </form>
+</section>
 
 {% endblock %}     
