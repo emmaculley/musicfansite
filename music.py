@@ -496,8 +496,6 @@ def get_albums(conn):
     )
     return curs.fetchall()
 
-<<<<<<< HEAD
-=======
 
 def get_beef_id(conn, id):
     '''
@@ -512,7 +510,6 @@ def get_beef_id(conn, id):
     curs = dbi.dict_cursor(conn)
     curs.execute('select bid from beef where artist1=%s or artist2=%s', [id, id])
     return curs.fetchone()
->>>>>>> 77e905344b77fe0de5662fb655a08a4b4a9a86a3
 
 
 def check_ratings(conn, userID, artistID):

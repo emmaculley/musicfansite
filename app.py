@@ -457,7 +457,6 @@ def album_page(aid):
     artist = music.get_artist_one(conn, album['artistID'])
     return render_template('album_page.html',album=album, artist=artist, page_title=album['title'])
     
-    
 
 
 if __name__ == '__main__':
