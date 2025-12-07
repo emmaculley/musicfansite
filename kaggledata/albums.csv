@@ -1,0 +1,154 @@
+albumID,title,release,artistID,approved
+1,Abbey Road,1969,1,approved
+2,Elvis Presley,1956,2,approved
+3,Thriller,1982,3,approved
+4,Goodbye Yellow Brick Road,1973,4,approved
+5,A Night at the Opera,1975,5,approved
+6,Like a Virgin,1984,6,approved
+7,IV,1971,7,approved
+8,Anti,2016,8,approved
+9,The Dark Side of the Moon,1973,9,approved
+10,The Marshall Mathers LP,2000,10,approved
+11,Daydream,1995,11,approved
+12,1989,2014,12,approved
+13,Lemonade,2016,13,approved
+14,Whitney,1987,14,approved
+15,Hotel California,1976,15,approved
+16,Falling Into You,1996,16,approved
+17,Back in Black,1980,17,approved
+18,Sticky Fingers,1971,18,approved
+19,Scorpion,2018,19,approved
+20,No Fences,1990,20,approved
+21,The College Dropout,2004,21,approved
+22,The Stranger,1977,22,approved
+23,Purpose,2015,23,approved
+24,÷ (Divide),2017,24,approved
+25,Doo-Wops & Hooligans,2010,25,approved
+26,Born in the U.S.A.,1984,26,approved
+27,The Joshua Tree,1987,27,approved
+28,Aerosmith,1973,28,approved
+29,Face Value,1981,29,approved
+30,Guilty,1980,30,approved
+31,Arrival,1976,31,approved
+32,In the Wee Small Hours,1955,32,approved
+33,Teenage Dream,2010,33,approved
+34,Exclusive,2007,34,approved
+35,The Blueprint,2001,35,approved
+36,Master of Puppets,1986,36,approved
+38,Tha Carter III,2008,38,approved
+39,Songs About Jane,2002,39,approved
+40,21,2011,40,approved
+41,Californication,1999,41,approved
+42,Rumours,1977,42,approved
+43,Slippery When Wet,1986,43,approved
+44,Every Picture Tells a Story,1971,44,approved
+45,Saturday Night Fever,1977,45,approved
+46,Pink Friday,2010,46,approved
+47,A Rush of Blood to the Head,2002,47,approved
+48,Hybrid Theory,2000,48,approved
+49,Ocean Front Property,1987,49,approved
+50,Funhouse,2008,50,approved
+51,...Baby One More Time,1999,51,approved
+52,Pleasure,1989,52,approved
+53,Come On Over,1997,53,approved
+54,Appetite for Destruction,1987,54,approved
+55,Millennium,1999,55,approved
+56,461 Ocean Boulevard,1974,56,approved
+57,Hot August Night,1972,57,approved
+58,Purple Rain,1984,58,approved
+59,Escape,1981,59,approved
+60,Band on the Run,1973,60,approved
+61,Control,1986,61,approved
+62,The Gambler,1978,62,approved
+63,Supernatural,1999,63,approved
+64,Bridge Over Troubled Water,1970,64,approved
+65,Faith,1987,65,approved
+66,Momentos,1982,66,approved
+67,Brothers in Arms,1985,67,approved
+68,L.A. Woman,1971,68,approved
+69,4,1981,69,approved
+70,Chicago 17,1984,70,approved
+71,Highway 61 Revisited,1965,71,approved
+72,A Song for You,1972,72,approved
+73,Bat Out of Hell,1977,73,approved
+74,That's the Way of the World,1975,74,approved
+75,Believe,1998,75,approved
+76,Hysteria,1987,76,approved
+77,Invisible Touch,1986,77,approved
+78,Heroes,1977,78,approved
+79,Songs in the Key of Life,1976,79,approved
+80,JT,1977,80,approved
+81,Private Dancer,1984,81,approved
+82,Physical,1981,82,approved
+83,Heart Like a Wheel,1974,83,approved
+84,Pet Sounds,1966,84,approved
+85,Bad Girls,1979,85,approved
+86,Songs in A Minor,2001,86,approved
+87,Stripped,2002,87,approved
+88,Can't Slow Down,1983,88,approved
+89,At Folsom Prison,1968,89,approved
+90,FutureSex/LoveSounds,2006,90,approved
+92,Out of Time,1991,92,approved
+93,Hollywood's Bleeding,2019,93,approved
+94,Wild Ones,2012,94,approved
+95,Confessions,2004,95,approved
+96,Laundry Service,2001,96,approved
+97,Not a Moment Too Soon,1994,97,approved
+98,The E.N.D.,2009,98,approved
+99,1984,1984,99,approved
+100,Loveppears,1999,100,approved
+101,Full Moon Fever,1989,101,approved
+102,La Génération Perdue,1986,102,approved
+103,After Hours,2020,103,approved
+104,Night Visions,2012,104,approved
+105,Crash My Party,2013,105,approved
+106,All Eyez on Me,1996,106,approved
+107,Mountain Music,1982,107,approved
+108,12 Play,1993,108,approved
+109,Nevermind,1991,109,approved
+110,Life thru a Lens,1997,110,approved
+111,Night Moves,1976,111,approved
+112,Breathless,1992,112,approved
+113,American Idiot,2004,113,approved
+114,Reckless,1984,114,approved
+115,Exodus,1977,115,approved
+116,Synchronicity,1983,116,approved
+117,Cuts Both Ways,1989,117,approved
+118,Tryin' to Get the Feeling,1975,118,approved
+119,Destroyer,1976,119,approved
+120,Lady Soul,1968,120,approved
+121,Crash,2024,121,approved
+122,City Girls,2020,122,approved
+123,Teenage Superstar,2023,123,approved
+124,fishmonger,2021,124,approved
+125,Teens of Style,2015,125,approved
+126,Oil of Every Pearl's Un-Insides,2018,126,approved
+127,Neon Bathwater,2022,127,approved
+128,To Hell With It,2021,128,approved
+129,I Love My Computer,2014,129,approved
+130,DS2,2015,130,approved
+131,Whole Lotta Red,2020,131,approved
+132,Snow Strippers,2023,132,approved
+134,To Pimp a Butterfly,2015,134,approved
+135,Webworld,2022,135,approved
+136,Invasion of Privacy,2018,136,approved
+137,"Miss E... So Addictive",2001,137,approved
+138,Broke with Expensive Taste,2014,138,approved
+139,Mercurial World,2021,139,approved
+140,The Fame,2008,140,approved
+141,Eversince,2016,141,approved
+142,Madvillainy,2004,142,approved
+143,Isolation,2018,143,approved
+144,The Rise and Fall of a Midwest Princess,2023,144,approved
+145,Gemini Rights,2022,145,approved
+146,Oh the Places You'll Go,2020,146,approved
+147,Good News,2020,147,approved
+148,Cinema,2021,148,approved
+149,Bloom,2018,149,approved
+150,Un Verano Sin Ti,2022,150,approved
+151,IGOR,2019,151,approved
+152,Emails I Can't Send,2022,152,approved
+153,Beatopia,2022,153,approved
+154,Good at Falling,2019,154,approved
+159,Imagine,1971,159,approved
+165,AR,2024,165,approved

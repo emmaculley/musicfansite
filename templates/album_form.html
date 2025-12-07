@@ -1,23 +1,14 @@
 <!-- Ashley Yang, Dana Hammouri, Megan O'Leary, Emma Culley -->
- 
+<!-- Music Fansite-->
+<!-- Renders a form where users can add a new album to the database-->
 {% extends "base.html" %}
 {% block main_content %}
 
 <h1>Add a New Album</h1>
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul style="color:red;">
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
-
-<form method="POST" action="{{ url_for('add_album') }}">
+<form method="POST" action="{{ url_for('contribution_type', type='music') }}">
     <label for="artist">Artist:</label>
+
     <select id="artist" name="artist">
         <option value="none">Choose One</option>
         {% for a in artists %}
