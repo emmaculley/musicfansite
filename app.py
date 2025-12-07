@@ -85,10 +85,6 @@ def discover_home():
     kind = request.args.get('kind')
     if kind:
         return redirect(url_for('discover_kind', kind=kind))
-<<<<<<< HEAD
-    
-=======
->>>>>>> 88c1a086b9e7804508ae03aed2bad60809df758a
     return render_template('discover.html') 
 
 # brings the user to the correct form to discover what they're looking
@@ -103,6 +99,9 @@ def discover_kind(kind):
             # user selects genre and # of total ratings they want the 
             # artist to have. we make sure artists of their category exist 
             artists = music.discover_artists(conn, genre, num_rating)
+            if not genre:
+                flash("Please make a selection for genre.")
+                return redirect(url_for('discover_kind', kind=kind))
             if not artists:
                 flash("There are no artists in this category.")
                 return redirect(url_for('discover_kind', kind=kind))
@@ -339,33 +338,33 @@ def forums_home():
             return redirect(url_for('forums_type', type=type))
     return render_template('forums.html') 
 
-# Forum pages, where the user is taken to the music, explore, or 
-# beef forum.
-# Music forum is for artist and album discussions, explore is for 
-# music recommendations, and beef is for discussing beefs.
-@app.route('/forums/<type>', methods=['GET', 'POST'])
-def forums_type(type):
-    conn = dbi.connect()
+# # Forum pages, where the user is taken to the music, explore, or 
+# # beef forum.
+# # Music forum is for artist and album discussions, explore is for 
+# # music recommendations, and beef is for discussing beefs.
+# @app.route('/forums/<type>', methods=['GET', 'POST'])
+# def forums_type(type):
+#     conn = dbi.connect()
 
-    if type not in ['music', 'explore', 'beef']:
-        forums = music.load_forums(conn, type)
-        return render_template('forums.html', type=type, forums=forums)
+#     if type not in ['music', 'explore', 'beef']:
+#         forums = music.load_forums(conn, type)
+#         return render_template('forums.html', type=type, forums=forums)
 
-    if request.method == 'POST':
-        title = request.form.get('title')
-        user_id = session.get('user_id')
-        if title:
-            music.insert_to_forums(conn, type, title, user_id)
-        else:
-            flash("Forum title required!")
+#     if request.method == 'POST':
+#         title = request.form.get('title')
+#         user_id = session.get('user_id')
+#         if title:
+#             music.insert_to_forums(conn, type, title, user_id)
+#         else:
+#             flash("Forum title required!")
 
-    forums = music.load_forums(conn, type)
-    template_map = {
-        'music': 'forums-music.html',
-        'explore': 'forums-explore.html',
-        'beef': 'forum-beef.html'
-    }
-    return render_template(template_map[type], type=type, forums=forums)
+#     forums = music.load_forums(conn, type)
+#     template_map = {
+#         'music': 'forums-music.html',
+#         'explore': 'forums-explore.html',
+#         'beef': 'forum-beef.html'
+#     }
+#     return render_template(template_map[type], type=type, forums=forums)
 
 # brings the user to the correct formum they want to discuss on
 @app.route('/forums/<type>', methods=['GET', 'POST'])
