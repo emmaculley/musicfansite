@@ -85,6 +85,10 @@ def discover_home():
     kind = request.args.get('kind')
     if kind:
         return redirect(url_for('discover_kind', kind=kind))
+<<<<<<< HEAD
+    
+=======
+>>>>>>> 88c1a086b9e7804508ae03aed2bad60809df758a
     return render_template('discover.html') 
 
 # brings the user to the correct form to discover what they're looking
