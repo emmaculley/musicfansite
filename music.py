@@ -72,7 +72,7 @@ def update_vote(conn, artist_id, user_id, bid):
     conn.commit()
 
 def new_vote(conn, user_id, bid, artist_id):
-     '''
+    '''
     Inserts a new vote into the beef table
 
     Args:
