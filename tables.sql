@@ -46,12 +46,14 @@ CREATE TABLE beef (
 
 CREATE TABLE `album` (
   `albumID` INT AUTO_INCREMENT PRIMARY KEY,
-  `title` varchar(50),
+  `title` VARCHAR(50),
   `release` INT,
   `artistID` INT,
-  `approved` ENUM ('pending', 'approved', 'rejected')
+  `approved` ENUM('pending', 'approved', 'rejected'),
+  UNIQUE KEY `unique_album_per_artist` (`artistID`, `title`)
 );
 
+ 
 CREATE TABLE `user` (
   `userID` INT AUTO_INCREMENT PRIMARY KEY,
   `user_email` VARCHAR(30) UNIQUE,

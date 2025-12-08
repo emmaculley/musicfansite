@@ -114,6 +114,9 @@ def discover_kind(kind):
             num_rating = request.form.get('num_rating')
             # make sure there are albums in their category
             albums = music.discover_albums(conn, genre, num_rating)
+            if not genre:
+                flash("Please make a selection for genre.")
+                return redirect(url_for('discover_kind', kind=kind))
             if not albums:
                 flash("There are no albums in this category.")
                 return redirect(url_for('discover_kind', kind=kind))
