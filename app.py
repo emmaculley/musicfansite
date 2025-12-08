@@ -19,7 +19,7 @@ from pymysql import IntegrityError
 app.secret_key = secrets.token_hex()
 
 print(dbi.conf('musicfan_db'))
-
+conn = dbi.connect()
 # The main page of our site
 @app.route('/')
 def index():
@@ -341,77 +341,67 @@ def forums_home():
             return redirect(url_for('forums_type', type=type))
     return render_template('forums.html') 
 
-# # Forum pages, where the user is taken to the music, explore, or 
-# # beef forum.
-# # Music forum is for artist and album discussions, explore is for 
-# # music recommendations, and beef is for discussing beefs.
-# @app.route('/forums/<type>', methods=['GET', 'POST'])
-# def forums_type(type):
-#     conn = dbi.connect()
-
-#     if type not in ['music', 'explore', 'beef']:
-#         forums = music.load_forums(conn, type)
-#         return render_template('forums.html', type=type, forums=forums)
-
-#     if request.method == 'POST':
-#         title = request.form.get('title')
-#         user_id = session.get('user_id')
-#         if title:
-#             music.insert_to_forums(conn, type, title, user_id)
-#         else:
-#             flash("Forum title required!")
-
-#     forums = music.load_forums(conn, type)
-#     template_map = {
-#         'music': 'forums-music.html',
-#         'explore': 'forums-explore.html',
-#         'beef': 'forum-beef.html'
-#     }
-#     return render_template(template_map[type], type=type, forums=forums)
-
+# Forum pages, where the user is taken to the music, explore, or 
+# beef forum.
+# Music forum is for artist and album discussions, explore is for 
+# music recommendations, and beef is for discussing beefs.
 # brings the user to the correct formum they want to discuss on
 @app.route('/forums/<type>', methods=['GET', 'POST'])
 def forums_type(type):
     conn = dbi.connect()
-    if type == 'music':
-        if request.method == 'POST': 
-            # want to select from the forums
-            # or make a new forum
-            if request.method == 'POST':
-                title = request.form.get('title')
-                user_id = session.get('user_id')
-                if title:
-                    music.insert_to_forums(conn, type, title, user_id)
-                else:
-                    flash("Forum title required!")
-            forums = music.load_forums(conn, type)
-            return render_template('forums-music.html',type=type, forums = forums)
-    elif type == 'explore':
-        if request.method == 'POST':
-            title = request.form.get('title')
-            user_id = session.get('user_id')
-            if title:
-                music.insert_to_forums(conn, type, title, user_id)
-            else:
-                flash("Forum title required!")
-        forums = music.load_forums(conn, type)
-        return render_template('forums-explore.html', type=type, forums=forums)
-    elif type == 'beef':
-        if request.method == 'POST':
-            # want to select from the forums
-            # or make a new forum
-            title = request.form.get('title')
-            user_id = session.get('user_id')
-            if title:
-                music.insert_to_forums(conn, type, title, user_id)
-            else:
-                flash("Forum title required!")
-        forums = music.load_forums(conn, type)
-        return render_template('forum-beef.html',type=type, forums=forums)
+
+    # Invalid type
+    if type not in ['music', 'explore', 'beef']:
+        flash("Invalid forum type!")
+        return redirect(url_for('forums_home'))
+
+    # Handle POST only for music/explore forums
+    if request.method == 'POST' and type != 'beef':
+        title = request.form.get('title')
+        user_id = session.get('user_id')
+        if title:
+            music.insert_to_forums(conn, type, title, user_id)
+        else:
+            flash("Forum title required!")
+
+    # SPECIAL CASE: beef forums → load beefs, not forums
+    if type == 'beef':
+        beefs = music.load_all_beefs(conn)   # YOU CREATE THIS FUNCTION
+        return render_template('forum-beef.html', beefs=beefs)
+
+    # Default: load normal forums
+    forums = music.load_forums(conn, type)
+
+    template_map = {
+        'music': 'forums-music.html',
+        'explore': 'forums-explore.html',
+    }
+
+    return render_template(template_map[type], type=type, forums=forums)
+
+@app.route('/vote/<int:bid>/<int:artist_id>', methods=['POST'])
+def vote(bid, artist_id):
+    # must be logged in
+    if 'user_id' not in session:
+        flash("You must be logged in to vote.")
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+
+    # Check if they already voted for this beef
+
+    existing = music.voted(conn,user_id,bid)
+
+    if existing:
+        # update vote
+        music.update_vote(conn, artist_id, user_id, bid)
     else:
-        # default behavior
-        forums = music.load_forums(conn, type)
-        return render_template('forums.html', type=type, forums=forums)
+        # new vote
+        music.new_vote(conn, user_id, bid, artist_id)
+
+    flash("Your vote has been updated!")
+    return redirect(url_for('beef_page', bid=bid))
+
 
 
 # allows users to view the specific forum they are interested in or 
@@ -441,13 +431,19 @@ def beef_page(bid):
 
     if not beef:
         flash("Beef not found or not approved!")
-        return redirect(url_for('index'))
+        return redirect(url_for('forums_type', type = 'beef'))
 
     artist1 = music.get_artist_one(conn, beef['artist1'])
     artist2 = music.get_artist_one(conn, beef['artist2'])
-
-    return render_template('beef_page.html', beef=beef, artist1=artist1, artist2=artist2, page_title='Beef')
-
+    
+    # load vote totals
+    total_votes = music.total_votes(conn, bid, beef['artist1'], beef['artist2'])
+    return render_template('beef_page.html',
+                           beef=beef, 
+                           artist1=artist1, 
+                           artist2=artist2, 
+                           counts=total_votes,
+                           page_title='Beef')
 
 
 # Displays the album, allows users to rate the album

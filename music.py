@@ -8,6 +8,66 @@ Last updated: 8th November 2025
 
 import cs304dbi as dbi
 
+def load_all_beefs(conn):
+    curs = dbi.dict_cursor(conn)
+    curs.execute("""
+        SELECT 
+            b.bid,
+            b.artist1,
+            b.artist2,
+            COALESCE(a1.name, '') AS artist1_name,
+            COALESCE(a2.name, '') AS artist2_name
+        FROM beef b
+        LEFT JOIN artist a1 ON b.artist1 = a1.artistID
+        LEFT JOIN artist a2 ON b.artist2 = a2.artistID
+        WHERE b.approved = 'approved'
+    """)
+    return curs.fetchall()
+
+def voted(conn, user_id, bid):
+    curs = dbi.dict_cursor(conn)
+
+    # Check if they already voted for this beef
+    curs.execute("""
+        SELECT voted_for FROM beef_votes
+        WHERE user_id = %s AND bid = %s
+    """, [user_id, bid])
+
+    return curs.fetchone()
+
+def update_vote(conn, artist_id, user_id, bid):
+    curs = dbi.dict_cursor(conn)
+    curs.execute("""
+            UPDATE beef_votes
+            SET voted_for = %s
+            WHERE user_id = %s AND bid = %s
+        """, [artist_id, user_id, bid])
+    conn.commit()
+
+def new_vote(conn, user_id, bid, artist_id):
+    curs = dbi.dict_cursor(conn)
+    curs.execute("""
+            INSERT INTO beef_votes (user_id, bid, voted_for)
+            VALUES (%s, %s, %s)
+        """, [user_id, bid, artist_id])
+    conn.commit()
+def total_votes(conn, bid, artist1_id, artist2_id):
+
+    curs = dbi.dict_cursor(conn)
+    curs.execute("""
+        SELECT
+            SUM(voted_for = %s) AS artist1_votes,
+            SUM(voted_for = %s) AS artist2_votes
+        FROM beef_votes
+        WHERE bid = %s
+    """, [artist1_id, artist2_id, bid])
+    
+    counts = curs.fetchone()
+    # Ensure counts are integers even if there are no votes yet
+    return {
+        'artist1_votes': counts['artist1_votes'] or 0,
+        'artist2_votes': counts['artist2_votes'] or 0
+    }
 
 def add_artist(conn, name, genre, rating):
     '''
