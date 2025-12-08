@@ -3,13 +3,14 @@
 <!-- Renders a form where users can navigate to the page to add an album, artist, or beef to the database-->
  
 {% extends "base.html" %}
-{% block main_content %}
 
+{% block title %}Contribute 🎤{% endblock %}
+
+{% block main_content %}
 
 <header>
 <h1>CONTRIBUTE 🎤</h1>
 </header>
-
 
 <section>
     <h2>Add artists, music, or beef:</h2>
@@ -25,8 +26,6 @@
 
     <input type="submit" value="Continue">
     </form>
-
 </section>
 
-
-{% endblock %}  
+{% endblock %}

@@ -9,6 +9,14 @@ Last updated: 8th November 2025
 import cs304dbi as dbi
 
 def load_all_beefs(conn):
+    '''
+    Returns all approved beefs from the beef table
+
+    Args:
+        None
+    Return:
+        All approved beefs
+    '''
     curs = dbi.dict_cursor(conn)
     curs.execute("""
         SELECT 
@@ -25,6 +33,15 @@ def load_all_beefs(conn):
     return curs.fetchall()
 
 def voted(conn, user_id, bid):
+    '''
+    Checks if user has already voted in this beef
+
+    Args:
+        user_id -> int
+        bid -> int
+    Return:
+        Returns vote if the user has already voted, None otherwise
+    '''
     curs = dbi.dict_cursor(conn)
 
     # Check if they already voted for this beef
@@ -36,6 +53,16 @@ def voted(conn, user_id, bid):
     return curs.fetchone()
 
 def update_vote(conn, artist_id, user_id, bid):
+    '''
+    Updates vote in the beef table
+
+    Args:
+        artist_id -> int
+        user_id -> int
+        bid -> int
+    Return:
+        None
+    '''
     curs = dbi.dict_cursor(conn)
     curs.execute("""
             UPDATE beef_votes
@@ -45,14 +72,34 @@ def update_vote(conn, artist_id, user_id, bid):
     conn.commit()
 
 def new_vote(conn, user_id, bid, artist_id):
+     '''
+    Inserts a new vote into the beef table
+
+    Args:
+        user_id -> int
+        bid -> int
+        artist_id -> int
+    Return:
+        None
+    '''
     curs = dbi.dict_cursor(conn)
     curs.execute("""
             INSERT INTO beef_votes (user_id, bid, voted_for)
             VALUES (%s, %s, %s)
         """, [user_id, bid, artist_id])
     conn.commit()
-def total_votes(conn, bid, artist1_id, artist2_id):
 
+def total_votes(conn, bid, artist1_id, artist2_id):
+    '''
+    Returns the total votes for both artists in a beef
+
+    Args:
+        bid -> int
+        artist1_id -> int
+        artist_id -> int
+    Return:
+        None
+    '''
     curs = dbi.dict_cursor(conn)
     curs.execute("""
         SELECT
@@ -61,7 +108,6 @@ def total_votes(conn, bid, artist1_id, artist2_id):
         FROM beef_votes
         WHERE bid = %s
     """, [artist1_id, artist2_id, bid])
-    
     counts = curs.fetchone()
     # Ensure counts are integers even if there are no votes yet
     return {
