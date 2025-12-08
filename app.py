@@ -114,6 +114,9 @@ def discover_kind(kind):
             num_rating = request.form.get('num_rating')
             # make sure there are albums in their category
             albums = music.discover_albums(conn, genre, num_rating)
+            if not genre:
+                flash("Please make a selection for genre.")
+                return redirect(url_for('discover_kind', kind=kind))
             if not albums:
                 flash("There are no albums in this category.")
                 return redirect(url_for('discover_kind', kind=kind))
@@ -330,7 +333,7 @@ def contribution_type(type):
 
 
 #forums home page to decide where the user wants to navigate
-@app.route('/forums/')
+@app.route('/forums/', methods=['GET', 'POST'])
 def forums_home():
     if request.method == 'POST':
         type = request.form.get('type')
