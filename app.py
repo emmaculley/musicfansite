@@ -191,7 +191,7 @@ def contribute_home():
     type = request.args.get('type')
     if type:
         return redirect(url_for('contribution_type', type=type))
-    return render_template('contribute.html') 
+    return render_template('contribute.html', page_title='Contribute') 
 
 # Takes the user to a page to contribute the correct type, either
 # to add a new artist, album, or beef.
@@ -206,7 +206,7 @@ def contribution_type(type):
     # -------------------------------
     if type == 'music':
         if request.method == 'GET':
-            return render_template('album_form.html', artists=artists)
+            return render_template('album_form.html', artists=artists, page_title='Album Form')
 
         # POST
         user_id = session.get('user_id')
@@ -221,15 +221,15 @@ def contribution_type(type):
         # Validation
         if not artist:
             flash("Please choose an artist.")
-            return render_template('album_form.html', artists=artists)
+            return render_template('album_form.html', artists=artists, page_title='Album Form')
 
         if not title:
             flash("Please add an album title.")
-            return render_template('album_form.html', artists=artists)
+            return render_template('album_form.html', artists=artists, page_title='Album Form')
 
         if not release:
             flash("Please add a release date.")
-            return render_template('album_form.html', artists=artists)
+            return render_template('album_form.html', artists=artists, page_title='Album Form')
 
         # Try DB insert
         try:
@@ -238,14 +238,14 @@ def contribution_type(type):
             return redirect(url_for('contribution_type', type='music'))
         except IntegrityError:
             flash("That album already exists.")
-            return render_template('album_form.html', artists=artists)
+            return render_template('album_form.html', artists=artists, page_title='Album Form')
 
     # -------------------------------
     # 2. ARTIST (add artist)
     # -------------------------------
     elif type == 'artist':
         if request.method == 'GET':
-            return render_template('add-artist.html', artists=artists, genres=genres)
+            return render_template('add-artist.html', artists=artists, genres=genres, page_title='Add Artist')
 
         # POST
         user_id = session.get('user_id')
@@ -260,14 +260,14 @@ def contribution_type(type):
 
         if not name or not genre:
             flash("Please fill in all required fields.")
-            return render_template('add-artist.html', artists=artists, genres=genres)
+            return render_template('add-artist.html', artists=artists, genres=genres, page_title='Add Artist')
 
         # Validate rating
         try:
             rating = int(rating)
         except ValueError:
             flash("Rating must be a number.")
-            return render_template('add-artist.html', artists=artists, genres=genres)
+            return render_template('add-artist.html', artists=artists, genres=genres, page_title='Add Artist')
 
         try:
             music.add_artist(conn, name, genre, rating)
@@ -275,14 +275,14 @@ def contribution_type(type):
             return redirect(url_for('contribution_type', type='artist'))
         except IntegrityError:
             flash("That artist already exists!")
-            return render_template('add-artist.html', artists=artists, genres=genres)
+            return render_template('add-artist.html', artists=artists, genres=genres, page_title='Add Artist')
 
     # -------------------------------
     # 3. BEEF (add beef)
     # -------------------------------
     elif type == 'beef':
         if request.method == 'GET':
-            return render_template('beef_form.html', artists=artists)
+            return render_template('beef_form.html', artists=artists, page_title='Beef Form')
 
         # POST
         user_id = session.get('user_id')
@@ -298,11 +298,11 @@ def contribution_type(type):
         # Validation
         if artist1 == artist2:
             flash("An artist cannot beef with themselves!")
-            return render_template('beef_form.html', artists=artists)
+            return render_template('beef_form.html', artists=artists, page_title='Beef Form')
 
         if artist1 == 'none' or artist2 == 'none':
             flash("Please choose two valid artists.")
-            return render_template('beef_form.html', artists=artists)
+            return render_template('beef_form.html', artists=artists, page_title='Beef Form')
 
         # Who user sides with
         countArtist1 = 1 if side == "artist1" else 0
@@ -318,7 +318,7 @@ def contribution_type(type):
             return redirect(url_for('contribution_type', type='beef'))
         except IntegrityError:
             flash("That beef already exists!")
-            return render_template('beef_form.html', artists=artists)
+            return render_template('beef_form.html', artists=artists, page_title='Beef Form')
 
     # -------------------------------
     # Invalid Type
@@ -337,6 +337,7 @@ def forums_home():
         if type:
             return redirect(url_for('forums_type', type=type))
     return render_template('forums.html') 
+
 
 # Forum pages, where the user is taken to the music, explore, or 
 # beef forum.
@@ -376,6 +377,10 @@ def forums_type(type):
 
     return render_template(template_map[type], type=type, forums=forums)
 
+
+# Lets users vote for an artist in a beef. If a user has already 
+# placed a vote in the beef, they can update their vote to support 
+# the other artist.
 @app.route('/vote/<int:bid>/<int:artist_id>', methods=['POST'])
 def vote(bid, artist_id):
     # must be logged in
