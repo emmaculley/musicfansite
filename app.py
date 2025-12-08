@@ -1,4 +1,4 @@
-x"""
+"""
 Music Fansite
 Authors: Emma Culley, Dana Hammouri, Megan O'Leary, Ashley Yang
 Last updated: 8th December 2025
