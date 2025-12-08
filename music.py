@@ -376,9 +376,9 @@ def create_album(conn, title, release, artistID):
     '''
     curs = dbi.dict_cursor(conn)
     curs.execute(
-        '''INSERT INTO album (title, `release`, artistID)
-           VALUES (%s, %s, %s)''',
-        [title, release, artistID]
+        '''INSERT INTO album (title, `release`, artistID, approved)
+           VALUES (%s, %s, %s, %s)''',
+        [title, release, artistID, 'pending']
     )
     conn.commit()
     return curs.lastrowid
