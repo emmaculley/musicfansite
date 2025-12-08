@@ -77,6 +77,21 @@ CREATE TABLE `forum` (
   `type` ENUM ('beef', 'music', 'explore')
 );
 
+CREATE TABLE `beef_votes` (
+  `vote_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NOT NULL,
+  `bid` INT NOT NULL,
+  `voted_for` INT NOT NULL,
+
+  UNIQUE KEY `unique_user_beef` (`user_id`, `bid`),
+
+  FOREIGN KEY (`user_id`) REFERENCES `user`(`userID`) ON DELETE CASCADE,
+
+  FOREIGN KEY (`bid`) REFERENCES `beef`(`bid`) ON DELETE CASCADE,
+
+  FOREIGN KEY (`voted_for`) REFERENCES `artist`(`artistID`) ON DELETE CASCADE
+);
+
 ALTER TABLE `ratings` ADD FOREIGN KEY (`artistID`) REFERENCES `artist` (`artistID`);
 
 ALTER TABLE `ratings` ADD FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);

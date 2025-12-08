@@ -9,31 +9,26 @@
 <section>
     <h2>Current Discussions</h2>
 
-    {% if forums %}
+    <h1>All Beefs</h1>
+
     <ul>
-        {% for forum in forums %}
-            <li>
-                <a href="{{url_for('view_forum', forum_id=forum['forum_id']) }}">
-                    {{ forum['title'] }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No forums yet... start the conversation!</p>
-    {% endif %}
+    {% for beef in beefs %}
+    <li>
+        <a href="{{ url_for('beef_page', bid=beef['bid']) }}">
+            {{ beef['artist1_name'] }} vs {{ beef['artist2_name'] }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+
 </section>
 
 <hr>
 
 <section>
-    <h2>Create a New Forum</h2>
-    <form method="POST">
-        <label for="title">Forum Title:</label>
-        <input type="text" id="title" name="title" required>
-
-        <input type="submit" value="Create Forum">
-    </form>
+    <h2>Can't find a beef?</h2>
+    <p >Add it <a href = "{{ url_for('contribution_type', type = 'beef') }}">here!</a></p>
+    
 </section>
 
 {% endblock %}
