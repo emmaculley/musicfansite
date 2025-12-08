@@ -429,6 +429,8 @@ def view_forum(forum_id):
     posts = music.get_posts(conn, forum_id)
     return render_template('view-forum.html', forum=forum, posts=posts, page_title='Forum')
 
+
+# Displays the beef pages. 
 @app.route('/beef/<int:bid>')
 def beef_page(bid):
     conn = dbi.connect()
