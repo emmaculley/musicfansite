@@ -1,7 +1,7 @@
 """
 Music Fansite
 Authors: Emma Culley, Dana Hammouri, Megan O'Leary, Ashley Yang
-Last updated: 25th November 2025
+Last updated: 8th December 2025
 """
 
 from flask import (Flask, render_template, url_for, request,
