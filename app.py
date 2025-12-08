@@ -1,4 +1,4 @@
-"""
+x"""
 Music Fansite
 Authors: Emma Culley, Dana Hammouri, Megan O'Leary, Ashley Yang
 Last updated: 8th December 2025
@@ -339,7 +339,7 @@ def forums_home():
         type = request.form.get('type')
         if type:
             return redirect(url_for('forums_type', type=type))
-    return render_template('forums.html') 
+    return render_template('forums.html', page_title = "forums") 
 
 
 # Forum pages, where the user is taken to the music, explore, or 
@@ -368,7 +368,7 @@ def forums_type(type):
     # SPECIAL CASE: beef forums → load beefs, not forums
     if type == 'beef':
         beefs = music.load_all_beefs(conn)   # YOU CREATE THIS FUNCTION
-        return render_template('forum-beef.html', beefs=beefs)
+        return render_template('forum-beef.html', beefs=beefs, page_title = "Beef Forum")
 
     # Default: load normal forums
     forums = music.load_forums(conn, type)
@@ -378,7 +378,7 @@ def forums_type(type):
         'explore': 'forums-explore.html',
     }
 
-    return render_template(template_map[type], type=type, forums=forums)
+    return render_template(template_map[type], type=type, forums=forums, page_title = "forum type")
 
 
 # Lets users vote for an artist in a beef. If a user has already 
