@@ -73,7 +73,7 @@ def update_vote(conn, artist_id, user_id, bid):
 
 def new_vote(conn, user_id, bid, artist_id):
     '''
-    Inserts a new vote into the beef_votes table
+    Inserts a new vote into the beef table
 
     Args:
         user_id -> int
