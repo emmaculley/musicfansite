@@ -188,7 +188,7 @@ def get_beef_names(conn, id):
         The artist's beefs
     '''
     curs = dbi.dict_cursor(conn)
-    curs.execute('select name, artistID from artist where artistID=(select artist1 from beef where artist2=%s) or artistID=(select artist2 from beef where artist1=%s)', [id, id])
+    curs.execute('select name, artistID from artist where artistID in (select artist1 from beef where artist2=%s) or artistID in (select artist2 from beef where artist1=%s)', [id, id])
     beefs = curs.fetchall()
     return beefs
 
@@ -603,7 +603,7 @@ def get_albums(conn):
     return curs.fetchall()
 
 
-def get_beef_id(conn, id):
+def get_beef_id(conn, id1, id2):
     '''
     Returns a beef an artist has given an artistID
 
@@ -614,7 +614,7 @@ def get_beef_id(conn, id):
         A beef an artist has had given their artistID
     '''
     curs = dbi.dict_cursor(conn)
-    curs.execute('select bid from beef where artist1=%s or artist2=%s', [id, id])
+    curs.execute('select bid from beef where (artist1=%s and artist2=%s) or (artist1=%s and artist2=%s)', [id1, id2, id2, id1])
     return curs.fetchone()
 
 

@@ -163,8 +163,9 @@ def artist(id):
     if request.method == 'GET':
         for beef in beefs:
             # add the beef ID to the beef, so we can put a link to it
-            artistID = artist[0]['artistID']
-            beefID = music.get_beef_id(conn, artistID)
+            artist1ID = artist[0]['artistID']
+            artist2ID = beef['artistID']
+            beefID = music.get_beef_id(conn, artist1ID, artist2ID)
             beef['beefID'] = beefID['bid']
         return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
     else:
