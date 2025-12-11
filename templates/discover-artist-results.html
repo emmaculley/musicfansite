@@ -2,18 +2,32 @@
 <!-- Music Fansite-->
 <!-- Renders a page that shows new artists with clickable links-->
 {% extends "base.html" %}
-{% block main_content %}
-<h1>Discover Artists</h1>
+{% block main_content %}   
 
-<p>Artists for you to explore in "{{ genre }}" with {{ num_rating + '+' if num_rating else 'Any' }} ratings</p>
+<h1>Discover Artists 🎤</h1>
 
-<ul>
-  {% for artist in artists %}
-    <li>
-      <a href="/artist/{{ artist.artistID }}">{{ artist.name }}</a>
-    </li>
-  {% endfor %}
-</ul>
+<p class="intro-text">
+    Artists for you to explore in 
+    <strong>{{ genre if genre else 'Any Genre' }}</strong>
+    with 
+    <strong>{{ num_rating + '+' if num_rating else 'Any' }}</strong>
+    ratings
+</p>
+
+<section class="artists-list">
+    {% if artists %}
+        {% for artist in artists %}
+            <div class="artist-card">
+                <a href="/artist/{{ artist.artistID }}">
+                    <h3>{{ artist.name }}</h3>
+                </a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No artists found. Try a different filter!</p>
+    {% endif %}
+</section>
 
 {% endblock %}
+
 

@@ -4,18 +4,26 @@
  
 {% extends "base.html" %}
 {% block main_content %}   
+
 <h1>Discover Albums</h1>
 
-<p>Albums for you to explore in "{{ genre }}" with {{ num_rating + '+' if num_rating else 'Any' }} ratings</p>
+<p class="intro-text">Albums for you to explore in "<strong>{{ genre }}</strong>" with {{ num_rating + '+' if num_rating else 'Any' }} ratings</p>
 
-
-  <ul>
+<section class="albums-list">
+  {% if albums %}
     {% for album in albums %}
-      <li>
-        <a href="/album/{{ album.albumID}}">{{ album.title }}</a> 
-      </li>
+      <div class="album-card">
+        <a href="/album/{{ album.albumID }}">
+          <h3>{{ album.title }}</h3>
+          {% if album.artistName %}
+            <p>by {{ album.artistName }}</p>
+          {% endif %}
+        </a>
+      </div>
     {% endfor %}
-  </ul>
+  {% else %}
+    <p>No albums found for this genre and rating filter.</p>
+  {% endif %}
+</section>
 
-
-{% endblock %}  
+{% endblock %}

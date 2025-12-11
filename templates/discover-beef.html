@@ -8,17 +8,20 @@
 <section>
 
 <form method="POST" action="">
-  <label>Artist involved:
-    <!--<input type="text" name="artist" placeholder="e.g. Drake">-->
-    <select id="artist" name="artist" required>
-      <option value="" disabled selected>choose one:</option>
-      {% for a in artists %}
-        <option value="{{a.artistID}}">{{ a.name }}</option>
-      {% endfor %}
-    </select>
-  </label>
+<div class="form-row">
+  <label for="artist">Artist involved:</label>
+  <select id="artist" name="artist" required>
+    <option value="" disabled selected>choose one:</option>
+    {% for a in artists %}
+      <option value="{{a.artistID}}">{{ a.name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
   
+<div class="form-row submit-row">
   <input type="submit" value="Find Beefs">
+</div>
 </form>
 
 </section>

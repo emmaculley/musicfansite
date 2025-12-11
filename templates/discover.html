@@ -5,24 +5,27 @@
 {% block main_content %}
 
 
-<header>
+<header style="text-align: center; margin-top: 2rem;">
 <h1>DISCOVER 🎧</h1>
+<p style="color: var(--purple-dark); font-weight: 500;"></p>
 </header>
 
 
-<section>
+<section class="section" style="text-align: center;">
     <h2>What do you want to discover?</h2>
-    <form method="GET" action="/discover/">
-    <label>Kind:
-        <select required name="kind">
-        <option value="">choose one</option>
-        <option value="artist">artist</option>
-        <option value="album">album</option>
-        <option value="beef">beef</option>
+    <form method="GET" action="/discover/" style="margin-top: 1.5rem;">
+    <div class="form-row">
+        <label for="kind">Kind:</label>
+        <select id="kind" name="kind" required>
+            <option value="">choose one</option>
+            <option value="artist">artist</option>
+            <option value="album">album</option>
+            <option value="beef">beef</option>
         </select>
+    </div>
     </label>
 
-    <input type="submit" value="Continue">
+    <input type="submit" value="Continue" style="margin-top: 1.5rem;">
     </form>
 
 </section>

@@ -8,17 +8,19 @@
 <section>
 
 <form method="POST" action="">
-  <label>Genre:
-        <select name="genre">
-          <option value="">choose one</option>
-          {% for g in genres %}
-              <option value="{{g}}">{{g}}</option>
-          {% endfor %}
-        </select>
-  </label>
+<div class="form-row">
+    <label for="genre">Genre:</label>
+    <select id="genre" name="genre">
+      <option value="">choose one</option>
+      {% for g in genres %}
+          <option value="{{g}}">{{g}}</option>
+      {% endfor %}
+    </select>
+</div>
 
-  <label>Number of Ratings:
-    <select name="num_rating">
+<div class="form-row">
+    <label for="num_rating">Number of Ratings:</label>
+    <select id="num_rating" name="num_rating">
       <option value="">Any</option>
       <option value="100">100+</option>
       <option value="75">75-100</option>
@@ -26,11 +28,16 @@
       <option value="25">25-50</option>
       <option value="0">0-25</option>
     </select>
-  </label>
+</div>
 
+<div class="form-row submit-row">
   <input type="submit" value="Find Albums">
+</div>
 </form>
+
 </section>
 
+{% endblock %}      
+ 
 
-{% endblock %}     
+        

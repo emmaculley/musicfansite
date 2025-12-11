@@ -3,17 +3,23 @@
 <!-- Renders a page that shows new beefs with clickable links-->
 {% extends "base.html" %}
 {% block main_content %}  
+
 <h1>Discover Beefs</h1>
 
-<p>Beefs for you to explore involving "{{ artist }}" in {{ genre }}</p>
+<p class="intro-text">Beefs for you to explore involving "<strong>{{ artist }}</strong>" in <strong>{{ genre }}</strong></p>
 
-  <ul>
+<section class="beefs-list">
+  {% if beefs %}
     {% for beef in beefs %}
-      <li>
-        <a href="{{ url_for('beef_page', bid=beef.bid) }}">{{ beef.artist1Name }} vs. {{ beef.artist2Name }}</a> 
-      </li>
+      <div class="beef-card">
+        <a href="{{ url_for('beef_page', bid=beef.bid) }}">
+          <h3>{{ beef.artist1Name }} vs. {{ beef.artist2Name }}</h3>
+        </a>
+      </div>
     {% endfor %}
-  </ul>
- 
+  {% else %}
+    <p>No beefs found for this artist in this genre.</p>
+  {% endif %}
+</section>
 
-{% endblock %}  
+{% endblock %}
