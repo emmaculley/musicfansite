@@ -632,3 +632,43 @@ def check_ratings(conn, userID, artistID):
     curs = dbi.dict_cursor(conn)
     curs.execute('select userID from ratings where artistID=%s AND userID=%s', [artistID, userID])
     return curs.fetchone()
+
+
+def search_artists(conn, term):
+    '''
+    Search for artists whose name matches the search.
+    
+    Args:
+        term -> str 
+
+    Returns:
+        A list of dicts with artistID, name, genre, rating, approvalStatus.
+    '''
+    curs = dbi.dict_cursor(conn)
+    sql = '''SELECT artistID, name, genre, rating, approvalStatus
+        FROM artist
+        WHERE name LIKE %s'''
+    curs.execute(sql, ['%' + term + '%'])
+    return curs.fetchall()
+
+
+def search_albums(conn, term):
+    '''
+    Search for albums whose title matches the search.
+
+    Args:
+        term -> str 
+
+    Returns:    
+        Returns a list of dicts with albumID, title, release, artistID, approved.
+    '''
+    curs = dbi.dict_cursor(conn)
+    sql = ''' SELECT albumID, title, `release`, artistID, approved
+        FROM album
+        WHERE title LIKE %s'''
+    curs.execute(sql, ['%' + term + '%'])
+    return curs.fetchall()
+
+
+
+

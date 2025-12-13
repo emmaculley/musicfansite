@@ -12,7 +12,7 @@
 <p>{{ person.name }} is a {{ person.genre }} artist with a current rating of {{ person.rating }} out of 10.</p>
 
 
-<form method="POST">
+<form method="POST" action="{{ url_for('artist', id=person.artistID) }}">
     <label>Rate this artist: 
         <input type="number" name="rating" value="1" min="1" max="10">
     </label>
@@ -48,7 +48,7 @@
 <p>Artists {{person.name}} has had beef with:</p>
 {% for beef in beefs %}
 <ul>
-    <li><a href="/beef/{{beef.beefID}}">{{beef.name}}</a></li> <!--Later add the beef pages to here as href-->
+    <li><a href="{{ url_for('beef_page', bid=beef.beefID) }}">{{beef.name}}</a></li> <!--Later add the beef pages to here as href-->
 </ul>
 
 {% endfor %}

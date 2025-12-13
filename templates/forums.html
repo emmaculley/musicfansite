@@ -13,7 +13,8 @@
 
 <section>
     <h2>What do you want to discuss?</h2>
-    <form method="POST" action="/forums/">
+<form method="POST" action="{{ url_for('forums_home') }}">
+
     <label>Type:
         <select required name="type">
         <option value="">choose one</option>

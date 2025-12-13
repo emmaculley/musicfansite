@@ -13,7 +13,7 @@
 
 <section class="section" style="text-align: center;">
     <h2>What do you want to discover?</h2>
-    <form method="GET" action="/discover/" style="margin-top: 1.5rem;">
+    <form method="GET" action="{{ url_for('discover_home') }}" style="margin-top: 1.5rem;">
     <div class="form-row">
         <label for="kind">Kind:</label>
         <select id="kind" name="kind" required>

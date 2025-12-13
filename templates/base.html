@@ -36,12 +36,14 @@
             <li><a href="{{ url_for('discover_home') }}">Discover</a></li>
             <li><a href="{{ url_for('contribute_home') }}">Contribute</a></li>
             <li><a href="{{url_for('forums_home')}}">Forums</a></li>
+            <li><a href="{{ url_for('search_page') }}">Search</a></li>
             {% if session.get('user_id') %}
                 <li>Welcome, {{ session.get('fname') }}!</li>
             {% else %}
                 <li><a href="{{ url_for('login') }}">Log in</a></li>
                 <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
             {% endif %}
+
         </ul>
     </nav>
 

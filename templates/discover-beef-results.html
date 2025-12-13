@@ -6,7 +6,7 @@
 
 <h1>Discover Beefs</h1>
 
-<p class="intro-text">Beefs for you to explore involving "<strong>{{ artist }}</strong>" in <strong>{{ genre }}</strong></p>
+<p class="intro-text">Beefs for you to explore involving "<strong>{{ artist }}</strong>"</p>
 
 <section class="beefs-list">
   {% if beefs %}
@@ -18,7 +18,7 @@
       </div>
     {% endfor %}
   {% else %}
-    <p>No beefs found for this artist in this genre.</p>
+    <p>No beefs found for this artist.</p>
   {% endif %}
 </section>
 

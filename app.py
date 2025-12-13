@@ -96,61 +96,96 @@ def discover_kind(kind):
         if request.method == 'POST':
             genre = request.form.get('genre')
             num_rating = request.form.get('num_rating')
-            # user selects genre and # of total ratings they want the 
-            # artist to have. we make sure artists of their category exist 
-            artists = music.discover_artists(conn, genre, num_rating)
+
             if not genre:
                 flash("Please make a selection for genre.")
-                return redirect(url_for('discover_kind', kind=kind))
-            if not artists:
-                flash("There are no artists in this category.")
-                return redirect(url_for('discover_kind', kind=kind))
-            return render_template('discover-artist-results.html',genre=genre,num_rating=num_rating, artists=artists, page_title='Artists to Discover')
+                return redirect(url_for('discover_kind', kind='artist'))
+
+            return redirect(url_for('discover_artist_results', genre=genre, num_rating=num_rating))
+
         genres = music.get_genres(conn)
         return render_template('discover-artist.html', genres=genres, page_title='Discover Artists')
     elif kind == 'album':
         if request.method == 'POST':
             genre = request.form.get('genre')
             num_rating = request.form.get('num_rating')
-            # make sure there are albums in their category
-            albums = music.discover_albums(conn, genre, num_rating)
+
             if not genre:
                 flash("Please make a selection for genre.")
-                return redirect(url_for('discover_kind', kind=kind))
-            if not albums:
-                flash("There are no albums in this category.")
-                return redirect(url_for('discover_kind', kind=kind))
-            return render_template('discover-album-results.html',genre=genre,num_rating=num_rating, albums=albums, page_title='Albums to Discover')
+                return redirect(url_for('discover_kind', kind='album'))
+
+            return redirect(url_for('discover_album_results', genre=genre, num_rating=num_rating))
+
         genres = music.get_genres(conn)
         return render_template('discover-album.html', genres=genres, page_title='Discover Albums')
     elif kind == 'beef':
         if request.method == 'POST':
             artist = request.form.get('artist')
-            # 'artist' is their id. also need to get their name to display on the page
-            artistInfo =  music.get_artist_one(conn, artist)
-            artistName = artistInfo['name']
-            # make sure there are beefs involving that artist
-            beefs = music.discover_beefs(conn, artist)
-            if not beefs:
-                flash("This artist has no beefs.")
-                return redirect(url_for('discover_kind', kind=kind))
-            for beef in beefs:
-                # get the artist IDs involved
-                artist1 = beef["artist1"]
-                artist2 = beef["artist2"]
-                #get artist1's name
-                artist1Info = music.get_artist_one(conn, artist1)
-                artist1Name = artist1Info['name']
-                # get artist2's name
-                artist2Info = music.get_artist_one(conn, artist2)
-                artist2Name = artist2Info['name']
-                # add names to the beef dict so they can be displayed on the 'beefs to explore'
-                beef['artist1Name'] = artist1Name
-                beef['artist2Name'] = artist2Name
-            return render_template('discover-beef-results.html',artist=artistName, beefs=beefs, page_title='Beefs to Discover')
+            if not artist:
+                flash("Please select an artist.")
+                return redirect(url_for('discover_kind', kind='beef'))
+
+            return redirect(url_for('discover_beef_results', artist=artist))
+
         genres = music.get_genres(conn)
         artists = music.get_artists(conn)
         return render_template('discover-beef.html', genres=genres, artists=artists, page_title='Discover Beefs')
+
+
+@app.route('/discover/artist/results')
+def discover_artist_results():
+    genre = request.args.get('genre')
+    num_rating = request.args.get('num_rating')
+    conn = dbi.connect()
+    artists = music.discover_artists(conn, genre, num_rating)
+
+    if not artists:
+        flash("There are no artists in this category with this number of ratings.")
+        return redirect(url_for('discover_kind', kind='artist'))
+
+    return render_template('discover-artist-results.html', genre=genre, num_rating=num_rating, artists=artists, page_title='Artists to Discover')
+
+@app.route('/discover/album/results')
+def discover_album_results():
+    genre = request.args.get('genre')
+    num_rating = request.args.get('num_rating')
+    conn = dbi.connect()
+    albums = music.discover_albums(conn, genre, num_rating)
+
+    if not albums:
+        flash("There are no albums in this category with this number of rating")
+        return redirect(url_for('discover_kind', kind='album'))
+
+    return render_template('discover-album-results.html', genre=genre, num_rating=num_rating, albums=albums, page_title='Albums to Discover')
+
+
+@app.route('/discover/beef/results')
+def discover_beef_results():
+    artist_id = request.args.get('artist')
+    conn = dbi.connect()
+
+    artistInfo = music.get_artist_one(conn, artist_id)
+    if not artistInfo:
+        flash("Artist not found.")
+        return redirect(url_for('discover_kind', kind='beef'))
+
+    artistName = artistInfo['name']
+    beefs = music.discover_beefs(conn, artist_id)
+
+    if not beefs:
+        flash("This artist has no beefs.")
+        return redirect(url_for('discover_kind', kind='beef'))
+
+    for beef in beefs:
+        artist1 = beef["artist1"]
+        artist2 = beef["artist2"]
+        beef['artist1Name'] = music.get_artist_one(conn, artist1)['name']
+        beef['artist2Name'] = music.get_artist_one(conn, artist2)['name']
+
+    return render_template('discover-beef-results.html', artist=artistName, beefs=beefs, page_title='Beefs to Discover')
+
+
+
 
 # pages for individual artists
 @app.route('/artist/<id>/', methods = ['GET', 'POST'])
@@ -467,6 +502,29 @@ def album_page(aid):
     artist = music.get_artist_one(conn, album['artistID'])
     return render_template('album_page.html',album=album, artist=artist, page_title=album['title'])
     
+
+@app.route('/search')
+def search_page():
+    conn = dbi.connect()
+
+    term = request.args.get('term')
+
+    artists = []
+    albums = []
+
+    if term:
+        artists = music.search_artists(conn, term)
+        albums = music.search_albums(conn, term)
+
+    return render_template(
+        'search.html',
+        term=term,
+        artists=artists,
+        albums=albums,
+        page_title="Search"
+    )
+
+
 
 
 if __name__ == '__main__':

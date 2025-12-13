@@ -7,7 +7,9 @@
 <h1>Discover Beefs</h1>
 <section>
 
-<form method="POST" action="">
+<form method="POST" action="{{ url_for('discover_kind', kind='beef') }}">
+
+
 <div class="form-row">
   <label for="artist">Artist involved:</label>
   <select id="artist" name="artist" required>
