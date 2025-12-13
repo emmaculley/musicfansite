@@ -5,10 +5,12 @@ Last updated: 8th December 2025
 """
 
 from flask import (Flask, render_template, url_for, request,
-                   redirect, session, flash)
+                   redirect, session, flash, send_from_directory)
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
+import sys, os
 import secrets
 import cs304dbi as dbi
 import music
@@ -17,6 +19,10 @@ from pymysql import IntegrityError
 
 # for flashing
 app.secret_key = secrets.token_hex()
+
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads', 'artists')
+app.config['UPLOADS'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 1*1024*1024 # 1 MB
 
 print(dbi.conf('musicfan_db'))
 conn = dbi.connect()
@@ -195,6 +201,7 @@ def artist(id):
     beefs = music.get_beef_names(conn, id)
     if beefs == None:
         beefs = {}
+    photo_filename = music.get_artist_photo(conn, id)
     if request.method == 'GET':
         for beef in beefs:
             # add the beef ID to the beef, so we can put a link to it
@@ -202,7 +209,7 @@ def artist(id):
             artist2ID = beef['artistID']
             beefID = music.get_beef_id(conn, artist1ID, artist2ID)
             beef['beefID'] = beefID['bid']
-        return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
+        return render_template('artist.html', artist=artist, beefs=beefs, photo=photo_filename, page_title=artist[0]['name'])
     else:
         form_data = request.form
         if 'user_id' in session:
@@ -223,6 +230,7 @@ def artist(id):
         else:
             flash('you need to be logged in to rate artists')
             return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
+
 
 # Page to contribute new information to the site        
 @app.route('/contribute/')
@@ -502,28 +510,64 @@ def album_page(aid):
     artist = music.get_artist_one(conn, album['artistID'])
     return render_template('album_page.html',album=album, artist=artist, page_title=album['title'])
     
-
+# allows users to search for albums and artists directly
 @app.route('/search')
 def search_page():
     conn = dbi.connect()
-
     term = request.args.get('term')
-
     artists = []
     albums = []
-
     if term:
         artists = music.search_artists(conn, term)
         albums = music.search_albums(conn, term)
+    return render_template('search.html',term=term,artists=artists,albums=albums,page_title="Search")
 
-    return render_template(
-        'search.html',
-        term=term,
-        artists=artists,
-        albums=albums,
-        page_title="Search"
-    )
+@app.route('/upload_artist_photo/', methods=['GET', 'POST'])
+def upload_artist_photo():
+    if 'user_id' not in session:
+        flash("You must be logged in to upload a photo.")
+        return redirect(url_for('login'))
+    conn = dbi.connect()
+    if request.method == 'GET':
+        artists = music.get_artists(conn)
+        return render_template(
+            'upload_artist_photo.html',
+            artists=artists,
+            src='',
+            artistID=''
+        )
+    else:
+        try:
+            artistID = int(request.form['artistID'])
+            f = request.files['photo']
+            user_filename = f.filename
+            ext = user_filename.split('.')[-1]
+            filename = secure_filename(f'artist_{artistID}.{ext}')
+            pathname = os.path.join(app.config['UPLOADS'], filename)
+            f.save(pathname)
+            music.save_artist_photo(conn, artistID, filename)
+            flash('Artist photo upload successful')
+            return render_template(
+                'upload_artist_photo.html',
+                artists=music.get_artists(conn),
+                src=url_for('artist_pic', artistID=artistID),
+                artistID=artistID
+            )
+        except Exception as err:
+            flash(f'Upload failed: {err}')
+            return render_template(
+                'upload_artist_photo.html',
+                artists=music.get_artists(conn),
+                src='',
+                artistID='')
 
+@app.route('/artist_pic/<int:artistID>')
+def artist_pic(artistID):
+    conn = dbi.connect()
+    filename = music.get_artist_photo(conn, artistID)
+    if not filename:
+        return url_for('static', filename='uploads/artists/placeholder.png')
+    return send_from_directory(app.config['UPLOADS'], filename)
 
 
 

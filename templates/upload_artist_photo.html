@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<h2>Upload Artist Photo</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  <!-- Artist selection -->
+  <label for="artistID">Select Artist</label>
+  <select name="artistID" required>
+    <option value="">-- choose artist --</option>
+    {% for a in artists %}
+      <option value="{{ a.artistID }}"
+        {% if a.artistID|string == request.args.get('artistID') or a.artistID == artistID %}selected{% endif %}>
+        {{ a.name }}
+      </option>
+    {% endfor %}
+  </select>
+  <br><br>
+
+  <!-- File input -->
+  <label for="photo">Choose Photo</label>
+  <input type="file" name="photo" accept="image/*" required>
+  <br><br>
+
+  <button type="submit">Upload</button>
+</form>
+
+{% if src %}
+  <h3>Uploaded Image</h3>
+  <img src="{{ src }}" width="300">
+{% endif %}
+
+{% endblock %}

@@ -671,4 +671,30 @@ def search_albums(conn, term):
 
 
 
+def get_artist_photo(conn, artistID):
+    """Return the filename of the artist's photo, or None if none exists."""
+    curs = dbi.dict_cursor(conn)
+    numrows = curs.execute(
+        '''SELECT filename
+           FROM artist_photo
+           WHERE artistID = %s''',
+        [artistID])
+    if numrows == 0:
+        return None
+    row = curs.fetchone()
+    return row['filename']
+
+
+def save_artist_photo(conn, artistID, filename):
+    """Insert or update the artist's photo in the database."""
+    curs = dbi.dict_cursor(conn)
+    curs.execute(
+        '''INSERT INTO artist_photo (artistID, filename)
+           VALUES (%s, %s)
+           ON DUPLICATE KEY UPDATE filename = %s''',
+        [artistID, filename, filename])
+    conn.commit()
+
+
+
 
