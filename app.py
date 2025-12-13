@@ -198,38 +198,32 @@ def discover_beef_results():
 def artist(id):
     conn = dbi.connect()
     artist = music.get_artist(conn, id)
-    beefs = music.get_beef_names(conn, id)
-    if beefs == None:
-        beefs = {}
+    beefs = music.get_beef_names(conn, id) or [] 
     photo_filename = music.get_artist_photo(conn, id)
-    if request.method == 'GET':
-        for beef in beefs:
-            # add the beef ID to the beef, so we can put a link to it
-            artist1ID = artist[0]['artistID']
-            artist2ID = beef['artistID']
-            beefID = music.get_beef_id(conn, artist1ID, artist2ID)
-            beef['beefID'] = beefID['bid']
-        return render_template('artist.html', artist=artist, beefs=beefs, photo=photo_filename, page_title=artist[0]['name'])
-    else:
+    for beef in beefs:
+        artist1ID = artist[0]['artistID']
+        artist2ID = beef['artistID']
+        beefID = music.get_beef_id(conn, artist1ID, artist2ID)
+        beef['beefID'] = beefID['bid']
+    if request.method == 'POST':
         form_data = request.form
         if 'user_id' in session:
             user_id = session['user_id']
             artistID = artist[0]['artistID']
             potential_rating = music.check_ratings(conn, user_id, artistID)
-            if potential_rating == None:
-                # if this user hasn't rated this artist yet
+            if potential_rating is None:
                 music.insert_rating(conn, form_data, id, user_id)
                 music.update_artist_rating(conn, id)
-                artist_w_current_rating = music.get_artist(conn, id) # change to better name later
-                # need to get the artist again so that their new rating gets rendered on their page
-                return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs, page_title=artist[0]['name'])
+                artist = music.get_artist(conn, id)
+                flash("Rating submitted successfully.")
             else:
-                # if this user has already rated this artist
-                flash("you have already rated this artist")
-                return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
+                flash("You have already rated this artist")
         else:
-            flash('you need to be logged in to rate artists')
-            return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
+            flash('You need to be logged in to rate artists')
+    return render_template('artist.html', artist=artist, beefs=beefs, photo=photo_filename, page_title=artist[0]['name'])
+
+
+        
 
 
 # Page to contribute new information to the site        
@@ -522,6 +516,7 @@ def search_page():
         albums = music.search_albums(conn, term)
     return render_template('search.html',term=term,artists=artists,albums=albums,page_title="Search")
 
+# allows users to upload a photo of the artist for their artist page
 @app.route('/upload_artist_photo/', methods=['GET', 'POST'])
 def upload_artist_photo():
     if 'user_id' not in session:
@@ -561,7 +556,8 @@ def upload_artist_photo():
                 src='',
                 artistID='')
 
-@app.route('/artist_pic/<int:artistID>')
+# gets the artist photo 
+@app.route('/artist_pic/<int:artistID>/')
 def artist_pic(artistID):
     conn = dbi.connect()
     filename = music.get_artist_photo(conn, artistID)

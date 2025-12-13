@@ -7,22 +7,16 @@
 
 
 
+
 {% for person in artist %}
 <h2>{{ person.name }} </h2>
 
 <p>{{ person.name }} is a {{ person.genre }} artist with a current rating of {{ person.rating }} out of 10.</p>
 
-{% if photo %}
-  <div class="artist-photo">
-      <img src="{{ url_for('static', filename='uploads/artists/' ~ photo) }}" 
-           alt="{{ artist[0].name }}" 
-           width="100" height="100" 
-           style="border-radius: 50%; object-fit: cover;">
-  </div>
-{% else %}
-  <a href="{{ url_for('upload_artist_photo') }}">Upload a photo</a>
-{% endif %}
-
+{% if photo %} <div class="artist-photo"> 
+<img src="{{ url_for('static', filename='uploads/artists/' ~ photo) }}" alt="{{ artist[0].name }}" width="100" height="100" style="border-radius: 50%; object-fit: cover;"> 
+</div> 
+{% else %} <a href="{{ url_for('upload_artist_photo') }}">Upload a photo</a> {% endif %}
 
 <form method="POST" action="{{ url_for('artist', id=person.artistID) }}">
     <label>Rate this artist: 
@@ -31,8 +25,8 @@
     <button type="submit" name="submit" value="rate">Rate</button>
 </form>
 
-<!--
-<form method="POST">
+
+<!-- <form method="POST">
     <input type="radio" id="1" name="rating" value="1">
     <label for="1">1</label><br>
     <input type="radio" id="2" name="rating" value="2">
@@ -54,8 +48,8 @@
     <input type="radio" id="10" name="rating" value="10">
     <label for="10">10</label><br>
     <input type="submit" name="submit" value="rate">
-</form>
--->
+</form> -->
+
 
 <p>Artists {{person.name}} has had beef with:</p>
 {% for beef in beefs %}
