@@ -287,7 +287,7 @@ def discover_albums(conn, genre, num_rating):
         5 (or fewer) albums who fit the form criteria
     '''
     curs = dbi.dict_cursor(conn)
-    query = '''SELECT a.artistID, a.name, a.genre, a.rating, COUNT(r.userID) AS num_ratings
+    query = '''SELECT a.albumID, a.title, ar.genre, ar.rating, COUNT(r.userID) AS num_ratings
         from album a left join artist ar using (artistID)
         left join ratings r using (artistID)
         where a.approved = 'approved' AND ar.genre = %s
@@ -450,7 +450,7 @@ def get_album(conn, albumID):
     curs = dbi.dict_cursor(conn)
     curs.execute(
     '''
-    SELECT albumID, title, release, artistID
+    SELECT albumID, title, `release`, artistID
     FROM album
     WHERE albumID = %s
       AND approved = "approved"

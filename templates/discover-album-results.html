@@ -13,7 +13,7 @@
   {% if albums %}
     {% for album in albums %}
       <div class="album-card">
-        <a href="/album/{{ album.albumID }}">
+        <a href="{{url_for('album_page', aid=album.albumID)}}">
           <h3>{{ album.title }}</h3>
           {% if album.artistName %}
             <p>by {{ album.artistName }}</p>
