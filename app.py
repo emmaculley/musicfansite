@@ -529,6 +529,7 @@ def search_page():
         albums = music.search_albums(conn, term)
     return render_template('search.html',term=term,artists=artists,albums=albums,page_title="Search")
 
+# allows users to upload a photo of the artist for their artist page
 @app.route('/upload_artist_photo/', methods=['GET', 'POST'])
 def upload_artist_photo():
     if 'user_id' not in session:
@@ -561,8 +562,11 @@ def upload_artist_photo():
 
         except Exception as err:
             flash(f'Upload failed: {err}')
-            return redirect(url_for('upload_artist_photo'))
-            
+            return render_template(
+                'upload_artist_photo.html',
+                artists=music.get_artists(conn),
+                src='',
+                artistID='')
 
 @app.route('/artist_pic/<int:artistID>')
 def artist_pic(artistID):
