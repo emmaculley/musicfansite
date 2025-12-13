@@ -192,45 +192,52 @@ def discover_beef_results():
 
 
 
-
 # pages for individual artists
 @app.route('/artist/<id>/', methods = ['GET', 'POST'])
 def artist(id):
     conn = dbi.connect()
     artist = music.get_artist(conn, id)
-    beefs = music.get_beef_names(conn, id)
-    if beefs == None:
-        beefs = {}
+    beefs = music.get_beef_names(conn, id) or []   
     photo_filename = music.get_artist_photo(conn, id)
+
     if request.method == 'GET':
         for beef in beefs:
-            # add the beef ID to the beef, so we can put a link to it
             artist1ID = artist[0]['artistID']
             artist2ID = beef['artistID']
+
+            beef['beefID'] = None  
+
             beefID = music.get_beef_id(conn, artist1ID, artist2ID)
-            beef['beefID'] = beefID['bid']
-        return render_template('artist.html', artist=artist, beefs=beefs, photo=photo_filename, page_title=artist[0]['name'])
+            if beefID:
+                beef['beefID'] = beefID['bid']
+
+        return render_template(
+            'artist.html',
+            artist=artist,
+            beefs=beefs,
+            photo=photo_filename,
+            page_title=artist[0]['name']
+        )
     else:
         form_data = request.form
-        if 'user_id' in session:
-            user_id = session['user_id']
-            artistID = artist[0]['artistID']
-            potential_rating = music.check_ratings(conn, user_id, artistID)
-            if potential_rating == None:
-                # if this user hasn't rated this artist yet
-                music.insert_rating(conn, form_data, id, user_id)
-                music.update_artist_rating(conn, id)
-                artist_w_current_rating = music.get_artist(conn, id) # change to better name later
-                # need to get the artist again so that their new rating gets rendered on their page
-                return render_template('artist.html', artist=artist_w_current_rating, beefs=beefs, page_title=artist[0]['name'])
-            else:
-                # if this user has already rated this artist
-                flash("you have already rated this artist")
-                return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
-        else:
-            flash('you need to be logged in to rate artists')
-            return render_template('artist.html', artist=artist, beefs=beefs, page_title=artist[0]['name'])
 
+        if 'user_id' not in session:
+            flash('you need to be logged in to rate artists')
+            return redirect(url_for('artist', id=id))
+
+        user_id = session['user_id']
+        artistID = artist[0]['artistID']
+
+        potential_rating = music.check_ratings(conn, user_id, artistID)
+
+        if potential_rating is None:
+            music.insert_rating(conn, form_data, id, user_id)
+            music.update_artist_rating(conn, id)
+            flash('Rating submitted!')
+        else:
+            flash('You have already rated this artist')
+
+        return redirect(url_for('artist', id=id))  
 
 # Page to contribute new information to the site        
 @app.route('/contribute/')
@@ -540,26 +547,22 @@ def upload_artist_photo():
         try:
             artistID = int(request.form['artistID'])
             f = request.files['photo']
+
             user_filename = f.filename
-            ext = user_filename.split('.')[-1]
+            ext = user_filename.rsplit('.', 1)[-1]
             filename = secure_filename(f'artist_{artistID}.{ext}')
             pathname = os.path.join(app.config['UPLOADS'], filename)
+
             f.save(pathname)
             music.save_artist_photo(conn, artistID, filename)
+
             flash('Artist photo upload successful')
-            return render_template(
-                'upload_artist_photo.html',
-                artists=music.get_artists(conn),
-                src=url_for('artist_pic', artistID=artistID),
-                artistID=artistID
-            )
+            return redirect(url_for('artist', id=artistID))
+
         except Exception as err:
             flash(f'Upload failed: {err}')
-            return render_template(
-                'upload_artist_photo.html',
-                artists=music.get_artists(conn),
-                src='',
-                artistID='')
+            return redirect(url_for('upload_artist_photo'))
+            
 
 @app.route('/artist_pic/<int:artistID>')
 def artist_pic(artistID):

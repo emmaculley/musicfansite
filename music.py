@@ -188,7 +188,14 @@ def get_beef_names(conn, id):
         The artist's beefs
     '''
     curs = dbi.dict_cursor(conn)
-    curs.execute('select name, artistID from artist where artistID in (select artist1 from beef where artist2=%s) or artistID in (select artist2 from beef where artist1=%s)', [id, id])
+    curs.execute("""
+    SELECT DISTINCT a.name, a.artistID
+    FROM artist AS a
+    JOIN beef AS b
+      ON (a.artistID = b.artist1 AND b.artist2 = %s)
+      OR (a.artistID = b.artist2 AND b.artist1 = %s)
+    WHERE b.approved = 'approved'
+    """, [id, id])
     beefs = curs.fetchall()
     return beefs
 
