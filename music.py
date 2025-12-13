@@ -253,7 +253,7 @@ def discover_artists(conn, genre, num_rating):
         5 (or fewer) artists who fit the form criteria
     '''
     curs = dbi.dict_cursor(conn)
-    query = '''select a.*, count(r.userID) as num_ratings from artist a
+    query = '''select a.artistID, a.name, a.genre, a.rating, count(r.userID) as num_ratings from artist a
         left join ratings r on a.artistID = r.artistID
         where a.approvalStatus = "approved" AND a.genre = %s
         group by a.artistID'''
@@ -287,7 +287,7 @@ def discover_albums(conn, genre, num_rating):
         5 (or fewer) albums who fit the form criteria
     '''
     curs = dbi.dict_cursor(conn)
-    query = '''SELECT a.*, COUNT(r.userID) AS num_ratings
+    query = '''SELECT a.artistID, a.name, a.genre, a.rating, COUNT(r.userID) AS num_ratings
         from album a left join artist ar using (artistID)
         left join ratings r using (artistID)
         where a.approved = 'approved' AND ar.genre = %s
@@ -322,7 +322,7 @@ def discover_beefs(conn, artist):
         5 (or fewer) beefs with a given artist
     '''
     curs = dbi.dict_cursor(conn)
-    curs.execute('''select b.* from beef b
+    curs.execute('''select b.countArtist1, b.countArtist2,b.artist1, b.artist2 from beef b
         where (b.artist1 = %s or b.artist2 = %s)
         and b.approved = 'approved'
         order by rand()
@@ -345,7 +345,7 @@ def get_user_by_email(conn, email):
         The user's information from the user table given their email
     '''
     curs = dbi.dict_cursor(conn)
-    curs.execute('''select * from user where user_email = %s''', [email])
+    curs.execute('''select fname, lname, userID, user_email, password from user where user_email = %s''', [email])
     return curs.fetchone() 
 
 
@@ -406,7 +406,7 @@ def get_beef(conn, bid):
     '''
     curs = dbi.dict_cursor(conn)
     curs.execute('''
-        SELECT *
+        SELECT bid, artist1, artist2, countArtist1, countArtist2, context
         FROM beef
         WHERE bid = %s
           AND approved = 'approved'
@@ -448,7 +448,13 @@ def get_album(conn, albumID):
         The album given the albumID
     '''
     curs = dbi.dict_cursor(conn)
-    curs.execute('''SELECT * FROM album WHERE albumID = %s''', [albumID])
+    curs.execute(
+    '''
+    SELECT albumID, title, release, artistID
+    FROM album
+    WHERE albumID = %s
+      AND approved = "approved"
+    ''', [albumID])
     return curs.fetchone()
 
 
@@ -533,7 +539,7 @@ def get_forum(conn, forum_id):
         Corresponding forum to the forumID
     '''
     curs = dbi.dict_cursor(conn)
-    curs.execute('''select * from forum where forum_id = %s''', (forum_id))
+    curs.execute('''select forum_id, title, type, userID from forum where forum_id = %s''', (forum_id))
     return curs.fetchone()
 
 
@@ -548,7 +554,7 @@ def get_posts(conn, forum_id):
         All the posts from the given forum
     '''
     curs = dbi.dict_cursor(conn)
-    curs.execute('''select * from post where forum_id = %s order by created_at asc''', (forum_id))
+    curs.execute('''select post_id, forum_id, userID, content from post where forum_id = %s order by created_at asc''', (forum_id))
     return curs.fetchall()
 
 
