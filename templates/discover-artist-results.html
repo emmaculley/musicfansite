@@ -18,7 +18,7 @@
     {% if artists %}
         {% for artist in artists %}
             <div class="artist-card">
-                <a href="/artist/{{ artist.artistID }}">
+                <a href="{{url_for('artist', id=artist.artistID)}}">
                     <h3>{{ artist.name }}</h3>
                 </a>
             </div>
