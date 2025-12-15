@@ -660,7 +660,9 @@ def search_artists(conn, term):
     curs = dbi.dict_cursor(conn)
     sql = '''SELECT artistID, name, genre, rating, approvalStatus
         FROM artist
-        WHERE name LIKE %s'''
+        WHERE name LIKE %s
+        AND approvalStatus = 'approved'
+        '''
     curs.execute(sql, ['%' + term + '%'])
     return curs.fetchall()
 
@@ -678,7 +680,9 @@ def search_albums(conn, term):
     curs = dbi.dict_cursor(conn)
     sql = ''' SELECT albumID, title, `release`, artistID, approved
         FROM album
-        WHERE title LIKE %s'''
+        WHERE title LIKE %s 
+        AND approved = 'approved'
+        '''
     curs.execute(sql, ['%' + term + '%'])
     return curs.fetchall()
 
