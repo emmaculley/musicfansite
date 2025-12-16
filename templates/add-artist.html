@@ -17,7 +17,9 @@
     </label>
     <label>Rating (min = 0, max = 10): <input type="number" name="rating" value="0" min="0" max="10"></label>
     <button type="submit">Add Artist</button>
+    <br>
 </form>
 </section>
+<button type="submit"><a href="{{ url_for('contribute_home') }}">Back to Contribute</a></button>
 
 {% endblock %}

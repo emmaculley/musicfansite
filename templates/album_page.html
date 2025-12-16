@@ -5,14 +5,15 @@
 
 {% block main_content %}
 
-<h1>Album Title: {{ album['title'] }}</h1>
+<h1 style = "text-align: center;">Album Title: {{ album['title'] }}</h1>
+<section>
 <p><strong>Artist:</strong> 
     <a href="{{ url_for('artist', id=artist['artistID']) }}">{{ artist['name'] }}</a>
 </p>
 <p><strong>Release Date:</strong> {{ album['release'] }}</p>
+</section>
 
-<a href="{{ url_for('contribution_type', type='music') }}">Add Another Album</a>
+<button type="submit"><a href="{{ url_for('contribution_type', type='music') }}">Add Another Album</a></button>
 <br>
-<a href="{{ url_for('index') }}">Back to Home</a>
-
+<button type="submit"><a href="{{ url_for('index') }}">Back to Home</a></button>
 {% endblock %}

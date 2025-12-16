@@ -7,8 +7,8 @@
 
 
 {% for person in artist %}
-<h2>{{ person.name }} </h2>
-
+<h2 style="text-align: center;">{{ person.name }} </h2>
+<section>
 <p>{{ person.name }} is a {{ person.genre }} artist with a current rating of {{ person.rating }} out of 10.</p>
 
 {% if photo %} <div class="artist-photo"> 
@@ -22,16 +22,19 @@
     </label>
     <button type="submit" name="submit" value="rate">Rate</button>
 </form>
+</section>
 
-
-<p>Artists {{person.name}} has had beef with:</p>
-{% for beef in beefs %}
-<ul>
-    <li><a href="{{ url_for('beef_page', bid=beef.beefID) }}">{{beef.name}}</a></li>
-</ul>
-
-{% endfor %}
-{% endfor %}
-
-
+<section>
+    {% if beefs %}
+        <p>Artists {{ person.name }} has had beef with:</p>
+        <ul>
+        {% for beef in beefs %}
+            <li><a href="{{ url_for('beef_page', bid=beef.beefID) }}">{{ beef.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>{{ person.name }} doesn’t have any beefs.</p>
+    {% endif %}
+</section>
+{% endfor %} 
 {% endblock %}

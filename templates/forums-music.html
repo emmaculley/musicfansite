@@ -31,10 +31,11 @@
     <h2>Create a New Forum</h2>
     <form method="POST">
         <label for="title">Forum Title:</label>
-        <input type="text" id="title" name="title" required>
+        <input type="text" id="title" name="title" required placeholder="write the title...">
 
         <input type="submit" value="Create Forum">
     </form>
 </section>
+<button type="submit"><a href="{{ url_for('forums_home') }}">Back to Forums</a></button>
 
 {% endblock %}

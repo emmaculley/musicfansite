@@ -554,7 +554,18 @@ def get_posts(conn, forum_id):
         All the posts from the given forum
     '''
     curs = dbi.dict_cursor(conn)
-    curs.execute('''select post_id, forum_id, userID, content from post where forum_id = %s order by created_at asc''', (forum_id))
+    curs.execute("""
+        SELECT
+            p.post_id,
+            p.content,
+            p.created_at,
+            u.fname,
+            u.lname
+        FROM post p
+        JOIN user u ON p.userID = u.userID
+        WHERE p.forum_id = %s
+        ORDER BY p.created_at DESC
+    """, [forum_id])
     return curs.fetchall()
 
 

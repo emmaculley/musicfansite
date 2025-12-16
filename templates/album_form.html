@@ -5,7 +5,7 @@
 {% block main_content %}
 
 <h1>Add a New Album</h1>
-
+<section>
 <form method="POST" action="{{ url_for('contribution_type', type='music') }}">
     <label for="artist">Artist:</label>
 
@@ -26,9 +26,10 @@
     <br><br>
     
     <button type="submit">Add Album</button>
+    <br>
 </form>
-
-<a href="{{ url_for('index') }}">Back to Home</a>
+</section>
+<button type="submit"><a href="{{ url_for('contribute_home') }}">Back to Contribute</a></button>
 
 {% endblock %}
 

@@ -21,16 +21,6 @@
     <button type="submit">Vote for {{ artist2.name }}</button>
 </form>
 
-<p><strong>Approval Status:</strong>
-    {% if beef.approved == 'approved' %}
-        Approved
-    {% elif beef.approved == 'pending' %}
-        Pending
-    {% else %}
-        Rejected
-    {% endif %}
-</p>
-
 </section>
 <button><a href="{{ url_for('forums_type', type = 'beef') }}">Back to Forums</a></button>
 
