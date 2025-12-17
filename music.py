@@ -322,7 +322,7 @@ def discover_beefs(conn, artist):
         5 (or fewer) beefs with a given artist
     '''
     curs = dbi.dict_cursor(conn)
-    curs.execute('''select b.countArtist1, b.countArtist2,b.artist1, b.artist2 from beef b
+    curs.execute('''select b.countArtist1, b.countArtist2,b.artist1, b.artist2, b.bid from beef b
         where (b.artist1 = %s or b.artist2 = %s)
         and b.approved = 'approved'
         order by rand()
